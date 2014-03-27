@@ -68,12 +68,6 @@
 		3ADCDC6B18E45938000ED44E /* Boss_Idle.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC3018E45938000ED44E /* Boss_Idle.atlas */; };
 		3ADCDC6C18E45938000ED44E /* Boss_Walk.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC3118E45938000ED44E /* Boss_Walk.atlas */; };
 		3ADCDC6D18E45938000ED44E /* Environment.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC3218E45938000ED44E /* Environment.atlas */; };
-		3ADCDC6E18E45938000ED44E /* Goblin_Attack.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC3418E45938000ED44E /* Goblin_Attack.atlas */; };
-		3ADCDC6F18E45938000ED44E /* Goblin_Death.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC3518E45938000ED44E /* Goblin_Death.atlas */; };
-		3ADCDC7018E45938000ED44E /* Goblin_GetHit.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC3618E45938000ED44E /* Goblin_GetHit.atlas */; };
-		3ADCDC7118E45938000ED44E /* Goblin_Idle.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC3718E45938000ED44E /* Goblin_Idle.atlas */; };
-		3ADCDC7218E45938000ED44E /* Goblin_Walk.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC3818E45938000ED44E /* Goblin_Walk.atlas */; };
-		3ADCDC7318E45938000ED44E /* Tiles.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC3918E45938000ED44E /* Tiles.atlas */; };
 		3ADCDC7418E45938000ED44E /* Warrior_Attack.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC3B18E45938000ED44E /* Warrior_Attack.atlas */; };
 		3ADCDC7518E45938000ED44E /* Warrior_Death.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC3C18E45938000ED44E /* Warrior_Death.atlas */; };
 		3ADCDC7618E45938000ED44E /* Warrior_GetHit.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC3D18E45938000ED44E /* Warrior_GetHit.atlas */; };
@@ -185,12 +179,6 @@
 		3ADCDC3018E45938000ED44E /* Boss_Idle.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Boss_Idle.atlas; sourceTree = "<group>"; };
 		3ADCDC3118E45938000ED44E /* Boss_Walk.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Boss_Walk.atlas; sourceTree = "<group>"; };
 		3ADCDC3218E45938000ED44E /* Environment.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Environment.atlas; sourceTree = "<group>"; };
-		3ADCDC3418E45938000ED44E /* Goblin_Attack.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Goblin_Attack.atlas; sourceTree = "<group>"; };
-		3ADCDC3518E45938000ED44E /* Goblin_Death.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Goblin_Death.atlas; sourceTree = "<group>"; };
-		3ADCDC3618E45938000ED44E /* Goblin_GetHit.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Goblin_GetHit.atlas; sourceTree = "<group>"; };
-		3ADCDC3718E45938000ED44E /* Goblin_Idle.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Goblin_Idle.atlas; sourceTree = "<group>"; };
-		3ADCDC3818E45938000ED44E /* Goblin_Walk.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Goblin_Walk.atlas; sourceTree = "<group>"; };
-		3ADCDC3918E45938000ED44E /* Tiles.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Tiles.atlas; sourceTree = "<group>"; };
 		3ADCDC3B18E45938000ED44E /* Warrior_Attack.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Warrior_Attack.atlas; sourceTree = "<group>"; };
 		3ADCDC3C18E45938000ED44E /* Warrior_Death.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Warrior_Death.atlas; sourceTree = "<group>"; };
 		3ADCDC3D18E45938000ED44E /* Warrior_GetHit.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Warrior_GetHit.atlas; sourceTree = "<group>"; };
@@ -431,8 +419,6 @@
 				3ADCDC2618E45938000ED44E /* Archer */,
 				3ADCDC2C18E45938000ED44E /* Boss */,
 				3ADCDC3218E45938000ED44E /* Environment.atlas */,
-				3ADCDC3318E45938000ED44E /* Goblin */,
-				3ADCDC3918E45938000ED44E /* Tiles.atlas */,
 				3ADCDC3A18E45938000ED44E /* Warrior */,
 			);
 			path = "Texture Atlases";
@@ -460,18 +446,6 @@
 				3ADCDC3118E45938000ED44E /* Boss_Walk.atlas */,
 			);
 			path = Boss;
-			sourceTree = "<group>";
-		};
-		3ADCDC3318E45938000ED44E /* Goblin */ = {
-			isa = PBXGroup;
-			children = (
-				3ADCDC3418E45938000ED44E /* Goblin_Attack.atlas */,
-				3ADCDC3518E45938000ED44E /* Goblin_Death.atlas */,
-				3ADCDC3618E45938000ED44E /* Goblin_GetHit.atlas */,
-				3ADCDC3718E45938000ED44E /* Goblin_Idle.atlas */,
-				3ADCDC3818E45938000ED44E /* Goblin_Walk.atlas */,
-			);
-			path = Goblin;
 			sourceTree = "<group>";
 		};
 		3ADCDC3A18E45938000ED44E /* Warrior */ = {
@@ -587,8 +561,6 @@
 				3ADCDC7B18E45938000ED44E /* button_archer.png in Resources */,
 				3ADCDC6618E45938000ED44E /* Archer_Idle.atlas in Resources */,
 				3ADCDC5418E45938000ED44E /* CaveFire.sks in Resources */,
-				3ADCDC6E18E45938000ED44E /* Goblin_Attack.atlas in Resources */,
-				3ADCDC7318E45938000ED44E /* Tiles.atlas in Resources */,
 				3ADCDC7E18E45938000ED44E /* Default.png in Resources */,
 				3ADCDC7718E45938000ED44E /* Warrior_Idle.atlas in Resources */,
 				3ADCDC7D18E45938000ED44E /* Default-568h@2x.png in Resources */,
@@ -598,15 +570,12 @@
 				3ADCDC8418E45938000ED44E /* lives.png in Resources */,
 				3ADCDC5218E45938000ED44E /* CaveDamage.sks in Resources */,
 				3ADCDC6D18E45938000ED44E /* Environment.atlas in Resources */,
-				3ADCDC6F18E45938000ED44E /* Goblin_Death.atlas in Resources */,
 				3ADCDC6518E45938000ED44E /* Archer_GetHit.atlas in Resources */,
 				3ADCDC7818E45938000ED44E /* Warrior_Walk.atlas in Resources */,
 				3ADCDC6C18E45938000ED44E /* Boss_Walk.atlas in Resources */,
 				3ADCDC7618E45938000ED44E /* Warrior_GetHit.atlas in Resources */,
-				3ADCDC7018E45938000ED44E /* Goblin_GetHit.atlas in Resources */,
 				3ADCDC7918E45938000ED44E /* Assets - iOS.xcassets in Resources */,
 				3ADCDC5E18E45938000ED44E /* spark.png in Resources */,
-				3ADCDC7218E45938000ED44E /* Goblin_Walk.atlas in Resources */,
 				3ADCDC6818E45938000ED44E /* Boss_Attack.atlas in Resources */,
 				3ADCDC5518E45938000ED44E /* CaveFireSmoke.sks in Resources */,
 				3ADCDC8518E45938000ED44E /* logo.png in Resources */,
@@ -618,7 +587,6 @@
 				3ADCDC5318E45938000ED44E /* CaveDeathSmoke.sks in Resources */,
 				3ADCDBC218E44EDD000ED44E /* Images.xcassets in Resources */,
 				3ADCDC6A18E45938000ED44E /* Boss_GetHit.atlas in Resources */,
-				3ADCDC7118E45938000ED44E /* Goblin_Idle.atlas in Resources */,
 				3ADCDC5618E45938000ED44E /* Damage.sks in Resources */,
 				3ADCDC5B18E45938000ED44E /* Leaves_01.sks in Resources */,
 				3ADCDC7F18E45938000ED44E /* Default@2x.png in Resources */,
