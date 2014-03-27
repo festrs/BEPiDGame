@@ -236,7 +236,6 @@
     if (animAction || [frames count] < 1) {
         return; // we already have a running animation or there aren't any frames to animate
     }
-    
     self.activeAnimationKey = key;
     [self runAction:[SKAction sequence:@[
                 [SKAction animateWithTextures:frames timePerFrame:self.animationSpeed resize:YES restore:NO],
