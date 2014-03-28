@@ -82,7 +82,7 @@
     self.physicsBody.categoryBitMask = APAColliderTypeHero;
     
     // Collides with these objects.
-    self.physicsBody.collisionBitMask = APAColliderTypeGoblinOrBoss | APAColliderTypeHero;
+    self.physicsBody.collisionBitMask = APAColliderTypeGoblinOrBoss | APAColliderTypeHero | APAColliderTypeWall;
     
     // We want notifications for colliding with these objects.
     self.physicsBody.contactTestBitMask = APAColliderTypeGoblinOrBoss;
