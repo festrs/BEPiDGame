@@ -348,6 +348,22 @@
     
     self.requestedAnimation = APAAnimationStateWalk;
 }
+//hited
+- (void)moveTowards:(CGPoint)position {
+    CGPoint curPosition = self.position;
+    CGFloat dx = position.x - curPosition.x;
+    CGFloat dy = position.y - curPosition.y;
+    CGFloat dt = self.movementSpeed * 0.0003;
+    
+    CGFloat ang = APA_POLAR_ADJUST(APARadiansBetweenPoints(position, curPosition));
+    self.zRotation = ang;
+    
+
+        self.position = position;
+    
+    
+    self.requestedAnimation = APAAnimationStateWalk;
+}
 
 - (void)moveInDirection:(CGPoint)direction withTimeInterval:(NSTimeInterval)timeInterval {
     CGPoint curPosition = self.position;

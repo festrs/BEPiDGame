@@ -136,6 +136,7 @@ typedef enum : uint8_t {
 - (void)move:(APAMoveDirection)direction withTimeInterval:(NSTimeInterval)timeInterval;
 - (CGFloat)faceTo:(CGPoint)position;
 - (void)moveTowards:(CGPoint)position withTimeInterval:(NSTimeInterval)timeInterval;
+- (void)moveTowards:(CGPoint)position;
 - (void)moveInDirection:(CGPoint)direction withTimeInterval:(NSTimeInterval)timeInterval;
 - (void)performAttackAction;
 

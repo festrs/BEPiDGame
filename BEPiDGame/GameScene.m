@@ -13,11 +13,15 @@
 #import "PlayerHero.h"
 #import "EnemyCharacter.h"
 #import "Boss.h"
+#import "APAGraphicsUtilities.h"
+
+
 
 @interface GameScene() 
 @property (strong, nonatomic) JCImageJoystick *imageJoystick;
 @property (strong, nonatomic) JCButton *normalButton;
 @property (strong, nonatomic) JCButton *turboButton;
+@property (nonatomic) NSTimeInterval lastUpdateTimeInterval;
 @property HeroCharacter *hero;
 @property EnemyCharacter *enemy;
 @property BOOL atackIntent;
@@ -81,6 +85,13 @@
 
 -(void)update:(CFTimeInterval)currentTime {
     
+    CFTimeInterval timeSinceLast = currentTime - self.lastUpdateTimeInterval;
+    self.lastUpdateTimeInterval = currentTime;
+    if (timeSinceLast > 1) { // more than a second since last update
+        timeSinceLast = kMinTimeInterval;
+        self.lastUpdateTimeInterval = currentTime;
+    }
+    
     if(self.imageJoystick.touchesBegin && !self.atackIntent){
         [self.hero moveTowards:CGPointMake(self.hero.position.x+self.imageJoystick.x *2, self.hero.position.y+self.imageJoystick.y *2) withTimeInterval:currentTime];
     }
@@ -103,7 +114,10 @@
     
 }
 
-
+static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
+- (SKEmitterNode *)sharedProjectileSparkEmitter {
+    return sSharedProjectileSparkEmitter;
+}
 
 #pragma mark - Physics Delegate
 - (void)didBeginContact:(SKPhysicsContact *)contact {
@@ -112,7 +126,7 @@
     if ([node isKindOfClass:[Character class]]) {
         [(Character *)node collidedWith:contact.bodyB];
     }
-    
+    contact.contactPoint;
     // Check bodyB too.
     node = contact.bodyB.node;
     if ([node isKindOfClass:[Character class]]) {
@@ -125,11 +139,23 @@
         
         [projectile runAction:[SKAction removeFromParent]];
         
+        if([contact.bodyB.node isKindOfClass:[Boss class]]){
+            node = (Character *)contact.bodyB.node;
+            //[(Character *)node moveTowards:CGPointMake(node.position.x *1.1, node.position.y *1.1) withTimeInterval:self.lastUpdateTimeInterval];
+            
+            [node.physicsBody  applyImpulse:CGVectorMake(0, 2.5)];
+        }else{
+            node = (Character *)contact.bodyA.node;
+            //[(Character *)node moveTowards:CGPointMake(node.position.x *1.1, node.position.y *1.1) withTimeInterval:self.lastUpdateTimeInterval];
+            
+            [node.physicsBody  applyImpulse:CGVectorMake(0, 2.5)];
+        }
+        
         // Build up a "one shot" particle to indicate where the projectile hit.
-//        SKEmitterNode *emitter = [[self sharedProjectileSparkEmitter] copy];
-//        [self addNode:emitter atWorldLayer:APAWorldLayerAboveCharacter];
-//        emitter.position = projectile.position;
-//        APARunOneShotEmitter(emitter, 0.15f);
+        SKEmitterNode *emitter = [[self sharedProjectileSparkEmitter] copy];
+        //[self addNode:emitter atWorldLayer:APAWorldLayerAboveCharacter];
+        emitter.position = projectile.position;
+        APARunOneShotEmitter(emitter, 0.15f);
     }
 }
 
