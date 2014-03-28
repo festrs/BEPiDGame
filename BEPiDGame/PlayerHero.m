@@ -59,7 +59,6 @@
 - (id)initAtPosition:(CGPoint)position withPlayer:(APAPlayer *)player {
     SKTextureAtlas *atlas = [SKTextureAtlas atlasNamed:@"Warrior_Idle"];
     SKTexture *texture = [atlas textureNamed:@"warrior_idle_0001.png"];
-    
     return [super initWithTexture:texture atPosition:position withPlayer:player];
 }
 

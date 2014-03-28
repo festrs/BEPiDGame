@@ -67,6 +67,7 @@
         self.physicsBody.restitution = 0.0f;
         self.physicsBody.linearDamping = 0.1f;
         self.physicsBody.mass = 0.2f;
+        [self setSize:CGSizeMake(50, 50)];
     }
     
     return self;

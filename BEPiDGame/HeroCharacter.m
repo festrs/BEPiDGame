@@ -61,6 +61,7 @@
 }
 
 - (id)initWithTexture:(SKTexture *)texture atPosition:(CGPoint)position withPlayer:(APAPlayer *)player {
+    
     self = [super initWithTexture:texture atPosition:position];
     if (self) {
         _player = player;
@@ -82,7 +83,7 @@
     self.physicsBody.categoryBitMask = APAColliderTypeHero;
     
     // Collides with these objects.
-    self.physicsBody.collisionBitMask = APAColliderTypeGoblinOrBoss | APAColliderTypeHero | APAColliderTypeWall;
+    self.physicsBody.collisionBitMask = APAColliderTypeGoblinOrBoss | APAColliderTypeHero |APAColliderTypeWall | APAColliderTypeScenario;
     
     // We want notifications for colliding with these objects.
     self.physicsBody.contactTestBitMask = APAColliderTypeGoblinOrBoss;
