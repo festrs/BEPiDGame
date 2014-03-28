@@ -14,7 +14,7 @@
 #import "EnemyCharacter.h"
 #import "Boss.h"
 
-@interface GameScene() <SKPhysicsContactDelegate>
+@interface GameScene() 
 @property (strong, nonatomic) JCImageJoystick *imageJoystick;
 @property (strong, nonatomic) JCButton *normalButton;
 @property (strong, nonatomic) JCButton *turboButton;
@@ -27,6 +27,10 @@
 
 -(id)initWithSize:(CGSize)size {
     if (self = [super initWithSize:size]) {
+        
+        self.physicsWorld.gravity = CGVectorMake(0.0f, 0.0f); // no gravity
+        self.physicsWorld.contactDelegate = self;
+        
         //JCImageJoystic
         self.imageJoystick = [[JCImageJoystick alloc]initWithJoystickImage:(@"joystick.png") baseImage:@"dpad.png"];
         [self.imageJoystick setPosition:CGPointMake(70, 70)];
@@ -56,16 +60,17 @@
         self.hero = [[PlayerHero alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.frame)*1.5,
                                                                   CGRectGetMidY(self.frame)) withPlayer:nil];
         [self.hero characterScene];
-        self.hero.physicsBody.affectedByGravity = NO;
         [PlayerHero loadSharedAssets];
         [self addChild:self.hero];
         
         //enemy
-        self.enemy = [[Boss alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.frame)*1.5,
+        self.enemy = [[Boss alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.frame)*1.9,
                                                                          CGRectGetMidY(self.frame))];
-        self.enemy.physicsBody.affectedByGravity = NO;
         [Boss loadSharedAssets];
         [self addChild:self.enemy];
+        
+        //self.physicsWorld.contactDelegate = self;
+        
     }
     return self;
 }
