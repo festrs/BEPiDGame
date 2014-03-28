@@ -69,7 +69,8 @@ typedef enum : uint8_t {
     APAColliderTypeGoblinOrBoss     = 2,
     APAColliderTypeProjectile       = 4,
     APAColliderTypeWall             = 8,
-    APAColliderTypeCave             = 16
+    APAColliderTypeCave             = 16,
+    APAColliderTypeScenario         = 32
 } APAColliderType;
 
 
