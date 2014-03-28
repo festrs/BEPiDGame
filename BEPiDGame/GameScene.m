@@ -32,8 +32,12 @@
 -(id)initWithSize:(CGSize)size {
     if (self = [super initWithSize:size]) {
         
+        //World Sets
         self.physicsWorld.gravity = CGVectorMake(0.0f, 0.0f); // no gravity
         self.physicsWorld.contactDelegate = self;
+		self.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:self.frame];
+		self.physicsBody.categoryBitMask = APAColliderTypeScenario;
+		self.physicsBody.collisionBitMask = APAColliderTypeScenario;
         
         //JCImageJoystic
         self.imageJoystick = [[JCImageJoystick alloc]initWithJoystickImage:(@"joystick.png") baseImage:@"dpad.png"];
