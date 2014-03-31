@@ -122,9 +122,32 @@
     }
     
     if (self.turboButton.wasPressed) {
-        
+        [self addSquareIn:CGPointMake(0,self.size.height-80) withColor:[SKColor yellowColor]];
     }
     
+}
+
+- (void)addSquareIn:(CGPoint)position
+          withColor:(SKColor *)color
+{
+    Character *square = [[Character alloc] init];
+    square.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:square.frame];
+    
+    // Our object type for collisions.
+    square.physicsBody.categoryBitMask = APAColliderTypeWall;
+    
+    // Collides with these objects.
+    square.physicsBody.collisionBitMask =  APAColliderTypeHero;
+    
+    // We want notifications for colliding with these objects.
+    square.physicsBody.contactTestBitMask =  APAColliderTypeHero;
+    
+    [square setPosition:position];
+    
+    SKAction *move = [SKAction moveTo:CGPointMake(self.size.width+square.size.width/2,position.y) duration:1];
+    SKAction *destroy = [SKAction removeFromParent];
+    [self addChild:square];
+    [square runAction:[SKAction sequence:@[move,destroy]]];
 }
 
 static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
@@ -156,12 +179,12 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
             node = (Character *)contact.bodyB.node;
             //[(Character *)node moveTowards:CGPointMake(node.position.x *1.1, node.position.y *1.1) withTimeInterval:self.lastUpdateTimeInterval];
             
-            [node.physicsBody  applyImpulse:CGVectorMake(0, 2.5)];
+            [node.physicsBody  applyImpulse:CGVectorMake(10, 0)];
         }else{
             node = (Character *)contact.bodyA.node;
             //[(Character *)node moveTowards:CGPointMake(node.position.x *1.1, node.position.y *1.1) withTimeInterval:self.lastUpdateTimeInterval];
             
-            [node.physicsBody  applyImpulse:CGVectorMake(0, 2.5)];
+            [node.physicsBody  applyImpulse:CGVectorMake(10, 0)];
         }
         
         // Build up a "one shot" particle to indicate where the projectile hit.
@@ -169,6 +192,26 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         //[self addNode:emitter atWorldLayer:APAWorldLayerAboveCharacter];
         emitter.position = projectile.position;
         APARunOneShotEmitter(emitter, 0.15f);
+    }
+    // Handle collisions with projectiles.
+    if (contact.bodyA.categoryBitMask & APAColliderTypeWall || contact.bodyB.categoryBitMask & APAColliderTypeWall) {
+        SKNode *projectile = (contact.bodyA.categoryBitMask & APAColliderTypeWall) ? contact.bodyA.node : contact.bodyB.node;
+        
+        //[projectile runAction:[SKAction removeFromParent]];
+        
+        if([contact.bodyB.node isKindOfClass:[HeroCharacter class]]){
+            node = (Character *)contact.bodyB.node;
+            //[(Character *)node moveTowards:CGPointMake(node.position.x *1.1, node.position.y *1.1) withTimeInterval:self.lastUpdateTimeInterval];
+            
+            [node.physicsBody  applyImpulse:CGVectorMake(31, 0)];
+        }else{
+            node = (Character *)contact.bodyA.node;
+            //[(Character *)node moveTowards:CGPointMake(node.position.x *1.1, node.position.y *1.1) withTimeInterval:self.lastUpdateTimeInterval];
+            
+            [node.physicsBody  applyImpulse:CGVectorMake(31, 0)];
+        }
+        
+
     }
 }
 
