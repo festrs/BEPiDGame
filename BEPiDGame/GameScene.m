@@ -17,7 +17,7 @@
 
 
 
-@interface GameScene() 
+@interface GameScene()
 @property (strong, nonatomic) JCImageJoystick *imageJoystick;
 @property (strong, nonatomic) JCButton *normalButton;
 @property (strong, nonatomic) JCButton *turboButton;
@@ -39,7 +39,7 @@
 		self.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:self.frame];
 		self.physicsBody.categoryBitMask = APAColliderTypeScenario;
 		self.physicsBody.collisionBitMask = APAColliderTypeScenario;
-
+        
         //island
         _island = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.3 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(self.frame.size.width*0.7f, self.frame.size.height*0.7f)];
         _island.position = CGPointMake(size.width/2, size.height/2);
@@ -64,7 +64,7 @@
         self.turboButton = [[JCButton alloc] initWithButtonRadius:25 color:[SKColor yellowColor] pressedColor:[SKColor blackColor] isTurbo:YES];
         [self.turboButton setPosition:CGPointMake(size.width - 85,50)];
         [self addChild:self.turboButton];
-
+        
         //scheduling the action to check buttons
         SKAction *wait = [SKAction waitForDuration:0.3];
         SKAction *checkButtons = [SKAction runBlock:^{
@@ -77,17 +77,17 @@
         
         //hero
         self.hero = [[PlayerHero alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.frame)-120,
-                                                                  CGRectGetMidY(self.frame)) withPlayer:nil];
+                                                                   CGRectGetMidY(self.frame)) withPlayer:nil];
         [self.hero characterScene];
         [PlayerHero loadSharedAssets];
         [self addChild:self.hero];
         
         //enemy
         self.enemy = [[Boss alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.frame)+120,
-                                                                         CGRectGetMidY(self.frame))];
+                                                              CGRectGetMidY(self.frame))];
         [Boss loadSharedAssets];
         [self addChild:self.enemy];
-
+        
     }
     return self;
 }
@@ -139,7 +139,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     if ([node isKindOfClass:[Character class]]) {
         [(Character *)node collidedWith:contact.bodyB];
     }
-
+    
     // Check bodyB too.
     node = contact.bodyB.node;
     if ([node isKindOfClass:[Character class]]) {
