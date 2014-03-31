@@ -70,7 +70,8 @@ typedef enum : uint8_t {
     APAColliderTypeProjectile       = 4,
     APAColliderTypeWall             = 8,
     APAColliderTypeCave             = 16,
-    APAColliderTypeScenario         = 32
+    APAColliderTypeScenario         = 32,
+    APAColliderTypeIsland           = 64
 } APAColliderType;
 
 
