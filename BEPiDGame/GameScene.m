@@ -22,6 +22,7 @@
 @property (strong, nonatomic) JCButton *normalButton;
 @property (strong, nonatomic) JCButton *turboButton;
 @property (nonatomic) NSTimeInterval lastUpdateTimeInterval;
+@property SKSpriteNode *island;
 @property HeroCharacter *hero;
 @property EnemyCharacter *enemy;
 @property BOOL atackIntent;
@@ -32,28 +33,38 @@
 -(id)initWithSize:(CGSize)size {
     if (self = [super initWithSize:size]) {
         
-        //World Sets
+        //world sets
         self.physicsWorld.gravity = CGVectorMake(0.0f, 0.0f); // no gravity
         self.physicsWorld.contactDelegate = self;
 		self.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:self.frame];
 		self.physicsBody.categoryBitMask = APAColliderTypeScenario;
 		self.physicsBody.collisionBitMask = APAColliderTypeScenario;
+
+        //island
+        _island = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.3 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(self.frame.size.width*0.7f, self.frame.size.height*0.7f)];
+        _island.position = CGPointMake(size.width/2, size.height/2);
+        _island.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:_island.frame.size];
+		_island.physicsBody.categoryBitMask = APAColliderTypeIsland;
+		_island.physicsBody.collisionBitMask = APAColliderTypeIsland;
+		_island.physicsBody.contactTestBitMask = APAColliderTypeIsland;
+        _island.zPosition = -1; // pra ilha ficar embaixo dos personagens
+        [self addChild:_island];
         
-        //JCImageJoystic
+        //direcional
         self.imageJoystick = [[JCImageJoystick alloc]initWithJoystickImage:(@"joystick.png") baseImage:@"dpad.png"];
         [self.imageJoystick setPosition:CGPointMake(70, 70)];
         [self addChild:self.imageJoystick];
         
+        //normal button
         self.normalButton = [[JCButton alloc] initWithButtonRadius:25 color:[SKColor greenColor] pressedColor:[SKColor blackColor] isTurbo:NO];
         [self.normalButton setPosition:CGPointMake(size.width - 40,95)];
         [self addChild:self.normalButton];
         
-        
+        //turbo button
         self.turboButton = [[JCButton alloc] initWithButtonRadius:25 color:[SKColor yellowColor] pressedColor:[SKColor blackColor] isTurbo:YES];
         [self.turboButton setPosition:CGPointMake(size.width - 85,50)];
         [self addChild:self.turboButton];
-        
-        
+
         //scheduling the action to check buttons
         SKAction *wait = [SKAction waitForDuration:0.3];
         SKAction *checkButtons = [SKAction runBlock:^{
@@ -62,23 +73,21 @@
         SKAction *checkButtonsAction = [SKAction sequence:@[wait,checkButtons]];
         [self runAction:[SKAction repeatActionForever:checkButtonsAction]];
         
-        self.backgroundColor = [SKColor colorWithRed:0.15 green:0.15 blue:0.3 alpha:1.0];
+        self.backgroundColor = [SKColor colorWithRed:0.4 green:0.15 blue:0.15 alpha:1.0];
         
         //hero
-        self.hero = [[PlayerHero alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.frame)*1.5,
+        self.hero = [[PlayerHero alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.frame)-120,
                                                                   CGRectGetMidY(self.frame)) withPlayer:nil];
         [self.hero characterScene];
         [PlayerHero loadSharedAssets];
         [self addChild:self.hero];
         
         //enemy
-        self.enemy = [[Boss alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.frame)*1.9,
+        self.enemy = [[Boss alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.frame)+120,
                                                                          CGRectGetMidY(self.frame))];
         [Boss loadSharedAssets];
         [self addChild:self.enemy];
-        
-        //self.physicsWorld.contactDelegate = self;
-        
+
     }
     return self;
 }
@@ -130,7 +139,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     if ([node isKindOfClass:[Character class]]) {
         [(Character *)node collidedWith:contact.bodyB];
     }
-    contact.contactPoint;
+
     // Check bodyB too.
     node = contact.bodyB.node;
     if ([node isKindOfClass:[Character class]]) {
