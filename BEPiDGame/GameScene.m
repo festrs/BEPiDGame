@@ -15,7 +15,16 @@
 #import "Boss.h"
 #import "APAGraphicsUtilities.h"
 
+#define kNumPlayers 1
 
+
+/* Player states for the four players in the HUD. */
+typedef enum : uint8_t {
+    APAHUDStateLocal,
+    APAHUDStateConnecting,
+    APAHUDStateDisconnected,
+    APAHUDStateConnected
+} APAHUDState;
 
 @interface GameScene()
 @property (strong, nonatomic) JCImageJoystick *imageJoystick;
@@ -23,9 +32,20 @@
 @property (strong, nonatomic) JCButton *turboButton;
 @property (nonatomic) NSTimeInterval lastUpdateTimeInterval;
 @property SKSpriteNode *island;
-@property HeroCharacter *hero;
+@property PlayerHero *hero;
 @property EnemyCharacter *enemy;
 @property BOOL atackIntent;
+
+
+@property (nonatomic) NSMutableArray *players;          // array of player objects or NSNull for no player
+@property (nonatomic) PlayerHero *defaultPlayer;         // player '1' controlled by keyboard/touch
+
+
+#pragma  mark - HUD vars
+@property (nonatomic) NSArray *hudAvatars;              // keep track of the various nodes for the HUD
+@property (nonatomic) NSArray *hudLabels;               // - there are always 'kNumPlayers' instances in each array
+@property (nonatomic) NSArray *hudScores;
+@property (nonatomic) NSArray *hudLifeHeartArrays;      // an array of NSArrays of life hearts
 @end
 
 @implementation GameScene
@@ -77,16 +97,30 @@
         
         //hero
         self.hero = [[PlayerHero alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.frame)-120,
+              
                                                                    CGRectGetMidY(self.frame)) withPlayer:nil];
         [self.hero characterScene];
         [PlayerHero loadSharedAssets];
         [self addChild:self.hero];
+        
+        
+        _players = [[NSMutableArray alloc] initWithCapacity:kNumPlayers];
+        _defaultPlayer = self.hero;
+        [(NSMutableArray *)_players addObject:_defaultPlayer];
+        for (int i = 1; i < kNumPlayers; i++) {
+            [(NSMutableArray *)_players addObject:[NSNull null]];
+        }
+
         
         //enemy
         self.enemy = [[Boss alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.frame)+120,
                                                               CGRectGetMidY(self.frame))];
         [Boss loadSharedAssets];
         [self addChild:self.enemy];
+        
+        
+        [self buildHUD];
+        [self updateHUDForPlayer:self.hero forState:APAHUDStateLocal withMessage:nil];
         
     }
     return self;
@@ -110,6 +144,7 @@
     }
     [self.hero updateWithTimeSinceLastUpdate:currentTime];
     [self.enemy updateWithTimeSinceLastUpdate:currentTime];
+    
     self.atackIntent = FALSE;
 }
 
@@ -213,6 +248,126 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         
 
     }
+}
+
+
+#pragma mark - HUD and Scores
+- (void)buildHUD {
+    NSString *iconNames[] = { @"iconWarrior_blue", @"iconWarrior_green", @"iconWarrior_pink", @"iconWarrior_red" };
+    NSArray *colors = @[ [SKColor greenColor], [SKColor blueColor], [SKColor yellowColor], [SKColor redColor] ];
+    CGFloat hudX = 0;
+    CGFloat hudY = self.frame.size.height - 30;
+    CGFloat hudD = self.frame.size.width / kNumPlayers;
+    
+    _hudAvatars = [NSMutableArray arrayWithCapacity:kNumPlayers];
+    _hudLabels = [NSMutableArray arrayWithCapacity:kNumPlayers];
+    _hudScores = [NSMutableArray arrayWithCapacity:kNumPlayers];
+    _hudLifeHeartArrays = [NSMutableArray arrayWithCapacity:kNumPlayers];
+    SKNode *hud = [[SKNode alloc] init];
+    
+    for (int i = 0; i < kNumPlayers; i++) {
+        SKSpriteNode *avatar = [SKSpriteNode spriteNodeWithImageNamed:iconNames[i]];
+        avatar.scale = 0.5;
+        avatar.alpha = 0.5;
+        avatar.position = CGPointMake(hudX + i * hudD + (avatar.size.width * 0.5), self.frame.size.height - avatar.size.height * 0.5 - 8 );
+        [(NSMutableArray *)_hudAvatars addObject:avatar];
+        [hud addChild:avatar];
+        
+        SKLabelNode *label = [SKLabelNode labelNodeWithFontNamed:@"Copperplate"];
+        label.text = @"NO PLAYER";
+        label.fontColor = colors[i];
+        label.fontSize = 16;
+        label.horizontalAlignmentMode = SKLabelHorizontalAlignmentModeLeft;
+        label.position = CGPointMake(hudX + i * hudD + (avatar.size.width * 1.0), hudY + 10 );
+        [(NSMutableArray *)_hudLabels addObject:label];
+        [hud addChild:label];
+        
+        SKLabelNode *score = [SKLabelNode labelNodeWithFontNamed:@"Copperplate"];
+        score.text = @"SCORE: 0";
+        score.fontColor = colors[i];
+        score.fontSize = 16;
+        score.horizontalAlignmentMode = SKLabelHorizontalAlignmentModeLeft;
+        score.position = CGPointMake(hudX + i * hudD + (avatar.size.width * 1.0), hudY - 40 );
+        [(NSMutableArray *)_hudScores addObject:score];
+        [hud addChild:score];
+        
+        [(NSMutableArray *)_hudLifeHeartArrays addObject:[NSMutableArray arrayWithCapacity:kStartLives]];
+        for (int j = 0; j < kStartLives; j++) {
+            SKSpriteNode *heart = [SKSpriteNode spriteNodeWithImageNamed:@"lives.png"];
+            heart.scale = 0.4;
+            heart.position = CGPointMake(hudX + i * hudD + (avatar.size.width * 1.0) + 18 + ((heart.size.width + 5) * j), hudY - 10);
+            heart.alpha = 0.1;
+            [_hudLifeHeartArrays[i] addObject:heart];
+            [hud addChild:heart];
+        }
+    }
+    
+    [self addChild:hud];
+}
+
+- (void)updateHUDForPlayer:(PlayerHero *)player forState:(APAHUDState)state withMessage:(NSString *)message {
+    NSUInteger playerIndex = [self.players indexOfObject:player];
+    
+    SKSpriteNode *avatar = self.hudAvatars[playerIndex];
+    [avatar runAction:[SKAction sequence: @[[SKAction fadeAlphaTo:1.0 duration:1.0], [SKAction fadeAlphaTo:0.2 duration:1.0], [SKAction fadeAlphaTo:1.0 duration:1.0]]]];
+    
+    SKLabelNode *label = self.hudLabels[playerIndex];
+    CGFloat heartAlpha = 1.0;
+    switch (state) {
+        case APAHUDStateLocal:;
+            label.text = @"ME";
+            break;
+        case APAHUDStateConnecting:
+            heartAlpha = 0.25;
+            if (message) {
+                label.text = message;
+            } else {
+                label.text = @"AVAILABLE";
+            }
+            break;
+        case APAHUDStateDisconnected:
+            avatar.alpha = 0.5;
+            heartAlpha = 0.1;
+            label.text = @"NO PLAYER";
+            break;
+        case APAHUDStateConnected:
+            if (message) {
+                label.text = message;
+            } else {
+                label.text = @"CONNECTED";
+            }
+            break;
+    }
+    
+    for (int i = 0; i < player.livesLeft; i++) {
+        SKSpriteNode *heart = self.hudLifeHeartArrays[playerIndex][i];
+        heart.alpha = heartAlpha;
+    }
+}
+
+- (void)updateHUDForPlayer:(PlayerHero *)player {
+    NSUInteger playerIndex = [self.players indexOfObject:player];
+    SKLabelNode *label = self.hudScores[playerIndex];
+    label.text = [NSString stringWithFormat:@"SCORE: %d", player.score];
+}
+
+- (void)updateHUDAfterHeroDeathForPlayer:(PlayerHero *)player {
+    NSUInteger playerIndex = [self.players indexOfObject:player];
+    
+    // Fade out the relevant heart - one-based livesLeft has already been decremented.
+    NSUInteger heartNumber = player.livesLeft;
+    
+    NSArray *heartArray = self.hudLifeHeartArrays[playerIndex];
+    SKSpriteNode *heart = heartArray[heartNumber];
+    [heart runAction:[SKAction fadeAlphaTo:0.0 duration:3.0f]];
+}
+
+- (void)addToScore:(uint32_t)amount afterEnemyKillWithProjectile:(SKNode *)projectile {
+    PlayerHero *player = projectile.userData[kPlayer];
+    
+    player.score += amount;
+    
+    [self updateHUDForPlayer:player];
 }
 
 @end

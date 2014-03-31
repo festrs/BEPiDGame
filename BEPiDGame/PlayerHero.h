@@ -49,6 +49,9 @@
 
 @interface PlayerHero : HeroCharacter
 
+@property (nonatomic) uint8_t livesLeft;
+@property (nonatomic) uint32_t score;
+
 - (id)initAtPosition:(CGPoint)position withPlayer:(APAPlayer *)player;
 
 @end
