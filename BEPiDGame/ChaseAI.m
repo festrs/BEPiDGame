@@ -85,6 +85,11 @@
 //        }
 //    }
     
+    
+    CGPoint point = CGPointMake(self.character.position.x-0.1, self.character.position.y+0.1);
+    [self.character moveTowards:point withTimeInterval:interval];
+    
+    
     // If there's no target, don't do anything.
     Character *target = self.target;
     if (!target) {
