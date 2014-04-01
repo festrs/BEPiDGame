@@ -67,7 +67,6 @@
         self.physicsBody.restitution = 0.0f;
         self.physicsBody.linearDamping = 0.1f;
         self.physicsBody.mass = 0.2f;
-        [self setSize:CGSizeMake(50, 50)];
     }
     
     return self;
@@ -146,7 +145,7 @@
     self.health -= damage;
     
     if (self.health > 0.0f) {
-        APAMultiplayerLayeredCharacterScene *scene = [self characterScene];
+        APAMultiplayerLayeredCharacterScene *scene = (APAMultiplayerLayeredCharacterScene *)[self characterScene];
         
         // Build up "one shot" particle.
         SKEmitterNode *emitter = [[self damageEmitter] copy];
@@ -329,13 +328,13 @@
 
 - (CGFloat)faceTo:(CGPoint)position {
     CGFloat ang = APA_POLAR_ADJUST(APARadiansBetweenPoints(position, self.position));
-    SKAction *action = [SKAction rotateToAngle:ang duration:0];
+    SKAction *action = [SKAction rotateToAngle:ang duration:0.0];
     [self runAction:action];
     return ang;
 }
 
 - (void)moveTowards:(CGPoint)position withTimeInterval:(NSTimeInterval)timeInterval {
-    self.physicsBody.velocity = CGVectorMake(0, 0);
+    //self.physicsBody.velocity = CGVectorMake(0, 0);
     CGPoint curPosition = self.position;
     CGFloat dx = position.x - curPosition.x;
     CGFloat dy = position.y - curPosition.y;

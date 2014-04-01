@@ -28,8 +28,8 @@ typedef enum : uint8_t {
 
 @interface GameScene()
 @property (strong, nonatomic) JCImageJoystick *imageJoystick;
-@property (strong, nonatomic) JCButton *normalButton;
-@property (strong, nonatomic) JCButton *turboButton;
+@property (strong, nonatomic) JCButton *attackButton;
+@property (strong, nonatomic) JCButton *testButton;
 @property (nonatomic) NSTimeInterval lastUpdateTimeInterval;
 @property SKSpriteNode *island;
 @property PlayerHero *hero;
@@ -78,15 +78,18 @@ typedef enum : uint8_t {
         [self.imageJoystick setPosition:CGPointMake(70, 70)];
         [self addChild:self.imageJoystick];
         
-        //normal button
-        self.normalButton = [[JCButton alloc] initWithButtonRadius:25 color:[SKColor greenColor] pressedColor:[SKColor blackColor] isTurbo:NO];
-        [self.normalButton setPosition:CGPointMake(size.width - 40,95)];
-        [self addChild:self.normalButton];
+        //attack button
+        self.attackButton = [[JCButton alloc] initWithButtonRadius:25 color:[SKColor lightGrayColor] pressedColor:[SKColor blackColor] isTurbo:NO];
+        [self.attackButton setPosition:CGPointMake(size.width - 40,95)];
+        [self addChild:self.attackButton];
         
-        //turbo button
-        self.turboButton = [[JCButton alloc] initWithButtonRadius:25 color:[SKColor yellowColor] pressedColor:[SKColor blackColor] isTurbo:YES];
-        [self.turboButton setPosition:CGPointMake(size.width - 85,50)];
-        [self addChild:self.turboButton];
+        //test button
+        self.testButton = [[JCButton alloc] initWithButtonRadius:25 color:[SKColor grayColor] pressedColor:[SKColor blackColor] isTurbo:NO];
+        
+        [self.testButton setPosition:CGPointMake(size.width - 85,50)];
+        [self addChild:self.testButton];
+        
+        
         
         //scheduling the action to check buttons
         SKAction *wait = [SKAction waitForDuration:0.3];
@@ -120,6 +123,7 @@ typedef enum : uint8_t {
                                                               CGRectGetMidY(self.frame))];
         [Boss loadSharedAssets];
         [self addChild:self.enemy];
+        self.enemy.physicsBody.density = 3.0; //teste
         
         
         [self buildHUD];
@@ -154,13 +158,14 @@ typedef enum : uint8_t {
 - (void)checkButtons
 {
     
-    if (self.normalButton.wasPressed) {
+    if (self.attackButton.wasPressed) {
         self.atackIntent = TRUE;
         [self.hero performAttackAction];
     }
     
-    if (self.turboButton.wasPressed) {
+    if (self.testButton.wasPressed) {
         [self addSquareIn:CGPointMake(0,self.size.height-80) withColor:[SKColor yellowColor]];
+        [self.enemy performAttackAction];
     }
     
 }
@@ -172,13 +177,13 @@ typedef enum : uint8_t {
     square.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:square.frame];
     
     // Our object type for collisions.
-    square.physicsBody.categoryBitMask = APAColliderTypeWall;
+    square.physicsBody.categoryBitMask = APAColliderTypeProjectile;
     
     // Collides with these objects.
-    square.physicsBody.collisionBitMask =  APAColliderTypeHero;
+    square.physicsBody.collisionBitMask =  APAColliderTypeHero | APAColliderTypeGoblinOrBoss;
     
     // We want notifications for colliding with these objects.
-    square.physicsBody.contactTestBitMask =  APAColliderTypeHero;
+    square.physicsBody.contactTestBitMask =  APAColliderTypeHero | APAColliderTypeGoblinOrBoss;
     
     [square setPosition:position];
     
@@ -197,7 +202,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     
     NSLog(@"Algo se encostou.");
     
-    //bodyA e bodyB não podem ser heróis ao mesmo tempo
+    //chamando o método de colisão da classe se for um char (hero ou enemy)
     SKNode *node = contact.bodyA.node;
     if ([node isKindOfClass:[Character class]])
         [(Character *)node collidedWith:contact.bodyB];
@@ -208,33 +213,64 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     //colisão de projéteis
     if (contact.bodyA.categoryBitMask & APAColliderTypeProjectile || contact.bodyB.categoryBitMask & APAColliderTypeProjectile)
     {
-        SKNode *projectile = (contact.bodyA.categoryBitMask & APAColliderTypeProjectile) ? contact.bodyA.node : contact.bodyB.node;
+        SKNode *projectile = [[SKNode alloc] init];
+        if (contact.bodyA.categoryBitMask & APAColliderTypeProjectile) {
+            projectile = contact.bodyA.node;
+            node = contact.bodyB.node;
+        }else{
+            projectile = contact.bodyB.node;
+            node = contact.bodyA.node;
+        }
         
+        //elimina o projétil assim que toca no alvo
         [projectile runAction:[SKAction removeFromParent]];
         
-        if([contact.bodyB.node isKindOfClass:[Boss class]])
+        //hud update se o alvo for um inimigo
+        if([node isKindOfClass:[Boss class]])
         {
-            node = (Character *)contact.bodyB.node;
-        }
-        else if([contact.bodyA.node isKindOfClass:[Boss class]])
-        {
-            node = (Character *)contact.bodyA.node;
-        
-            //hud update
             self.hero.score = self.hero.score + 20;
             [self updateHUDForPlayer:self.hero];
         }
-        else
-            node = (Character *)contact.bodyA.node;
-
-        //aplicando a força do impacto
-        [node.physicsBody applyImpulse:CGVectorMake(node.position.x-contact.contactPoint.x, node.position.y-contact.contactPoint.y) atPoint:contact.contactPoint];
+        
+        //aplicando a força do impacto no alvo
+        [node.physicsBody applyImpulse:CGVectorMake(
+                                                    (node.position.x-contact.contactPoint.x)*2,
+                                                    (node.position.y-contact.contactPoint.y)*2
+                                                    ) atPoint:contact.contactPoint];
+        
+        //método que desacelera o alvo aos poucos
+        [self performSelector:@selector(desacelerateCharacter:) withObject:node afterDelay:0.1];
         
         // Build up a "one shot" particle to indicate where the projectile hit.
         SKEmitterNode *emitter = [[self sharedProjectileSparkEmitter] copy];
         //[self addNode:emitter atWorldLayer:APAWorldLayerAboveCharacter];
         emitter.position = projectile.position;
         APARunOneShotEmitter(emitter, 0.15f);
+    }
+}
+
+-(void)desacelerateCharacter:(Character *)node
+{
+    //NSLog(@"velocidade:%.2f %.2f - velocidade angular:%.2f",node.physicsBody.velocity.dx,node.physicsBody.velocity.dy,node.physicsBody.angularVelocity);
+
+    //desacelera em 10% a velocidade e giro
+    node.physicsBody.velocity = CGVectorMake(node.physicsBody.velocity.dx*0.9f, node.physicsBody.velocity.dy*0.9f);
+    node.physicsBody.angularVelocity = node.physicsBody.angularVelocity*0.9;
+
+    //para se tiver muito devagar
+    if ( fabsf(node.physicsBody.velocity.dx) + fabs(node.physicsBody.velocity.dy) < 5.0f)
+        node.physicsBody.velocity = CGVectorMake(0, 0);
+    
+    //para de girar se tiver girando muito devagar
+    if (node.physicsBody.angularVelocity < 2.0f)
+        node.physicsBody.angularVelocity = 0;
+    
+    //só chama o método novamente se tiver algum item pra desacelerar
+    if (node.physicsBody.velocity.dx != 0 ||
+        node.physicsBody.velocity.dy != 0 ||
+        node.physicsBody.angularVelocity != 0)
+    {
+        [self performSelector:@selector(desacelerateCharacter:) withObject:node afterDelay:0.1];
     }
 }
 
