@@ -191,7 +191,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
 }
 
 #pragma mark - Physics Delegate
-- (void)didBeginContact:(SKPhysicsContact *)contact {
+- (void)didBeginContact_orig:(SKPhysicsContact *)contact {
     // Either bodyA or bodyB in the collision could be a character.
     SKNode *node = contact.bodyA.node;
     if ([node isKindOfClass:[Character class]]) {
@@ -257,6 +257,50 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     }
 }
 
+- (void)didBeginContact:(SKPhysicsContact *)contact {
+    
+    NSLog(@"Algo se encostou.");
+    
+    //bodyA e bodyB não podem ser heróis ao mesmo tempo
+    SKNode *node = contact.bodyA.node;
+    if ([node isKindOfClass:[Character class]])
+        [(Character *)node collidedWith:contact.bodyB];
+    node = contact.bodyB.node;
+    if ([node isKindOfClass:[Character class]])
+        [(Character *)node collidedWith:contact.bodyA];
+    
+    //colisão de projéteis
+    if (contact.bodyA.categoryBitMask & APAColliderTypeProjectile || contact.bodyB.categoryBitMask & APAColliderTypeProjectile)
+    {
+        SKNode *projectile = (contact.bodyA.categoryBitMask & APAColliderTypeProjectile) ? contact.bodyA.node : contact.bodyB.node;
+        
+        [projectile runAction:[SKAction removeFromParent]];
+        
+        if([contact.bodyB.node isKindOfClass:[Boss class]])
+        {
+            node = (Character *)contact.bodyB.node;
+        }
+        else if([contact.bodyA.node isKindOfClass:[Boss class]])
+        {
+            node = (Character *)contact.bodyA.node;
+        
+            //hud update
+            self.hero.score = self.hero.score + 20;
+            [self updateHUDForPlayer:self.hero];
+        }
+        else
+            node = (Character *)contact.bodyA.node;
+
+        //aplicando a força do impacto
+        [node.physicsBody applyImpulse:CGVectorMake(node.position.x-contact.contactPoint.x, node.position.y-contact.contactPoint.y) atPoint:contact.contactPoint];
+        
+        // Build up a "one shot" particle to indicate where the projectile hit.
+        SKEmitterNode *emitter = [[self sharedProjectileSparkEmitter] copy];
+        //[self addNode:emitter atWorldLayer:APAWorldLayerAboveCharacter];
+        emitter.position = projectile.position;
+        APARunOneShotEmitter(emitter, 0.15f);
+    }
+}
 
 #pragma mark - HUD and Scores
 - (void)buildHUD {
