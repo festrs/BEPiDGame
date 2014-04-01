@@ -53,6 +53,7 @@ typedef enum : uint8_t {
 -(id)initWithSize:(CGSize)size {
     if (self = [super initWithSize:size]) {
         
+        
         //world sets
         self.physicsWorld.gravity = CGVectorMake(0.0f, 0.0f); // no gravity
         self.physicsWorld.contactDelegate = self;
@@ -63,10 +64,12 @@ typedef enum : uint8_t {
         //island
         _island = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.3 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(self.frame.size.width*0.7f, self.frame.size.height*0.7f)];
         _island.position = CGPointMake(size.width/2, size.height/2);
+
+        //island body
         _island.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:_island.frame.size];
 		_island.physicsBody.categoryBitMask = APAColliderTypeIsland;
 		_island.physicsBody.collisionBitMask = APAColliderTypeIsland;
-		_island.physicsBody.contactTestBitMask = APAColliderTypeIsland;
+		_island.physicsBody.contactTestBitMask = APAColliderTypeHero | APAColliderTypeGoblinOrBoss;
         _island.zPosition = -1; // pra ilha ficar embaixo dos personagens
         [self addChild:_island];
         
@@ -188,73 +191,6 @@ typedef enum : uint8_t {
 static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
 - (SKEmitterNode *)sharedProjectileSparkEmitter {
     return sSharedProjectileSparkEmitter;
-}
-
-#pragma mark - Physics Delegate
-- (void)didBeginContact_orig:(SKPhysicsContact *)contact {
-    // Either bodyA or bodyB in the collision could be a character.
-    SKNode *node = contact.bodyA.node;
-    if ([node isKindOfClass:[Character class]]) {
-        [(Character *)node collidedWith:contact.bodyB];
-    }
-    
-    // Check bodyB too.
-    node = contact.bodyB.node;
-    if ([node isKindOfClass:[Character class]]) {
-        [(Character *)node collidedWith:contact.bodyA];
-    }
-    
-    // Handle collisions with projectiles.
-    if (contact.bodyA.categoryBitMask & APAColliderTypeProjectile || contact.bodyB.categoryBitMask & APAColliderTypeProjectile) {
-        SKNode *projectile = (contact.bodyA.categoryBitMask & APAColliderTypeProjectile) ? contact.bodyA.node : contact.bodyB.node;
-        
-        [projectile runAction:[SKAction removeFromParent]];
-       
-        if([contact.bodyB.node isKindOfClass:[Boss class]]){
-            node = (Character *)contact.bodyB.node;
-            //[(Character *)node moveTowards:CGPointMake(node.position.x *1.1, node.position.y *1.1) withTimeInterval:self.lastUpdateTimeInterval];
-         
-            [node.physicsBody  applyImpulse:CGVectorMake(10, 0)];
-            
-            // Aqui eu troquei de bodyB pra bodyA, pra ele verificar se é o Boss (Antes contava com a parede tbm)
-        }else if([contact.bodyA.node isKindOfClass:[Boss class]]){
-            node = (Character *)contact.bodyA.node;
-            //[(Character *)node moveTowards:CGPointMake(node.position.x *1.1, node.position.y *1.1) withTimeInterval:self.lastUpdateTimeInterval];
-            self.hero.score = self.hero.score + 20;
-            [self updateHUDForPlayer:self.hero];
-            [node.physicsBody  applyImpulse:CGVectorMake(10, 0)];
-        }
-        
-        // Build up a "one shot" particle to indicate where the projectile hit.
-        SKEmitterNode *emitter = [[self sharedProjectileSparkEmitter] copy];
-        //[self addNode:emitter atWorldLayer:APAWorldLayerAboveCharacter];
-        emitter.position = projectile.position;
-        APARunOneShotEmitter(emitter, 0.15f);
-    }
-    if (contact.bodyA.categoryBitMask & APAColliderTypeWall || contact.bodyB.categoryBitMask & APAColliderTypeWall) {
-        SKNode *projectile = (contact.bodyA.categoryBitMask & APAColliderTypeWall) ? contact.bodyA.node : contact.bodyB.node;
-        
-        //[projectile runAction:[SKAction removeFromParent]];
-        
-        if([contact.bodyB.node isKindOfClass:[HeroCharacter class]]){
-            node = (Character *)contact.bodyB.node;
-            //[(Character *)node moveTowards:CGPointMake(node.position.x *1.1, node.position.y *1.1) withTimeInterval:self.lastUpdateTimeInterval];
-            
-                        NSLog(@"First");
-            [node.physicsBody  applyImpulse:CGVectorMake(31, 0)];
-        }else{
-            node = (Character *)contact.bodyA.node;
-            //[(Character *)node moveTowards:CGPointMake(node.position.x *1.1, node.position.y *1.1) withTimeInterval:self.lastUpdateTimeInterval];
-             NSLog(@"Second");
-            [node.physicsBody  applyImpulse:CGVectorMake(31, 0)];
-            
-            self.hero.score = 20;
-            [self updateHUDForPlayer:self.hero];
-
-        }
-        
-
-    }
 }
 
 - (void)didBeginContact:(SKPhysicsContact *)contact {
