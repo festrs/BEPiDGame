@@ -9,7 +9,7 @@
 #import <SpriteKit/SpriteKit.h>
 
 #define kMinTimeInterval (1.0f / 60.0f)
-#define kStartLives 11
+#define kStartLives 3
 
 @interface GameScene : SKScene <SKPhysicsContactDelegate>
 - (void)addNode:(SKNode *)node;

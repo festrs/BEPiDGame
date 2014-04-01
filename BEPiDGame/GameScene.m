@@ -209,16 +209,19 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         SKNode *projectile = (contact.bodyA.categoryBitMask & APAColliderTypeProjectile) ? contact.bodyA.node : contact.bodyB.node;
         
         [projectile runAction:[SKAction removeFromParent]];
-        
+       
         if([contact.bodyB.node isKindOfClass:[Boss class]]){
             node = (Character *)contact.bodyB.node;
             //[(Character *)node moveTowards:CGPointMake(node.position.x *1.1, node.position.y *1.1) withTimeInterval:self.lastUpdateTimeInterval];
-            
+         
             [node.physicsBody  applyImpulse:CGVectorMake(10, 0)];
-        }else{
+            
+            // Aqui eu troquei de bodyB pra bodyA, pra ele verificar se é o Boss (Antes contava com a parede tbm)
+        }else if([contact.bodyA.node isKindOfClass:[Boss class]]){
             node = (Character *)contact.bodyA.node;
             //[(Character *)node moveTowards:CGPointMake(node.position.x *1.1, node.position.y *1.1) withTimeInterval:self.lastUpdateTimeInterval];
-            
+            self.hero.score = self.hero.score + 20;
+            [self updateHUDForPlayer:self.hero];
             [node.physicsBody  applyImpulse:CGVectorMake(10, 0)];
         }
         
@@ -228,7 +231,6 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         emitter.position = projectile.position;
         APARunOneShotEmitter(emitter, 0.15f);
     }
-    // Handle collisions with projectiles.
     if (contact.bodyA.categoryBitMask & APAColliderTypeWall || contact.bodyB.categoryBitMask & APAColliderTypeWall) {
         SKNode *projectile = (contact.bodyA.categoryBitMask & APAColliderTypeWall) ? contact.bodyA.node : contact.bodyB.node;
         
@@ -238,12 +240,17 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
             node = (Character *)contact.bodyB.node;
             //[(Character *)node moveTowards:CGPointMake(node.position.x *1.1, node.position.y *1.1) withTimeInterval:self.lastUpdateTimeInterval];
             
+                        NSLog(@"First");
             [node.physicsBody  applyImpulse:CGVectorMake(31, 0)];
         }else{
             node = (Character *)contact.bodyA.node;
             //[(Character *)node moveTowards:CGPointMake(node.position.x *1.1, node.position.y *1.1) withTimeInterval:self.lastUpdateTimeInterval];
-            
+             NSLog(@"Second");
             [node.physicsBody  applyImpulse:CGVectorMake(31, 0)];
+            
+            self.hero.score = 20;
+            [self updateHUDForPlayer:self.hero];
+
         }
         
 
@@ -304,7 +311,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     
     [self addChild:hud];
 }
-
+#pragma mark - Metodos HUD
 - (void)updateHUDForPlayer:(PlayerHero *)player forState:(APAHUDState)state withMessage:(NSString *)message {
     NSUInteger playerIndex = [self.players indexOfObject:player];
     
