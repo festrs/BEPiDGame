@@ -88,9 +88,7 @@ typedef enum : uint8_t {
         
         [self.testButton setPosition:CGPointMake(size.width - 85,50)];
         [self addChild:self.testButton];
-        
-        
-        
+    
         //scheduling the action to check buttons
         SKAction *wait = [SKAction waitForDuration:0.3];
         SKAction *checkButtons = [SKAction runBlock:^{
@@ -109,7 +107,6 @@ typedef enum : uint8_t {
         [PlayerHero loadSharedAssets];
         [self addChild:self.hero];
         
-        
         _players = [[NSMutableArray alloc] initWithCapacity:kNumPlayers];
         _defaultPlayer = self.hero;
         [(NSMutableArray *)_players addObject:_defaultPlayer];
@@ -123,8 +120,10 @@ typedef enum : uint8_t {
                                                               CGRectGetMidY(self.frame))];
         [Boss loadSharedAssets];
         [self addChild:self.enemy];
-        self.enemy.physicsBody.density = 3.0; //teste
         
+        //método recursivo que desacelera o character caso ele esteja com força aplicada nele
+        [self desacelerateCharacter:self.hero];
+        [self desacelerateCharacter:self.enemy];
         
         [self buildHUD];
         [self updateHUDForPlayer:self.hero forState:APAHUDStateLocal withMessage:nil];
@@ -239,7 +238,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
                                                     ) atPoint:contact.contactPoint];
         
         //método que desacelera o alvo aos poucos
-        [self performSelector:@selector(desacelerateCharacter:) withObject:node afterDelay:0.1];
+        //[self performSelector:@selector(desacelerateCharacter:) withObject:node afterDelay:0.1];
         
         // Build up a "one shot" particle to indicate where the projectile hit.
         SKEmitterNode *emitter = [[self sharedProjectileSparkEmitter] copy];
@@ -253,28 +252,29 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
 {
     //NSLog(@"velocidade:%.2f %.2f - velocidade angular:%.2f",node.physicsBody.velocity.dx,node.physicsBody.velocity.dy,node.physicsBody.angularVelocity);
 
-    //desacelera em 10% a velocidade e giro
-    node.physicsBody.velocity = CGVectorMake(node.physicsBody.velocity.dx*0.9f, node.physicsBody.velocity.dy*0.9f);
-    node.physicsBody.angularVelocity = node.physicsBody.angularVelocity*0.9;
-
-    //para se tiver muito devagar
-    if ( fabsf(node.physicsBody.velocity.dx) + fabs(node.physicsBody.velocity.dy) < 5.0f)
-        node.physicsBody.velocity = CGVectorMake(0, 0);
-    
-    //para de girar se tiver girando muito devagar
-    if (node.physicsBody.angularVelocity < 2.0f)
-        node.physicsBody.angularVelocity = 0;
-    
-    //só chama o método novamente se tiver algum item pra desacelerar
+    //a desaceleração só acontece se alguma força estiver sendo aplicada no corpo
     if (node.physicsBody.velocity.dx != 0 ||
         node.physicsBody.velocity.dy != 0 ||
         node.physicsBody.angularVelocity != 0)
     {
-        [self performSelector:@selector(desacelerateCharacter:) withObject:node afterDelay:0.1];
+        //desacelera em 10% a velocidade e giro
+        node.physicsBody.velocity = CGVectorMake(node.physicsBody.velocity.dx*0.9f, node.physicsBody.velocity.dy*0.9f);
+        node.physicsBody.angularVelocity = node.physicsBody.angularVelocity*0.9;
+        
+        //para se tiver muito devagar
+        if ( fabsf(node.physicsBody.velocity.dx) + fabs(node.physicsBody.velocity.dy) < 5.0f)
+            node.physicsBody.velocity = CGVectorMake(0, 0);
+        
+        //para de girar se tiver girando muito devagar
+        if (node.physicsBody.angularVelocity < 2.0f)
+            node.physicsBody.angularVelocity = 0;
     }
+
+    [self performSelector:@selector(desacelerateCharacter:) withObject:node afterDelay:0.1];
 }
 
 #pragma mark - HUD and Scores
+
 - (void)buildHUD {
     NSString *iconNames[] = { @"iconWarrior_blue", @"iconWarrior_green", @"iconWarrior_pink", @"iconWarrior_red" };
     NSArray *colors = @[ [SKColor greenColor], [SKColor blueColor], [SKColor yellowColor], [SKColor redColor] ];
@@ -327,7 +327,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     
     [self addChild:hud];
 }
-#pragma mark - Metodos HUD
+
 - (void)updateHUDForPlayer:(PlayerHero *)player forState:(APAHUDState)state withMessage:(NSString *)message {
     NSUInteger playerIndex = [self.players indexOfObject:player];
     
