@@ -63,23 +63,18 @@ typedef enum : uint8_t {
         //lava
         _lava = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.6 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(self.frame.size.width, self.frame.size.height)];
         _lava.position = CGPointMake(size.width/2, size.height/2);
-        //lava body
-        //_lava.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:_lava.frame.size];
-		_lava.physicsBody.categoryBitMask = ColliderTypeLava;
-		_lava.physicsBody.collisionBitMask = ColliderTypeLava;
-		_lava.physicsBody.contactTestBitMask = ColliderTypeHero | ColliderTypeGoblinOrBoss;
         _lava.zPosition = -2; // pra lava ficar abaixo da ilha
         [self addChild:_lava];
 
         //island
         _island = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.3 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(_lava.frame.size.width*0.7f, _lava.frame.size.height*0.7f)];
         _island.position = CGPointMake(_lava.frame.size.width/2, _lava.frame.size.height/2);
+        _island.zPosition = -1; // pra ilha ficar embaixo dos personagens
         //island body
-        //_island.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:_island.frame.size];
+        _island.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(_island.frame.size.width-50, _island.frame.size.height-50)];
 		_island.physicsBody.categoryBitMask = ColliderTypeIsland;
 		_island.physicsBody.collisionBitMask = ColliderTypeIsland;
 		_island.physicsBody.contactTestBitMask = ColliderTypeHero | ColliderTypeGoblinOrBoss;
-        _island.zPosition = -1; // pra ilha ficar embaixo dos personagens
         [self addChild:_island];
         
         //direcional
@@ -250,6 +245,11 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     }
 }
 
+-(void)didEndContact:(SKPhysicsContact *)contact
+{
+    NSLog(@"Algo se desencostou.");
+}
+
 -(void)desacelerateCharacter:(Character *)node
 {
     //NSLog(@"velocidade:%.2f %.2f - velocidade angular:%.2f",node.physicsBody.velocity.dx,node.physicsBody.velocity.dy,node.physicsBody.angularVelocity);
@@ -271,8 +271,15 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         if (node.physicsBody.angularVelocity < 2.0f)
             node.physicsBody.angularVelocity = 0;
     }
-
-    [self performSelector:@selector(desacelerateCharacter:) withObject:node afterDelay:0.1];
+    
+    //método só não se renova se o monstro estiver morrendo
+    if (!node.isDying)
+        [self performSelector:@selector(desacelerateCharacter:) withObject:node afterDelay:0.1];
+    else
+    {
+        node.physicsBody.velocity = CGVectorMake(0, 0);
+        node.physicsBody.angularVelocity = 0;
+    }
 }
 
 #pragma mark - HUD and Scores
