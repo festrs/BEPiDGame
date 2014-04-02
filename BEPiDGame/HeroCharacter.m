@@ -80,17 +80,17 @@
     self.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:kCharacterCollisionRadius];
     
     // Our object type for collisions.
-    self.physicsBody.categoryBitMask = APAColliderTypeHero;
+    self.physicsBody.categoryBitMask = ColliderTypeHero;
     
     // Collides with these objects.
-    self.physicsBody.collisionBitMask = APAColliderTypeGoblinOrBoss | APAColliderTypeHero |APAColliderTypeWall | APAColliderTypeScenario;
+    self.physicsBody.collisionBitMask = ColliderTypeGoblinOrBoss | ColliderTypeHero | ColliderTypeScenario;
     
     // We want notifications for colliding with these objects.
-    self.physicsBody.contactTestBitMask = APAColliderTypeGoblinOrBoss;
+    self.physicsBody.contactTestBitMask = ColliderTypeGoblinOrBoss;
 }
 
 - (void)collidedWith:(SKPhysicsBody *)other {
-    if (other.categoryBitMask & APAColliderTypeGoblinOrBoss) {
+    if (other.categoryBitMask & ColliderTypeGoblinOrBoss) {
         Character *enemy = (Character *)other.node;
         if (!enemy.dying) {
             [self applyDamage:5.0f];
@@ -102,7 +102,7 @@
 - (void)animationDidComplete:(APAAnimationState)animationState {
     switch (animationState) {
         case APAAnimationStateDeath:{
-            APAMultiplayerLayeredCharacterScene *scene = [self characterScene];
+            //APAMultiplayerLayeredCharacterScene *scene = (APAMultiplayerLayeredCharacterScene *)[self characterScene];
             
             SKEmitterNode *emitter = [[self deathEmitter] copy];
             emitter.zPosition = -0.8;
