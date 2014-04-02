@@ -90,13 +90,13 @@
     self.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:kBossCollisionRadius];
     
     // Our object type for collisions.
-    self.physicsBody.categoryBitMask = APAColliderTypeGoblinOrBoss;
+    self.physicsBody.categoryBitMask = ColliderTypeGoblinOrBoss;
     
     // Collides with these objects.
-    self.physicsBody.collisionBitMask = APAColliderTypeGoblinOrBoss| APAColliderTypeHero | APAColliderTypeProjectile | APAColliderTypeScenario;
+    self.physicsBody.collisionBitMask = ColliderTypeGoblinOrBoss| ColliderTypeHero | ColliderTypeProjectile | ColliderTypeScenario;
     
     // We want notifications for colliding with these objects.
-    self.physicsBody.contactTestBitMask = APAColliderTypeProjectile;
+    self.physicsBody.contactTestBitMask = ColliderTypeProjectile;
 }
 
 - (void)animationDidComplete:(APAAnimationState)animationState {
@@ -120,7 +120,7 @@
         return;
     }
     
-    if (other.categoryBitMask & APAColliderTypeProjectile) {
+    if (other.categoryBitMask & ColliderTypeProjectile) {
         self.requestedAnimation = APAAnimationStateGetHit;
         CGFloat damage = 2.0f;
         BOOL killed = [self applyDamage:damage fromProjectile:other.node];

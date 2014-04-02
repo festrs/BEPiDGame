@@ -73,8 +73,8 @@
         sSharedProjectile = [SKSpriteNode spriteNodeWithTexture:[atlas textureNamed:@"warrior_throw_hammer.png"]];
         sSharedProjectile.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:kProjectileCollisionRadius];
         sSharedProjectile.name = @"Projectile";
-        sSharedProjectile.physicsBody.categoryBitMask = APAColliderTypeProjectile;
-        sSharedProjectile.physicsBody.collisionBitMask = APAColliderTypeWall | APAColliderTypeScenario;
+        sSharedProjectile.physicsBody.categoryBitMask = ColliderTypeProjectile;
+        sSharedProjectile.physicsBody.collisionBitMask = ColliderTypeScenario;
         sSharedProjectile.physicsBody.contactTestBitMask = sSharedProjectile.physicsBody.collisionBitMask;
         
         sSharedProjectileEmitter = [SKEmitterNode apa_emitterNodeWithEmitterNamed:@"WarriorProjectile"];

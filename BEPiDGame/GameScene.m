@@ -32,14 +32,13 @@ typedef enum : uint8_t {
 @property (strong, nonatomic) JCButton *testButton;
 @property (nonatomic) NSTimeInterval lastUpdateTimeInterval;
 @property SKSpriteNode *island;
+@property SKSpriteNode *lava;
 @property PlayerHero *hero;
 @property EnemyCharacter *enemy;
 @property BOOL atackIntent;
 
-
 @property (nonatomic) NSMutableArray *players;          // array of player objects or NSNull for no player
 @property (nonatomic) PlayerHero *defaultPlayer;         // player '1' controlled by keyboard/touch
-
 
 #pragma  mark - HUD vars
 @property (nonatomic) NSArray *hudAvatars;              // keep track of the various nodes for the HUD
@@ -55,21 +54,32 @@ typedef enum : uint8_t {
         
         
         //world sets
+        self.backgroundColor = [SKColor blackColor];
         self.physicsWorld.gravity = CGVectorMake(0.0f, 0.0f); // no gravity
         self.physicsWorld.contactDelegate = self;
 		self.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:self.frame];
-		self.physicsBody.categoryBitMask = APAColliderTypeScenario;
-		self.physicsBody.collisionBitMask = APAColliderTypeScenario;
+		self.physicsBody.categoryBitMask = ColliderTypeScenario;
+		self.physicsBody.collisionBitMask = ColliderTypeScenario;
         
-        //island
-        _island = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.3 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(self.frame.size.width*0.7f, self.frame.size.height*0.7f)];
-        _island.position = CGPointMake(size.width/2, size.height/2);
+        //lava
+        _lava = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.6 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(self.frame.size.width, self.frame.size.height)];
+        _lava.position = CGPointMake(size.width/2, size.height/2);
+        //lava body
+        //_lava.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:_lava.frame.size];
+		_lava.physicsBody.categoryBitMask = ColliderTypeLava;
+		_lava.physicsBody.collisionBitMask = ColliderTypeLava;
+		_lava.physicsBody.contactTestBitMask = ColliderTypeHero | ColliderTypeGoblinOrBoss;
+        _lava.zPosition = -2; // pra lava ficar abaixo da ilha
+        [self addChild:_lava];
 
+        //island
+        _island = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.3 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(_lava.frame.size.width*0.7f, _lava.frame.size.height*0.7f)];
+        _island.position = CGPointMake(_lava.frame.size.width/2, _lava.frame.size.height/2);
         //island body
-        _island.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:_island.frame.size];
-		_island.physicsBody.categoryBitMask = APAColliderTypeIsland;
-		_island.physicsBody.collisionBitMask = APAColliderTypeIsland;
-		_island.physicsBody.contactTestBitMask = APAColliderTypeHero | APAColliderTypeGoblinOrBoss;
+        //_island.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:_island.frame.size];
+		_island.physicsBody.categoryBitMask = ColliderTypeIsland;
+		_island.physicsBody.collisionBitMask = ColliderTypeIsland;
+		_island.physicsBody.contactTestBitMask = ColliderTypeHero | ColliderTypeGoblinOrBoss;
         _island.zPosition = -1; // pra ilha ficar embaixo dos personagens
         [self addChild:_island];
         
@@ -96,12 +106,9 @@ typedef enum : uint8_t {
         }];
         SKAction *checkButtonsAction = [SKAction sequence:@[wait,checkButtons]];
         [self runAction:[SKAction repeatActionForever:checkButtonsAction]];
-        
-        self.backgroundColor = [SKColor colorWithRed:0.4 green:0.15 blue:0.15 alpha:1.0];
-        
+
         //hero
         self.hero = [[PlayerHero alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.frame)-120,
-              
                                                                    CGRectGetMidY(self.frame)) withPlayer:nil];
         [self.hero characterScene];
         [PlayerHero loadSharedAssets];
@@ -166,7 +173,6 @@ typedef enum : uint8_t {
         [self addSquareIn:CGPointMake(0,self.size.height-80) withColor:[SKColor yellowColor]];
         [self.enemy performAttackAction];
     }
-    
 }
 
 - (void)addSquareIn:(CGPoint)position
@@ -176,13 +182,13 @@ typedef enum : uint8_t {
     square.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:square.frame];
     
     // Our object type for collisions.
-    square.physicsBody.categoryBitMask = APAColliderTypeProjectile;
+    square.physicsBody.categoryBitMask = ColliderTypeProjectile;
     
     // Collides with these objects.
-    square.physicsBody.collisionBitMask =  APAColliderTypeHero | APAColliderTypeGoblinOrBoss;
+    square.physicsBody.collisionBitMask =  ColliderTypeHero | ColliderTypeGoblinOrBoss;
     
     // We want notifications for colliding with these objects.
-    square.physicsBody.contactTestBitMask =  APAColliderTypeHero | APAColliderTypeGoblinOrBoss;
+    square.physicsBody.contactTestBitMask =  ColliderTypeHero | ColliderTypeGoblinOrBoss;
     
     [square setPosition:position];
     
@@ -210,10 +216,10 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         [(Character *)node collidedWith:contact.bodyA];
     
     //colisão de projéteis
-    if (contact.bodyA.categoryBitMask & APAColliderTypeProjectile || contact.bodyB.categoryBitMask & APAColliderTypeProjectile)
+    if (contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyB.categoryBitMask & ColliderTypeProjectile)
     {
         SKNode *projectile = [[SKNode alloc] init];
-        if (contact.bodyA.categoryBitMask & APAColliderTypeProjectile) {
+        if (contact.bodyA.categoryBitMask & ColliderTypeProjectile) {
             projectile = contact.bodyA.node;
             node = contact.bodyB.node;
         }else{
@@ -236,10 +242,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
                                                     (node.position.x-contact.contactPoint.x)*2,
                                                     (node.position.y-contact.contactPoint.y)*2
                                                     ) atPoint:contact.contactPoint];
-        
-        //método que desacelera o alvo aos poucos
-        //[self performSelector:@selector(desacelerateCharacter:) withObject:node afterDelay:0.1];
-        
+
         // Build up a "one shot" particle to indicate where the projectile hit.
         SKEmitterNode *emitter = [[self sharedProjectileSparkEmitter] copy];
         //[self addNode:emitter atWorldLayer:APAWorldLayerAboveCharacter];
@@ -251,7 +254,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
 -(void)desacelerateCharacter:(Character *)node
 {
     //NSLog(@"velocidade:%.2f %.2f - velocidade angular:%.2f",node.physicsBody.velocity.dx,node.physicsBody.velocity.dy,node.physicsBody.angularVelocity);
-
+    
     //a desaceleração só acontece se alguma força estiver sendo aplicada no corpo
     if (node.physicsBody.velocity.dx != 0 ||
         node.physicsBody.velocity.dy != 0 ||

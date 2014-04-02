@@ -64,14 +64,23 @@ typedef enum : uint8_t {
 } APAAnimationState;
 
 /* Bitmask for the different entities with physics bodies. */
+//typedef enum : uint8_t {
+//    APAColliderTypeHero             = 1,
+//    APAColliderTypeGoblinOrBoss     = 2,
+//    APAColliderTypeProjectile       = 4,
+//    APAColliderTypeWall             = 8,
+//    APAColliderTypeCave             = 16,
+//    APAColliderTypeScenario         = 32,
+//    APAColliderTypeIsland           = 64
+//} APAColliderType;
+
 typedef enum : uint8_t {
-    APAColliderTypeHero             = 1,
-    APAColliderTypeGoblinOrBoss     = 2,
-    APAColliderTypeProjectile       = 4,
-    APAColliderTypeWall             = 8,
-    APAColliderTypeCave             = 16,
-    APAColliderTypeScenario         = 32,
-    APAColliderTypeIsland           = 64
+    ColliderTypeHero             = 1,
+    ColliderTypeGoblinOrBoss     = 2,
+    ColliderTypeProjectile       = 4,
+    ColliderTypeIsland           = 8,
+    ColliderTypeLava             = 16,
+    ColliderTypeScenario         = 32
 } APAColliderType;
 
 
@@ -138,7 +147,6 @@ typedef enum : uint8_t {
 - (void)move:(APAMoveDirection)direction withTimeInterval:(NSTimeInterval)timeInterval;
 - (CGFloat)faceTo:(CGPoint)position;
 - (void)moveTowards:(CGPoint)position withTimeInterval:(NSTimeInterval)timeInterval;
-- (void)moveTowards:(CGPoint)position;
 - (void)moveInDirection:(CGPoint)direction withTimeInterval:(NSTimeInterval)timeInterval;
 - (void)performAttackAction;
 

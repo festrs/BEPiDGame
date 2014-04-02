@@ -145,7 +145,7 @@
     self.health -= damage;
     
     if (self.health > 0.0f) {
-        APAMultiplayerLayeredCharacterScene *scene = (APAMultiplayerLayeredCharacterScene *)[self characterScene];
+        //APAMultiplayerLayeredCharacterScene *scene = (APAMultiplayerLayeredCharacterScene *)[self characterScene];
         
         // Build up "one shot" particle.
         SKEmitterNode *emitter = [[self damageEmitter] copy];
@@ -350,22 +350,6 @@
         self.position = CGPointMake(curPosition.x - sinf(ang)*dt,
                                     curPosition.y + cosf(ang)*dt);
     }
-    
-    self.requestedAnimation = APAAnimationStateWalk;
-}
-//hited
-- (void)moveTowards:(CGPoint)position {
-    CGPoint curPosition = self.position;
-    CGFloat dx = position.x - curPosition.x;
-    CGFloat dy = position.y - curPosition.y;
-    CGFloat dt = self.movementSpeed * 0.0003;
-    
-    CGFloat ang = APA_POLAR_ADJUST(APARadiansBetweenPoints(position, curPosition));
-    self.zRotation = ang;
-    
-
-        self.position = position;
-    
     
     self.requestedAnimation = APAAnimationStateWalk;
 }

@@ -71,8 +71,8 @@
         return;
     }
     
-    CGPoint position = ourCharacter.position;
-    APAMultiplayerLayeredCharacterScene *scene = [ourCharacter characterScene];
+    //CGPoint position = ourCharacter.position;
+    //APAMultiplayerLayeredCharacterScene *scene = (APAMultiplayerLayeredCharacterScene *)[ourCharacter characterScene];
     CGFloat closestHeroDistance = MAXFLOAT;
     
     // Find the closest living hero, if any, within our alert distance.
