@@ -13,4 +13,5 @@
 
 @interface GameScene : SKScene <SKPhysicsContactDelegate>
 - (void)addNode:(SKNode *)node;
+@property SKSpriteNode *island;
 @end

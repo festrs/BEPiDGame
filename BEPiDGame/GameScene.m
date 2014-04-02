@@ -31,7 +31,6 @@ typedef enum : uint8_t {
 @property (strong, nonatomic) JCButton *attackButton;
 @property (strong, nonatomic) JCButton *testButton;
 @property (nonatomic) NSTimeInterval lastUpdateTimeInterval;
-@property SKSpriteNode *island;
 @property SKSpriteNode *lava;
 @property PlayerHero *hero;
 @property EnemyCharacter *enemy;
