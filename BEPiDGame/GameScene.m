@@ -251,6 +251,11 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     }
 }
 
+-(void)didEndContact:(SKPhysicsContact *)contact
+{
+    NSLog(@"Algo se desencostou.");
+}
+
 -(void)desacelerateCharacter:(Character *)node
 {
     //NSLog(@"velocidade:%.2f %.2f - velocidade angular:%.2f",node.physicsBody.velocity.dx,node.physicsBody.velocity.dy,node.physicsBody.angularVelocity);
@@ -272,8 +277,15 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         if (node.physicsBody.angularVelocity < 2.0f)
             node.physicsBody.angularVelocity = 0;
     }
-
-    [self performSelector:@selector(desacelerateCharacter:) withObject:node afterDelay:0.1];
+    
+    //método só não se renova se o monstro estiver morrendo
+    if (!node.isDying)
+        [self performSelector:@selector(desacelerateCharacter:) withObject:node afterDelay:0.1];
+    else
+    {
+        node.physicsBody.velocity = CGVectorMake(0, 0);
+        node.physicsBody.angularVelocity = 0;
+    }
 }
 
 #pragma mark - HUD and Scores
