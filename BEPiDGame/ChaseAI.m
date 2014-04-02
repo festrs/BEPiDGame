@@ -71,18 +71,30 @@
 #pragma mark - Loop Update
 - (void)updateWithTimeSinceLastUpdate:(CFTimeInterval)interval {
     Character *ourCharacter = self.character;
-    
+    GameScene *scene = [ourCharacter characterScene];
+    CGPoint position = ourCharacter.position;
     if (ourCharacter.dying) {
         self.target = nil;
         return;
     }
     if(!self.walking){
-        GameScene *scene = [ourCharacter characterScene];
+        
         self.walking = TRUE;
         CGPoint point = CGPointMake(
                     random() % (unsigned int)scene.island.size.width+70,
                     random() % (unsigned int)scene.island.size.height+70);
         self.pointToWalk = point;
+    }
+    //atack
+    CGFloat closestHeroDistance = MAXFLOAT;
+    
+    for (Character *hero in scene.heroes) {
+        CGPoint heroPosition = hero.position;
+        CGFloat distance = APADistanceBetweenPoints(position, heroPosition);
+        if (distance < kEnemyAlertRadius && distance < closestHeroDistance && !hero.dying) {
+            closestHeroDistance = distance;
+            self.target = hero;
+        }
     }
     
     // If there's no target, don't do anything.
@@ -93,14 +105,20 @@
     
     // Otherwise chase or attack the target, if it's near enough.
     CGFloat chaseRadius = self.chaseRadius;
-    CGPoint position = ourCharacter.position;
+    CGPoint heroPosition = target.position;
+    
     CGFloat distance = APADistanceBetweenPoints(position, self.pointToWalk);
-    if (distance > chaseRadius) {
+    if (closestHeroDistance > self.maxAlertRadius) {
+        self.target = nil;
+    }else if (distance > chaseRadius && !target) {
         CGFloat pointX = (self.pointToWalk.x - position.x)/100 + position.x;
         CGFloat pointY = (self.pointToWalk.y - position.y)/100 + position.y;
         [self.character moveTowards:CGPointMake(pointX, pointY) withTimeInterval:interval];
-    } else if (distance < chaseRadius) {
+    }else if (distance < chaseRadius) {
         self.walking = FALSE;
+    }else if (closestHeroDistance < chaseRadius) {
+        [self.character faceTo:heroPosition];
+        [self.character performAttackAction];
     }
 }
 

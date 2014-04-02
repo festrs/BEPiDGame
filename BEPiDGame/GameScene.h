@@ -12,6 +12,7 @@
 #define kStartLives 3
 
 @interface GameScene : SKScene <SKPhysicsContactDelegate>
+@property (nonatomic, readonly) NSArray *heroes;  
 - (void)addNode:(SKNode *)node;
 @property SKSpriteNode *island;
 @end

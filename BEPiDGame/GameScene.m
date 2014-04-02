@@ -35,7 +35,7 @@ typedef enum : uint8_t {
 @property PlayerHero *hero;
 @property EnemyCharacter *enemy;
 @property BOOL atackIntent;
-
+@property (nonatomic, readwrite) NSMutableArray *heroes;
 @property (nonatomic) NSMutableArray *players;          // array of player objects or NSNull for no player
 @property (nonatomic) PlayerHero *defaultPlayer;         // player '1' controlled by keyboard/touch
 
@@ -50,7 +50,8 @@ typedef enum : uint8_t {
 
 -(id)initWithSize:(CGSize)size {
     if (self = [super initWithSize:size]) {
-        
+        //heros
+        _heroes = [[NSMutableArray alloc] init];
         
         //world sets
         self.backgroundColor = [SKColor blackColor];
@@ -112,6 +113,9 @@ typedef enum : uint8_t {
         
         _players = [[NSMutableArray alloc] initWithCapacity:kNumPlayers];
         _defaultPlayer = self.hero;
+        
+        [(NSMutableArray *)self.heroes addObject:self.hero];
+        
         [(NSMutableArray *)_players addObject:_defaultPlayer];
         for (int i = 1; i < kNumPlayers; i++) {
             [(NSMutableArray *)_players addObject:[NSNull null]];

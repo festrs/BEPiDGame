@@ -53,4 +53,7 @@
 
 @property (nonatomic) ArtificialIntelligence *intelligence;
 
+- (void)fireProjectile;
+- (SKSpriteNode *)projectile;
+- (SKEmitterNode *)projectileEmitter;
 @end
