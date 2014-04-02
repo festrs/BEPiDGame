@@ -80,8 +80,8 @@
         GameScene *scene = [ourCharacter characterScene];
         self.walking = TRUE;
         CGPoint point = CGPointMake(
-                    random() % (unsigned int)scene.island.size.width,
-                    random() % (unsigned int)scene.island.size.height);
+                    random() % (unsigned int)scene.island.size.width-70,
+                    random() % (unsigned int)scene.island.size.height-70);
         self.pointToWalk = point;
     }
     
