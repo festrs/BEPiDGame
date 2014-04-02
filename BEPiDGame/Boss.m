@@ -143,6 +143,15 @@
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
+        sSharedProjectile = [SKSpriteNode spriteNodeWithColor:[SKColor whiteColor] size:CGSizeMake(2.0, 24.0)];
+        sSharedProjectile.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:kProjectileCollisionRadius];
+        sSharedProjectile.name = @"Projectile";
+        sSharedProjectile.physicsBody.categoryBitMask = ColliderTypeProjectileBoss;
+        sSharedProjectile.physicsBody.collisionBitMask = ColliderTypeScenario;
+        sSharedProjectile.physicsBody.contactTestBitMask = sSharedProjectile.physicsBody.collisionBitMask;
+        
+        sSharedProjectileEmitter = [SKEmitterNode apa_emitterNodeWithEmitterNamed:@"ArcherProjectile"];
+        
         sSharedIdleAnimationFrames = APALoadFramesFromAtlas(@"Boss_Idle", @"boss_idle_", kBossIdleFrames);
         sSharedWalkAnimationFrames = APALoadFramesFromAtlas(@"Boss_Walk", @"boss_walk_", kBossWalkFrames);
         sharedAttackAnimationFrames = APALoadFramesFromAtlas(@"Boss_Attack", @"boss_attack_", kBossAttackFrames);
@@ -154,6 +163,16 @@
                                                    [SKAction colorizeWithColorBlendFactor:0.0 duration:0.1]
                                                    ]];
     });
+}
+
+static SKSpriteNode *sSharedProjectile = nil;
+- (SKSpriteNode *)projectile {
+    return sSharedProjectile;
+}
+
+static SKEmitterNode *sSharedProjectileEmitter = nil;
+- (SKEmitterNode *)projectileEmitter {
+    return sSharedProjectileEmitter;
 }
 
 static SKEmitterNode *sSharedDamageEmitter = nil;

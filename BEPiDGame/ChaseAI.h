@@ -47,7 +47,7 @@
 
 #import "ArtificialIntelligence.h"
 
-#define kEnemyAlertRadius (kCharacterCollisionRadius * 500)
+#define kEnemyAlertRadius (kCharacterCollisionRadius * 1000)
 
 
 @interface ChaseAI : ArtificialIntelligence

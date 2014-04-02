@@ -48,6 +48,9 @@
 #import "EnemyCharacter.h"
 #import "ArtificialIntelligence.h"
 
+#define kHeroProjectileSpeed 480.0
+#define kHeroProjectileLifetime 1.0 // 1.0 seconds until the projectile disappears
+#define kHeroProjectileFadeOutTime 0.6 // 0.6 seconds until the projectile starts to fade out
 
 @implementation EnemyCharacter
 
@@ -62,8 +65,54 @@
     if (animationState == APAAnimationStateAttack) {
         // Attacking hero should apply same damage as collision with hero, so simply
         // tell the target that we collided with it.
-        [self.intelligence.target collidedWith:self.physicsBody];
+        //[self.intelligence.target collidedWith:self.physicsBody];
+        [self fireProjectile];
     }
+}
+
+#pragma mark - Projectiles
+- (void)fireProjectile {
+    GameScene *scene = [self characterScene];
+    
+    SKSpriteNode *projectile = [[self projectile] copy];
+    projectile.physicsBody.affectedByGravity=NO;
+    projectile.position = self.position;
+    projectile.zRotation = self.zRotation;
+    
+    SKEmitterNode *emitter = [[self projectileEmitter] copy];
+    emitter.targetNode = [self.scene childNodeWithName:@"world"];
+    [projectile addChild:emitter];
+    
+    
+    [scene addNode:projectile];
+    
+    CGFloat rot = self.zRotation;
+    
+    [projectile runAction:[SKAction moveByX:-sinf(rot)*kHeroProjectileSpeed*kHeroProjectileLifetime
+                                          y:cosf(rot)*kHeroProjectileSpeed*kHeroProjectileLifetime
+                                   duration:kHeroProjectileLifetime]];
+    
+    [projectile runAction:[SKAction sequence:@[[SKAction waitForDuration:kHeroProjectileFadeOutTime],
+                                               [SKAction fadeOutWithDuration:kHeroProjectileLifetime - kHeroProjectileFadeOutTime],
+                                               [SKAction removeFromParent]]]];
+    [projectile runAction:[self projectileSoundAction]];
+    
+    //projectile.userData = [NSMutableDictionary dictionaryWithObject:self.player forKey:kPlayer];
+}
+
+- (SKSpriteNode *)projectile {
+    // Overridden by subclasses to return a suitable projectile.
+    return nil;
+}
+
+- (SKEmitterNode *)projectileEmitter {
+    // Overridden by subclasses to return the particle emitter to attach to the projectile.
+    return nil;
+}
+
+static SKAction *sSharedProjectileSoundAction = nil;
+- (SKAction *)projectileSoundAction {
+    return sSharedProjectileSoundAction;
 }
 
 
