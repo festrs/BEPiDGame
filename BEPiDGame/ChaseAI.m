@@ -80,8 +80,8 @@
         GameScene *scene = [ourCharacter characterScene];
         self.walking = TRUE;
         CGPoint point = CGPointMake(
-                    random() % (unsigned int)scene.island.size.width-70,
-                    random() % (unsigned int)scene.island.size.height-70);
+                    random() % (unsigned int)scene.island.size.width+70,
+                    random() % (unsigned int)scene.island.size.height+70);
         self.pointToWalk = point;
     }
     
@@ -96,8 +96,8 @@
     CGPoint position = ourCharacter.position;
     CGFloat distance = APADistanceBetweenPoints(position, self.pointToWalk);
     if (distance > chaseRadius) {
-        CGFloat pointX = (self.pointToWalk.x - position.x)/500 + position.x;
-        CGFloat pointY = (self.pointToWalk.y - position.y)/500 + position.y;
+        CGFloat pointX = (self.pointToWalk.x - position.x)/100 + position.x;
+        CGFloat pointY = (self.pointToWalk.y - position.y)/100 + position.y;
         [self.character moveTowards:CGPointMake(pointX, pointY) withTimeInterval:interval];
     } else if (distance < chaseRadius) {
         self.walking = FALSE;
