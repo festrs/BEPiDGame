@@ -79,10 +79,8 @@ typedef enum : uint8_t {
     ColliderTypeGoblinOrBoss     = 2,
     ColliderTypeProjectile       = 4,
     ColliderTypeIsland           = 8,
-    ColliderTypeLava             = 16,
-    ColliderTypeScenario         = 32
+    ColliderTypeScenario         = 16
 } APAColliderType;
-
 
 #define kMovementSpeed 200.0
 #define kRotationSpeed 0.06
