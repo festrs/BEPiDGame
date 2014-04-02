@@ -72,7 +72,7 @@ typedef enum : uint8_t {
         _island.position = CGPointMake(_lava.frame.size.width/2, _lava.frame.size.height/2);
         _island.zPosition = -1; // pra ilha ficar embaixo dos personagens
         //island body
-        _island.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(_island.frame.size.width-50, _island.frame.size.height-50)];
+        _island.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(_island.frame.size.width-70, _island.frame.size.height-70)];
 		_island.physicsBody.categoryBitMask = ColliderTypeIsland;
 		_island.physicsBody.collisionBitMask = ColliderTypeIsland;
 		_island.physicsBody.contactTestBitMask = ColliderTypeHero | ColliderTypeGoblinOrBoss;
@@ -119,7 +119,6 @@ typedef enum : uint8_t {
             [(NSMutableArray *)_players addObject:[NSNull null]];
         }
 
-        
         //enemy
         self.enemy = [[Boss alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.frame)+120,
                                                               CGRectGetMidY(self.frame))];
@@ -203,8 +202,8 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
 
 - (void)didBeginContact:(SKPhysicsContact *)contact {
     
-    NSLog(@"Algo se encostou.");
-    
+    //NSLog(@"Algo se encostou.");
+
     //chamando o método de colisão da classe se for um char (hero ou enemy)
     SKNode *node = contact.bodyA.node;
     if ([node isKindOfClass:[Character class]])
@@ -213,6 +212,12 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     if ([node isKindOfClass:[Character class]])
         [(Character *)node collidedWith:contact.bodyA];
     
+    //testa se algum character entrou da ilha
+    if (contact.bodyA.categoryBitMask & ColliderTypeIsland)
+    {
+        NSLog(@"Algo entrou na ilha.");
+    }
+
     //colisão de projéteis
     if (contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyB.categoryBitMask & ColliderTypeProjectile)
     {
@@ -251,7 +256,13 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
 
 -(void)didEndContact:(SKPhysicsContact *)contact
 {
-    NSLog(@"Algo se desencostou.");
+    //NSLog(@"Algo se desencostou.");
+    
+    //testa se algum character saiu da ilha
+    if (contact.bodyA.categoryBitMask & ColliderTypeIsland)
+    {
+        NSLog(@"Algo saiu da ilha.");
+    }
 }
 
 -(void)desacelerateCharacter:(Character *)node
