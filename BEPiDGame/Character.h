@@ -102,6 +102,7 @@ typedef enum : uint8_t {
 @property (nonatomic, getter=isAttacking) BOOL attacking;
 @property (nonatomic) CGFloat health;
 @property (nonatomic, getter=isAnimated) BOOL animated;
+@property (nonatomic, getter=isInLava) BOOL inLava;
 @property (nonatomic) CGFloat animationSpeed;
 @property (nonatomic) CGFloat movementSpeed;
 

@@ -149,6 +149,7 @@ typedef enum : uint8_t {
     if (timeSinceLast > 1) { // more than a second since last update
         timeSinceLast = kMinTimeInterval;
         self.lastUpdateTimeInterval = currentTime;
+
     }
     
     if(self.imageJoystick.touchesBegin && !self.atackIntent){
@@ -216,9 +217,8 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     
     //testa se algum character entrou da ilha
     if (contact.bodyA.categoryBitMask & ColliderTypeIsland)
-    {
-        NSLog(@"Algo entrou na ilha.");
-    }
+        if (contact.bodyB.categoryBitMask & ColliderTypeHero || contact.bodyB.categoryBitMask & ColliderTypeGoblinOrBoss)
+            [(Character *)contact.bodyB.node setInLava:NO];
 
     //colisão de projéteis
     if (contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyB.categoryBitMask & ColliderTypeProjectile)
@@ -262,9 +262,8 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     
     //testa se algum character saiu da ilha
     if (contact.bodyA.categoryBitMask & ColliderTypeIsland)
-    {
-        NSLog(@"Algo saiu da ilha.");
-    }
+        if (contact.bodyB.categoryBitMask & ColliderTypeHero || contact.bodyB.categoryBitMask & ColliderTypeGoblinOrBoss)
+            [(Character *)contact.bodyB.node setInLava:YES];
 }
 
 -(void)desacelerateCharacter:(Character *)node
