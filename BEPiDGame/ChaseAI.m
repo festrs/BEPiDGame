@@ -53,6 +53,7 @@
 @interface ChaseAI ()
 @property CGPoint pointToWalk;
 @property BOOL walking;
+@property BOOL attacking;
 @end
 
 @implementation ChaseAI
@@ -64,7 +65,7 @@
         _maxAlertRadius = (kEnemyAlertRadius * 2.0f);
         _chaseRadius = (kCharacterCollisionRadius * 2.0f);
         _walking = FALSE;
-        
+        _attacking = FALSE;
         //scheduling the action to Attack
         SKAction *wait = [SKAction waitForDuration:2.3];
         SKAction *attack = [SKAction runBlock:^{
@@ -94,10 +95,11 @@
         self.pointToWalk = point;
     }
     
-    if(self.target){
+    if(self.target && !self.character.attacking){
         [self.character faceTo:self.target.position];
         self.character.attacking = YES;
         self.character.requestedAnimation = APAAnimationStateAttack;
+        return;
     }
     
     // Otherwise chase or attack the target, if it's near enough.
@@ -131,6 +133,7 @@
         if (distance < kEnemyAlertRadius && distance < closestHeroDistance && !hero.dying) {
             closestHeroDistance = distance;
             self.target = hero;
+            self.attacking = TRUE;
         }
     }
     if(self.target){
