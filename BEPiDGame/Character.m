@@ -102,6 +102,7 @@
     self.health = 100.0f;
     self.dying = NO;
     self.attacking = NO;
+    self.inLava = NO;
     self.animated = YES;
     self.requestedAnimation = APAAnimationStateIdle;
     self.shadowBlob.alpha = 1.0f;

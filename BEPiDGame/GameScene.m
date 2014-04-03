@@ -63,12 +63,14 @@ typedef enum : uint8_t {
         
         //lava
         _lava = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.6 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(self.frame.size.width, self.frame.size.height)];
+        [_lava setTexture:[SKTexture textureWithImageNamed:@"lava"]];
         _lava.position = CGPointMake(size.width/2, size.height/2);
         _lava.zPosition = -2; // pra lava ficar abaixo da ilha
         [self addChild:_lava];
 
         //island
         _island = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.3 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(_lava.frame.size.width*0.7f, _lava.frame.size.height*0.7f)];
+        [_island setTexture:[SKTexture textureWithImageNamed:@"rock"]];
         _island.position = CGPointMake(_lava.frame.size.width/2, _lava.frame.size.height/2);
         _island.zPosition = -1; // pra ilha ficar embaixo dos personagens
         //island body
@@ -147,6 +149,7 @@ typedef enum : uint8_t {
     if (timeSinceLast > 1) { // more than a second since last update
         timeSinceLast = kMinTimeInterval;
         self.lastUpdateTimeInterval = currentTime;
+
     }
     
     if(self.imageJoystick.touchesBegin && !self.atackIntent){
@@ -213,9 +216,8 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     
     //testa se algum character entrou da ilha
     if (contact.bodyA.categoryBitMask & ColliderTypeIsland)
-    {
-        NSLog(@"Algo entrou na ilha.");
-    }
+        if (contact.bodyB.categoryBitMask & ColliderTypeHero || contact.bodyB.categoryBitMask & ColliderTypeGoblinOrBoss)
+            [(Character *)contact.bodyB.node setInLava:NO];
 
     //colisão de projéteis
     if (contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyB.categoryBitMask & ColliderTypeProjectile ||
@@ -264,9 +266,8 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     
     //testa se algum character saiu da ilha
     if (contact.bodyA.categoryBitMask & ColliderTypeIsland)
-    {
-        NSLog(@"Algo saiu da ilha.");
-    }
+        if (contact.bodyB.categoryBitMask & ColliderTypeHero || contact.bodyB.categoryBitMask & ColliderTypeGoblinOrBoss)
+            [(Character *)contact.bodyB.node setInLava:YES];
 }
 
 -(void)desacelerateCharacter:(Character *)node
