@@ -59,6 +59,7 @@
 #define kBossCollisionRadius 40
 #define kBossChaseRadius (kBossCollisionRadius * 4)
 
+
 @implementation Boss
 
 #pragma mark - Initialization
@@ -80,10 +81,12 @@
         intelligence.chaseRadius = kBossChaseRadius;
         intelligence.maxAlertRadius = kBossChaseRadius * 4.0f;
         self.intelligence = intelligence;
+
     }
     
     return self;
 }
+
 
 #pragma mark - Overridden Methods
 - (void)configurePhysicsBody {
@@ -147,8 +150,8 @@
         sSharedProjectile.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:kProjectileCollisionRadius];
         sSharedProjectile.name = @"Projectile";
         sSharedProjectile.physicsBody.categoryBitMask = ColliderTypeProjectileBoss;
-        sSharedProjectile.physicsBody.collisionBitMask = ColliderTypeScenario;
-        sSharedProjectile.physicsBody.contactTestBitMask = sSharedProjectile.physicsBody.collisionBitMask;
+        sSharedProjectile.physicsBody.collisionBitMask = ColliderTypeScenario | ColliderTypeProjectile | ColliderTypeHero;
+        //sSharedProjectile.physicsBody.contactTestBitMask = ColliderTypeHero;
         
         sSharedProjectileEmitter = [SKEmitterNode apa_emitterNodeWithEmitterNamed:@"ArcherProjectile"];
         

@@ -1,7 +1,7 @@
 /*
-     File: APAChaseAI.m
+ File: APAChaseAI.m
  Abstract: n/a
-  Version: 1.2
+ Version: 1.2
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -64,6 +64,14 @@
         _maxAlertRadius = (kEnemyAlertRadius * 2.0f);
         _chaseRadius = (kCharacterCollisionRadius * 2.0f);
         _walking = FALSE;
+        
+        //scheduling the action to Attack
+        SKAction *wait = [SKAction waitForDuration:2.3];
+        SKAction *attack = [SKAction runBlock:^{
+            [self performAttackAction];
+        }];
+        SKAction *checkButtonsAction = [SKAction sequence:@[wait,attack]];
+        [self.character runAction:[SKAction repeatActionForever:checkButtonsAction]];
     }
     return self;
 }
@@ -77,15 +85,44 @@
         self.target = nil;
         return;
     }
-    if(!self.walking){
+    if(!self.walking && !self.target){
         
         self.walking = TRUE;
         CGPoint point = CGPointMake(
-                    random() % (unsigned int)scene.island.size.width+70,
-                    random() % (unsigned int)scene.island.size.height+70);
+                                    random() % (unsigned int)scene.island.size.width+70,
+                                    random() % (unsigned int)scene.island.size.height+70);
         self.pointToWalk = point;
     }
-    //atack
+    
+    if(self.target){
+        [self.character faceTo:self.target.position];
+        self.character.attacking = YES;
+        self.character.requestedAnimation = APAAnimationStateAttack;
+    }
+    
+    // Otherwise chase or attack the target, if it's near enough.
+    CGFloat chaseRadius = self.chaseRadius;
+    
+    CGFloat distance = APADistanceBetweenPoints(position, self.pointToWalk);
+    if (distance > chaseRadius) {
+        CGFloat pointX = (self.pointToWalk.x - position.x)/100 + position.x;
+        CGFloat pointY = (self.pointToWalk.y - position.y)/100 + position.y;
+        [self.character moveTowards:CGPointMake(pointX, pointY) withTimeInterval:interval];
+    }else if (distance < chaseRadius) {
+        self.walking = FALSE;
+    }
+}
+
+- (void)performAttackAction {
+    Character *ourCharacter = self.character;
+    
+    if (ourCharacter.dying) {
+        self.target = nil;
+        return;
+    }
+    
+    CGPoint position = ourCharacter.position;
+    GameScene *scene = [ourCharacter characterScene];
     CGFloat closestHeroDistance = MAXFLOAT;
     
     for (Character *hero in scene.heroes) {
@@ -96,29 +133,8 @@
             self.target = hero;
         }
     }
-    
-    // If there's no target, don't do anything.
-    Character *target = self.target;
-    if (!target) {
-        //return;
-    }
-    
-    // Otherwise chase or attack the target, if it's near enough.
-    CGFloat chaseRadius = self.chaseRadius;
-    CGPoint heroPosition = target.position;
-    
-    CGFloat distance = APADistanceBetweenPoints(position, self.pointToWalk);
-    if (closestHeroDistance > self.maxAlertRadius) {
-        self.target = nil;
-    }else if (distance > chaseRadius && !target) {
-        CGFloat pointX = (self.pointToWalk.x - position.x)/100 + position.x;
-        CGFloat pointY = (self.pointToWalk.y - position.y)/100 + position.y;
-        [self.character moveTowards:CGPointMake(pointX, pointY) withTimeInterval:interval];
-    }else if (distance < chaseRadius) {
-        self.walking = FALSE;
-    }else if (closestHeroDistance < chaseRadius) {
-        [self.character faceTo:heroPosition];
-        [self.character performAttackAction];
+    if(self.target){
+
     }
 }
 

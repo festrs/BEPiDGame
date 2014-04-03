@@ -95,7 +95,7 @@ typedef enum : uint8_t {
         [self addChild:self.testButton];
     
         //scheduling the action to check buttons
-        SKAction *wait = [SKAction waitForDuration:0.3];
+        SKAction *wait = [SKAction waitForDuration:2.3];
         SKAction *checkButtons = [SKAction runBlock:^{
             [self checkButtons];
         }];
@@ -168,7 +168,6 @@ typedef enum : uint8_t {
     
     if (self.testButton.wasPressed) {
         [self addSquareIn:CGPointMake(0,self.size.height-80) withColor:[SKColor yellowColor]];
-        [self.enemy performAttackAction];
     }
 }
 
@@ -219,7 +218,8 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     }
 
     //colisão de projéteis
-    if (contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyB.categoryBitMask & ColliderTypeProjectile)
+    if (contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyB.categoryBitMask & ColliderTypeProjectile ||
+        (contact.bodyA.categoryBitMask & ColliderTypeProjectileBoss) || (contact.bodyB.categoryBitMask & ColliderTypeProjectileBoss))
     {
         SKNode *projectile = [[SKNode alloc] init];
         if (contact.bodyA.categoryBitMask & ColliderTypeProjectile) {
@@ -238,6 +238,10 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         {
             self.hero.score = self.hero.score + 20;
             [self updateHUDForPlayer:self.hero];
+        }
+        
+        if([node isKindOfClass:[HeroCharacter class]]){
+            
         }
         
         //aplicando a força do impacto no alvo
