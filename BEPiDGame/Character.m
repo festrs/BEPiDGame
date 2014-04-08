@@ -1,3 +1,4 @@
+
 /*
      File: APACharacter.m
  Abstract: n/a
@@ -48,6 +49,7 @@
 #import "Character.h"
 #import "APAGraphicsUtilities.h"
 #import "ParallaxSprite.h"
+#import "Boss.h"
 
 
 @interface Character ()
@@ -199,7 +201,7 @@
     NSString *animationKey = nil;
     NSArray *animationFrames = nil;
     APAAnimationState animationState = self.requestedAnimation;
-    
+    self.animationSpeed = 1.0f/28.0f;
     switch (animationState) {
             
         default:
@@ -215,6 +217,11 @@
             
         case APAAnimationStateAttack:
             animationKey = @"anim_attack";
+            if([self isKindOfClass:[Boss class]]){
+                self.animationSpeed = 1.0f/68.0f;
+            }else{
+                self.animationSpeed = 1.0f/48.0f;
+            }
             animationFrames = [self attackAnimationFrames];
             break;
             
@@ -242,11 +249,13 @@
         return; // we already have a running animation or there aren't any frames to animate
     }
     self.activeAnimationKey = key;
-    [self runAction:[SKAction sequence:@[
-                [SKAction animateWithTextures:frames timePerFrame:self.animationSpeed resize:YES restore:NO],
-                [SKAction runBlock:^{
-                    [self animationHasCompleted:animationState];
-                }]]] withKey:key];
+    if(!([self isKindOfClass:[Boss class]] && self.attacking && animationState != APAAnimationStateAttack)){
+        [self runAction:[SKAction sequence:@[
+                                             [SKAction animateWithTextures:frames timePerFrame:self.animationSpeed resize:YES restore:NO],
+                                             [SKAction runBlock:^{
+            [self animationHasCompleted:animationState];
+        }]]] withKey:key];
+    }
 }
 
 - (void)fadeIn:(CGFloat)duration {
@@ -260,6 +269,7 @@
     [self.shadowBlob runAction:fadeAction];
 }
 
+
 - (void)animationHasCompleted:(APAAnimationState)animationState {
     if (self.dying) {
         self.animated = NO;
@@ -268,7 +278,7 @@
     
     [self animationDidComplete:animationState];
     
-    if (self.attacking) {
+    if (self.attacking && animationState == APAAnimationStateAttack) {
         self.attacking = NO;
     }
     
@@ -379,6 +389,25 @@
     if (!self.attacking) {
         self.requestedAnimation = APAAnimationStateWalk;
     }
+}
+
+#pragma mark - walking boss
+-(void)walking
+{
+    //This is our general runAction method to make our bear walk.
+    //By using a withKey if this gets called while already running it will remove the first action before
+    //starting this again.
+    
+    [self runAction:[SKAction repeatActionForever:[SKAction animateWithTextures:[self walkAnimationFrames]
+                                                                   timePerFrame:0.01f
+                                                                         resize:NO
+                                                                        restore:YES]] withKey:@"walkingInPlace"];
+    return;
+}
+
+-(void)moveEnded
+{
+    [self removeAllActions];
 }
 
 #pragma mark - Shared Assets

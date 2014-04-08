@@ -52,5 +52,5 @@
 @interface EnemyCharacter : Character
 
 @property (nonatomic) ArtificialIntelligence *intelligence;
-
+- (void)fireProjectile;
 @end

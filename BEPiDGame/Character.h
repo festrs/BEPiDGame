@@ -156,4 +156,7 @@ typedef enum : uint8_t {
 /* Animation. */
 - (void)fadeIn:(CGFloat)duration;
 
+
+-(void)moveEnded;
+-(void)walking;
 @end

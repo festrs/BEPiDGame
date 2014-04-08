@@ -56,7 +56,7 @@
 #define kBossDeathFrames 45
 #define kBossGetHitFrames 22
 
-#define kBossCollisionRadius 40
+#define kBossCollisionRadius 25
 #define kBossChaseRadius (kBossCollisionRadius * 4)
 
 
