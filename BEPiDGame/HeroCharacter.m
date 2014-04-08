@@ -86,13 +86,12 @@
     self.physicsBody.collisionBitMask = ColliderTypeGoblinOrBoss | ColliderTypeHero | ColliderTypeScenario;
     
     // We want notifications for colliding with these objects.
-    self.physicsBody.contactTestBitMask = ColliderTypeGoblinOrBoss;
+    self.physicsBody.contactTestBitMask =  ColliderTypeProjectileBoss;
 }
 
 - (void)collidedWith:(SKPhysicsBody *)other {
-    if (other.categoryBitMask & ColliderTypeGoblinOrBoss) {
-        Character *enemy = (Character *)other.node;
-        if (!enemy.dying) {
+    if (other.categoryBitMask & ColliderTypeProjectileBoss) {
+        if (!self.dying) {
             [self applyDamage:5.0f];
             self.requestedAnimation = APAAnimationStateGetHit;
         }

@@ -96,7 +96,7 @@
                                                [SKAction fadeOutWithDuration:kHeroProjectileLifetime - kHeroProjectileFadeOutTime],
                                                [SKAction removeFromParent]]]];
     [projectile runAction:[self projectileSoundAction]];
-    
+    self.intelligence.target = nil;
     //projectile.userData = [NSMutableDictionary dictionaryWithObject:self.player forKey:kPlayer];
 }
 
