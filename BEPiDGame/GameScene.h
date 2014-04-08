@@ -26,5 +26,6 @@ typedef enum : uint8_t {
 @property (nonatomic, readonly) NSArray *heroes;  
 - (void)addNode:(SKNode *)node;
 @property SKSpriteNode *island;
+@property SKCropNode *cropNode;
 - (void)addNode:(SKNode *)node atWorldLayer:(APAWorldLayer)layer;
 @end
