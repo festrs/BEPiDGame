@@ -61,6 +61,7 @@ typedef enum : uint8_t {
 		self.physicsBody.categoryBitMask = ColliderTypeScenario;
 		self.physicsBody.collisionBitMask = ColliderTypeScenario;
         
+        
         //lava
         _lava = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.6 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(self.frame.size.width, self.frame.size.height)];
         [_lava setTexture:[SKTexture textureWithImageNamed:@"lava"]];
@@ -133,6 +134,7 @@ typedef enum : uint8_t {
         
         [self buildHUD];
         [self updateHUDForPlayer:self.hero forState:APAHUDStateLocal withMessage:nil];
+        
         
     }
     return self;

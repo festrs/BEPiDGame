@@ -15,4 +15,5 @@
 @property (nonatomic, readonly) NSArray *heroes;  
 - (void)addNode:(SKNode *)node;
 @property SKSpriteNode *island;
+@property SKCropNode *cropNode;
 @end
