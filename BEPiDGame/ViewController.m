@@ -97,18 +97,21 @@
 {
     difficult = [(UIButton *)sender tag];
     [self EsconderScene];
+    [sceneGame startGame];
     
 }
 - (IBAction)TouchMedium:(id)sender
 {
     difficult = [(UIButton *)sender tag];
     [self EsconderScene];
+    [sceneGame startGame];
 }
 
 - (IBAction)TouchHard:(id)sender
 {
     difficult = [(UIButton *)sender tag];
     [self EsconderScene];
+    [sceneGame startGame];
 }
 
 @end

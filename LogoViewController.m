@@ -36,7 +36,7 @@
 
 - (IBAction)TouchSair:(id)sender
 {
-    exit(0);
+
 }
 
 - (IBAction)TouchJogar:(id)sender
