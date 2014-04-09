@@ -86,6 +86,10 @@
 		3ADCDC8318E45938000ED44E /* iconWarrior_red.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC4B18E45938000ED44E /* iconWarrior_red.png */; };
 		3ADCDC8418E45938000ED44E /* lives.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC4C18E45938000ED44E /* lives.png */; };
 		3ADCDC8518E45938000ED44E /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC4D18E45938000ED44E /* logo.png */; };
+		7CEBF7FE18EDA0670027E139 /* InicialScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CEBF7FD18EDA0670027E139 /* InicialScene.m */; };
+		7CEBF80118EDA07C0027E139 /* FundoLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CEBF7FF18EDA07C0027E139 /* FundoLogo.png */; };
+		7CEBF80218EDA07C0027E139 /* logoInicial.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CEBF80018EDA07C0027E139 /* logoInicial.png */; };
+		7CEBF80518F324E00027E139 /* LogoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CEBF80418F324E00027E139 /* LogoViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -197,6 +201,12 @@
 		3ADCDC4B18E45938000ED44E /* iconWarrior_red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconWarrior_red.png; sourceTree = "<group>"; };
 		3ADCDC4C18E45938000ED44E /* lives.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lives.png; sourceTree = "<group>"; };
 		3ADCDC4D18E45938000ED44E /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
+		7CEBF7FC18EDA0670027E139 /* InicialScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InicialScene.h; sourceTree = "<group>"; };
+		7CEBF7FD18EDA0670027E139 /* InicialScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InicialScene.m; sourceTree = "<group>"; };
+		7CEBF7FF18EDA07C0027E139 /* FundoLogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FundoLogo.png; sourceTree = "<group>"; };
+		7CEBF80018EDA07C0027E139 /* logoInicial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logoInicial.png; sourceTree = "<group>"; };
+		7CEBF80318F324E00027E139 /* LogoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LogoViewController.h; path = ../LogoViewController.h; sourceTree = "<group>"; };
+		7CEBF80418F324E00027E139 /* LogoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LogoViewController.m; path = ../LogoViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -265,8 +275,14 @@
 				3ADCDBB618E44EDD000ED44E /* Main.storyboard */,
 				3ADCDBB918E44EDD000ED44E /* ViewController.h */,
 				3ADCDBBA18E44EDD000ED44E /* ViewController.m */,
+				7CEBF80318F324E00027E139 /* LogoViewController.h */,
+				7CEBF80418F324E00027E139 /* LogoViewController.m */,
 				3ADCDBE818E45055000ED44E /* GameScene.h */,
 				3ADCDBE918E45055000ED44E /* GameScene.m */,
+				7CEBF7FC18EDA0670027E139 /* InicialScene.h */,
+				7CEBF7FD18EDA0670027E139 /* InicialScene.m */,
+				7CEBF7FF18EDA07C0027E139 /* FundoLogo.png */,
+				7CEBF80018EDA07C0027E139 /* logoInicial.png */,
 				3ADCDC0C18E45938000ED44E /* Assets */,
 				3ADCDBC118E44EDD000ED44E /* Images.xcassets */,
 				3ADCDBAB18E44EDD000ED44E /* Supporting Files */,
@@ -558,6 +574,7 @@
 			files = (
 				3ADCDBAF18E44EDD000ED44E /* InfoPlist.strings in Resources */,
 				3ADCDC4E18E45938000ED44E /* map_level.png in Resources */,
+				7CEBF80218EDA07C0027E139 /* logoInicial.png in Resources */,
 				3ADCDC7B18E45938000ED44E /* button_archer.png in Resources */,
 				3ADCDC6618E45938000ED44E /* Archer_Idle.atlas in Resources */,
 				3ADCDC5418E45938000ED44E /* CaveFire.sks in Resources */,
@@ -569,6 +586,7 @@
 				3ADCDC5118E45938000ED44E /* BossDamage.sks in Resources */,
 				3ADCDC8418E45938000ED44E /* lives.png in Resources */,
 				3ADCDC5218E45938000ED44E /* CaveDamage.sks in Resources */,
+				7CEBF80118EDA07C0027E139 /* FundoLogo.png in Resources */,
 				3ADCDC6D18E45938000ED44E /* Environment.atlas in Resources */,
 				3ADCDC6518E45938000ED44E /* Archer_GetHit.atlas in Resources */,
 				3ADCDC7818E45938000ED44E /* Warrior_Walk.atlas in Resources */,
@@ -635,6 +653,7 @@
 				3ADCDC0518E454CD000ED44E /* Boss.m in Sources */,
 				3ADCDBE518E44F80000ED44E /* JCJoystick.m in Sources */,
 				3ADCDBB518E44EDD000ED44E /* AppDelegate.m in Sources */,
+				7CEBF7FE18EDA0670027E139 /* InicialScene.m in Sources */,
 				3ADCDBEA18E45055000ED44E /* GameScene.m in Sources */,
 				3ADCDC0018E454CD000ED44E /* ParallaxSprite.m in Sources */,
 				3ADCDBB118E44EDD000ED44E /* main.m in Sources */,
@@ -644,6 +663,7 @@
 				3ADCDBE418E44F80000ED44E /* JCButton.m in Sources */,
 				3ADCDC0618E454CD000ED44E /* ArtificialIntelligence.m in Sources */,
 				3ADCDC0718E454CD000ED44E /* ChaseAI.m in Sources */,
+				7CEBF80518F324E00027E139 /* LogoViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -852,6 +872,7 @@
 				3ADCDBDA18E44EDD000ED44E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3ADCDBDB18E44EDD000ED44E /* Build configuration list for PBXNativeTarget "BEPiDGameTests" */ = {
 			isa = XCConfigurationList;
@@ -860,6 +881,7 @@
 				3ADCDBDD18E44EDD000ED44E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

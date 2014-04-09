@@ -31,6 +31,8 @@ typedef enum : uint8_t {
 @property (strong, nonatomic) JCButton *attackButton;
 @property (strong, nonatomic) JCButton *testButton;
 @property (nonatomic) NSTimeInterval lastUpdateTimeInterval;
+@property (nonatomic, readonly) SKNode *world;
+@property (nonatomic) NSMutableArray *layers;
 @property SKSpriteNode *lava;
 @property PlayerHero *hero;
 @property EnemyCharacter *enemy;
@@ -43,7 +45,8 @@ typedef enum : uint8_t {
 @property (nonatomic) NSArray *hudAvatars;              // keep track of the various nodes for the HUD
 @property (nonatomic) NSArray *hudLabels;               // - there are always 'kNumPlayers' instances in each array
 @property (nonatomic) NSArray *hudScores;
-@property (nonatomic) NSArray *hudLifeHeartArrays;      // an array of NSArrays of life hearts
+@property (nonatomic) NSArray *hudPercents;      // an array of NSArrays of life hearts
+@property (nonatomic) float lifeBarX;
 @end
 
 @implementation GameScene
@@ -54,7 +57,7 @@ typedef enum : uint8_t {
         _heroes = [[NSMutableArray alloc] init];
         
         //world sets
-        self.backgroundColor = [SKColor blackColor];
+        //self.backgroundColor = [SKColor blackColor];
         self.physicsWorld.gravity = CGVectorMake(0.0f, 0.0f); // no gravity
         self.physicsWorld.contactDelegate = self;
 		self.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:self.frame];
@@ -62,25 +65,29 @@ typedef enum : uint8_t {
         _island.physicsBody.collisionBitMask = ColliderTypeScenario;
         
         //lava
-        _lava = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.6 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(self.frame.size.width, self.frame.size.height)];
+        _lava = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.6 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(self.frame.size.width*3, self.frame.size.height*3)];
         [_lava setTexture:[SKTexture textureWithImageNamed:@"lava"]];
-        _lava.position = CGPointMake(size.width/2, size.height/2);
-        _lava.zPosition = -2; // pra lava ficar abaixo da ilha
-        [self addChild:_lava];
-
+        _lava.position = CGPointMake(_world.position.x, _world.position.y);
+        //_lava.zPosition = -2; // pra lava ficar abaixo da ilha
+        _lava.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:_lava.frame];
+        _lava.physicsBody.categoryBitMask = ColliderTypeScenario;
+		_lava.physicsBody.collisionBitMask = ColliderTypeScenario;
+        
+        [self addNode:_lava atWorldLayer:APAWorldLayerGround];
+        
         //island
-        _island = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.3 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(_lava.frame.size.width*0.7f, _lava.frame.size.height*0.7f)];
+        _island = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.3 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(_lava.frame.size.width*0.4f, _lava.frame.size.height*0.4f)];
         [_island setTexture:[SKTexture textureWithImageNamed:@"rock"]];
-        _island.position = CGPointMake(_lava.frame.size.width/2, _lava.frame.size.height/2);
-        _island.zPosition = -1; // pra ilha ficar embaixo dos personagens
+        //_island.position = CGPointMake(_lava.frame.size.width/2, _lava.frame.size.height/2);
+        //_island.zPosition = -1; // pra ilha ficar embaixo dos personagens
         //island body
-        _island.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(_island.frame.size.width-70, _island.frame.size.height-70)];
+        _island.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:_island.frame.size];
 		_island.physicsBody.categoryBitMask = ColliderTypeIsland;
 		_island.physicsBody.collisionBitMask = ColliderTypeIsland;
 		_island.physicsBody.contactTestBitMask = ColliderTypeHero | ColliderTypeGoblinOrBoss;
-        [self addChild:_island];
+        [self addNode:_island atWorldLayer:APAWorldLayerBelowCharacter];
         
-        //direcional
+        //direcionalz
         self.imageJoystick = [[JCImageJoystick alloc]initWithJoystickImage:(@"joystick.png") baseImage:@"dpad.png"];
         [self.imageJoystick setPosition:CGPointMake(70, 70)];
         [self addChild:self.imageJoystick];
@@ -103,37 +110,74 @@ typedef enum : uint8_t {
                                                                    CGRectGetMidY(self.frame)) withPlayer:nil];
         [self.hero characterScene];
         [PlayerHero loadSharedAssets];
-        [self addChild:self.hero];
-        
-        _players = [[NSMutableArray alloc] initWithCapacity:kNumPlayers];
-        _defaultPlayer = self.hero;
-        
-        [(NSMutableArray *)self.heroes addObject:self.hero];
-        
-        [(NSMutableArray *)_players addObject:_defaultPlayer];
-        for (int i = 1; i < kNumPlayers; i++) {
-            [(NSMutableArray *)_players addObject:[NSNull null]];
-        }
-
-        //enemy
-        self.enemy = [[Boss alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.frame)+120,
-                                                              CGRectGetMidY(self.frame))];
         [Boss loadSharedAssets];
-        [self addChild:self.enemy];
         
         //método recursivo que desacelera o character caso ele esteja com força aplicada nele
-        [self desacelerateCharacter:self.hero];
-        [self desacelerateCharacter:self.enemy];
-        
-        [self buildHUD];
-        [self updateHUDForPlayer:self.hero forState:APAHUDStateLocal withMessage:nil];
         
     }
     return self;
 }
 
+-(void) startGame{
+    //scheduling the action to check buttons
+    SKAction *wait = [SKAction waitForDuration:0.3];
+    SKAction *checkButtons = [SKAction runBlock:^{
+        [self checkButtons];
+    }];
+    SKAction *checkButtonsAction = [SKAction sequence:@[wait,checkButtons]];
+    [self runAction:[SKAction repeatActionForever:checkButtonsAction]];
+    
+    //hero
+    self.hero = [[PlayerHero alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.island.frame)-120,
+                                                               CGRectGetMidY(self.island.frame)) withPlayer:nil];
+    [self.hero characterScene];
+    
+    [self addNode:self.hero atWorldLayer:APAWorldLayerCharacter];
+    
+    
+    _defaultPlayer = self.hero;
+    
+    [self centerWorldOnCharacter:self.hero];
+    
+    [(NSMutableArray *)self.heroes addObject:self.hero];
+    
+    [(NSMutableArray *)_players addObject:_defaultPlayer];
+    for (int i = 1; i < kNumPlayers; i++) {
+        [(NSMutableArray *)_players addObject:[NSNull null]];
+    }
+    
+    //enemy
+    self.enemy = [[Boss alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.island.frame)+120,
+                                                          CGRectGetMidY(self.island.frame))];
+    
+    
+    [self addNode:self.enemy atWorldLayer:APAWorldLayerCharacter];
+    //método recursivo que desacelera o character caso ele esteja com força aplicada nele
+    [self desacelerateCharacter:self.hero];
+    [self desacelerateCharacter:self.enemy];
+    
+    [self buildHUD];
+    [self updateHUDForPlayer:self.hero forState:APAHUDStateLocal withMessage:nil];
+    
+}
+
 - (void)addNode:(SKNode *)node {
-    [self addChild:node];
+    [_world addChild:node];
+}
+
+- (void)addNode:(SKNode *)node atWorldLayer:(APAWorldLayer)layer {
+    SKNode *layerNode = self.layers[layer];
+    [layerNode addChild:node];
+}
+
+#pragma mark - Mapping
+- (void)centerWorldOnPosition:(CGPoint)position {
+    [self.world setPosition:CGPointMake(-(position.x) + CGRectGetMidX(self.frame),
+                                        -(position.y) + CGRectGetMidY(self.frame))];
+}
+
+- (void)centerWorldOnCharacter:(Character *)character {
+    [self centerWorldOnPosition:character.position];
 }
 
 -(void)update:(CFTimeInterval)currentTime {
@@ -143,21 +187,19 @@ typedef enum : uint8_t {
     if (timeSinceLast > 1) { // more than a second since last update
         timeSinceLast = kMinTimeInterval;
         self.lastUpdateTimeInterval = currentTime;
-
+        
     }
-    
     if(self.imageJoystick.touchesBegin && !self.atackIntent){
         [self.hero moveTowards:CGPointMake(self.hero.position.x+self.imageJoystick.x *2, self.hero.position.y+self.imageJoystick.y *2) withTimeInterval:currentTime];
     }
     [self.hero updateWithTimeSinceLastUpdate:currentTime];
     [self.enemy updateWithTimeSinceLastUpdate:currentTime];
-    
     self.atackIntent = FALSE;
+    [self centerWorldOnCharacter:self.hero];
 }
 
 - (void)checkButtons
 {
-    
     if (self.attackButton.wasPressed) {
         self.atackIntent = TRUE;
         [self.hero performAttackAction];
@@ -328,14 +370,18 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
             [self updateHUDForPlayer:self.hero];
         }
         
-        if([node isKindOfClass:[HeroCharacter class]]){
-            
+        if([node isKindOfClass:[PlayerHero class]]){
+            [self updateHUDForPlayer:self.hero];
         }
         
         //aplicando a força do impacto no alvo
+        NSLog(@"%f",(node.position.x-contact.contactPoint.x)*0.5);
+        NSLog(@"%f",(node.position.y-contact.contactPoint.y)*0.5);
+        NSLog(@"%f",contact.contactPoint.x);
+        NSLog(@"%f",contact.contactPoint.y);
         [node.physicsBody applyImpulse:CGVectorMake(
-                                                    (node.position.x-contact.contactPoint.x)*2,
-                                                    (node.position.y-contact.contactPoint.y)*2
+                                                    (node.position.x-contact.contactPoint.x)*0.5,
+                                                    (node.position.y-contact.contactPoint.y)*0.5
                                                     ) atPoint:contact.contactPoint];
         
         // Build up a "one shot" particle to indicate where the projectile hit.
@@ -395,8 +441,8 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
 #pragma mark - HUD and Scores
 
 - (void)buildHUD {
-    NSString *iconNames[] = { @"iconWarrior_blue", @"iconWarrior_green", @"iconWarrior_pink", @"iconWarrior_red" };
-    NSArray *colors = @[ [SKColor greenColor], [SKColor blueColor], [SKColor yellowColor], [SKColor redColor] ];
+    NSString *iconNames[] = { @"iconWarrior_blue" };
+    NSArray *colors = @[ [SKColor greenColor]];
     CGFloat hudX = 0;
     CGFloat hudY = self.frame.size.height - 30;
     CGFloat hudD = self.frame.size.width / kNumPlayers;
@@ -404,7 +450,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     _hudAvatars = [NSMutableArray arrayWithCapacity:kNumPlayers];
     _hudLabels = [NSMutableArray arrayWithCapacity:kNumPlayers];
     _hudScores = [NSMutableArray arrayWithCapacity:kNumPlayers];
-    _hudLifeHeartArrays = [NSMutableArray arrayWithCapacity:kNumPlayers];
+    _hudPercents = [NSMutableArray arrayWithCapacity:kNumPlayers];
     SKNode *hud = [[SKNode alloc] init];
     
     for (int i = 0; i < kNumPlayers; i++) {
@@ -433,15 +479,25 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         [(NSMutableArray *)_hudScores addObject:score];
         [hud addChild:score];
         
-        [(NSMutableArray *)_hudLifeHeartArrays addObject:[NSMutableArray arrayWithCapacity:kStartLives]];
-        for (int j = 0; j < kStartLives; j++) {
-            SKSpriteNode *heart = [SKSpriteNode spriteNodeWithImageNamed:@"lives.png"];
-            heart.scale = 0.4;
-            heart.position = CGPointMake(hudX + i * hudD + (avatar.size.width * 1.0) + 18 + ((heart.size.width + 5) * j), hudY - 10);
-            heart.alpha = 0.1;
-            [_hudLifeHeartArrays[i] addObject:heart];
-            [hud addChild:heart];
-        }
+//        [(NSMutableArray *)_hudLifeHeartArrays addObject:[NSMutableArray arrayWithCapacity:kStartLives]];
+//        for (int j = 0; j < kStartLives; j++) {
+//            SKSpriteNode *heart = [SKSpriteNode spriteNodeWithImageNamed:@"lives.png"];
+//            heart.scale = 0.4;
+//            heart.position = CGPointMake(hudX + i * hudD + (avatar.size.width * 1.0) + 18 + ((heart.size.width + 5) * j), hudY - 10);
+//            heart.alpha = 1;
+//            [_hudLifeHeartArrays[i] addObject:heart];
+//            [hud addChild:heart];
+//        }
+        
+        SKSpriteNode *nodeTest = [[SKSpriteNode alloc]init];
+        nodeTest.size = CGSizeMake(100, 10);
+        nodeTest.color = [SKColor greenColor];
+        nodeTest.position = CGPointMake(hudX + i * hudD + (avatar.size.width * 1.0) + ((nodeTest.size.width / 2)), hudY - 10);
+        
+        self.lifeBarX = nodeTest.position.x;
+        
+        [(NSMutableArray *) _hudPercents addObject:nodeTest];
+        [hud addChild:nodeTest];
     }
     
     [self addChild:hud];
@@ -481,27 +537,41 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
             break;
     }
     
-    for (int i = 0; i < player.livesLeft; i++) {
-        SKSpriteNode *heart = self.hudLifeHeartArrays[playerIndex][i];
-        heart.alpha = heartAlpha;
-    }
+    NSLog(@"health %f", player.health);
+    
+//    for (int i = 0; i < player.livesLeft; i++) {
+//        SKSpriteNode *heart = self.hudLifeHeartArrays[playerIndex][i];
+//        heart.alpha = heartAlpha;
+//    }
 }
 
 - (void)updateHUDForPlayer:(PlayerHero *)player {
     NSUInteger playerIndex = [self.players indexOfObject:player];
     SKLabelNode *label = self.hudScores[playerIndex];
     label.text = [NSString stringWithFormat:@"SCORE: %d", player.score];
+    
+    float teste = (player.health / 100) * 100;
+    
+    float diferenca = (100 - teste);
+    
+    NSLog(@"%f , %f", teste , diferenca);
+    
+    SKSpriteNode *lblPercent = self.hudPercents[playerIndex];
+    lblPercent.size = CGSizeMake((player.health / 100) * 100 , 10);
+    lblPercent.position = CGPointMake(self.lifeBarX - (diferenca /2), lblPercent.position.y);
+    
+    
+    NSLog(@"Teste %f", player.health);
 }
 
 - (void)updateHUDAfterHeroDeathForPlayer:(PlayerHero *)player {
-    NSUInteger playerIndex = [self.players indexOfObject:player];
+    //NSUInteger playerIndex = [self.players indexOfObject:player];
     
     // Fade out the relevant heart - one-based livesLeft has already been decremented.
-    NSUInteger heartNumber = player.livesLeft;
-    
-    NSArray *heartArray = self.hudLifeHeartArrays[playerIndex];
-    SKSpriteNode *heart = heartArray[heartNumber];
-    [heart runAction:[SKAction fadeAlphaTo:0.0 duration:3.0f]];
+    //NSUInteger heartNumber = player.livesLeft;
+   // NSArray *heartArray = self.hudLifeHeartArrays[playerIndex];
+    //SKSpriteNode *heart = heartArray[heartNumber];
+    //[heart runAction:[SKAction fadeAlphaTo:0.0 duration:3.0f]];
 }
 
 - (void)addToScore:(uint32_t)amount afterEnemyKillWithProjectile:(SKNode *)projectile {

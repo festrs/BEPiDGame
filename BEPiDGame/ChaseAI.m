@@ -67,18 +67,20 @@
         _walking = FALSE;
         _attacking = FALSE;
         //scheduling the action to Attack
-        SKAction *wait = [SKAction waitForDuration:2.3];
+        SKAction *wait = [SKAction waitForDuration:5.3];
         SKAction *attack = [SKAction runBlock:^{
-            [self performAttackAction];
+            [self performAttackMonster];
         }];
-        SKAction *checkButtonsAction = [SKAction sequence:@[wait,attack]];
-        [self.character runAction:[SKAction repeatActionForever:checkButtonsAction]];
+        SKAction *checkAttack = [SKAction sequence:@[wait,attack]];
+        [self.character runAction:[SKAction repeatActionForever:checkAttack]];
+        
     }
     return self;
 }
 
 #pragma mark - Loop Update
 - (void)updateWithTimeSinceLastUpdate:(CFTimeInterval)interval {
+    
     Character *ourCharacter = self.character;
     GameScene *scene = [ourCharacter characterScene];
     CGPoint position = ourCharacter.position;
@@ -86,36 +88,39 @@
         self.target = nil;
         return;
     }
-    if(!self.walking && !self.target){
-        
-        self.walking = TRUE;
-        CGPoint point = CGPointMake(
-                                    random() % (unsigned int)scene.island.size.width+70,
-                                    random() % (unsigned int)scene.island.size.height+70);
-        self.pointToWalk = point;
-    }
     
-    if(self.target && !self.character.attacking){
-        [self.character faceTo:self.target.position];
-        self.character.attacking = YES;
-        self.character.requestedAnimation = APAAnimationStateAttack;
-        return;
+    if(!self.walking && !self.target){
+        self.walking = TRUE;
+        CGPoint point = [self randomPointInRect:scene.island.frame];
+        self.pointToWalk = point;
     }
     
     // Otherwise chase or attack the target, if it's near enough.
     CGFloat chaseRadius = self.chaseRadius;
-    
     CGFloat distance = APADistanceBetweenPoints(position, self.pointToWalk);
-    if (distance > chaseRadius) {
-        CGFloat pointX = (self.pointToWalk.x - position.x)/100 + position.x;
-        CGFloat pointY = (self.pointToWalk.y - position.y)/100 + position.y;
+
+    if (distance > chaseRadius && self.walking && !self.target) {
+        CGFloat pointX = (self.pointToWalk.x - position.x)/150 + position.x;
+        CGFloat pointY = (self.pointToWalk.y - position.y)/150 + position.y;
         [self.character moveTowards:CGPointMake(pointX, pointY) withTimeInterval:interval];
-    }else if (distance < chaseRadius) {
+    }else{
         self.walking = FALSE;
+        if(self.target !=nil){
+            [self.character faceTo:self.target.position];
+            [self.character performAttackAction];
+        }
     }
 }
 
-- (void)performAttackAction {
+- (CGPoint)randomPointInRect:(CGRect)r
+{
+    CGPoint p = r.origin;
+    p.x += arc4random() % (int)r.size.width;
+    p.y += arc4random() % (int)r.size.height;
+    return p;
+}
+
+- (void)performAttackMonster {
     Character *ourCharacter = self.character;
     
     if (ourCharacter.dying) {
@@ -133,11 +138,7 @@
         if (distance < kEnemyAlertRadius && distance < closestHeroDistance && !hero.dying) {
             closestHeroDistance = distance;
             self.target = hero;
-            self.attacking = TRUE;
         }
-    }
-    if(self.target){
-
     }
 }
 
