@@ -74,7 +74,7 @@
         sSharedProjectile.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:kProjectileCollisionRadius];
         sSharedProjectile.name = @"Projectile";
         sSharedProjectile.physicsBody.categoryBitMask = ColliderTypeProjectile;
-        sSharedProjectile.physicsBody.collisionBitMask = ColliderTypeScenario;
+        sSharedProjectile.physicsBody.collisionBitMask = ColliderTypeScenario | ColliderTypeProjectileBoss | ColliderTypeGoblinOrBoss;
         sSharedProjectile.physicsBody.contactTestBitMask = sSharedProjectile.physicsBody.collisionBitMask;
         
         sSharedProjectileEmitter = [SKEmitterNode apa_emitterNodeWithEmitterNamed:@"WarriorProjectile"];

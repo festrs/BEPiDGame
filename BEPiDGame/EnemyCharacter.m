@@ -48,8 +48,8 @@
 #import "EnemyCharacter.h"
 #import "ArtificialIntelligence.h"
 
-#define kHeroProjectileSpeed 480.0
-#define kHeroProjectileLifetime 1.0 // 1.0 seconds until the projectile disappears
+#define kHeroProjectileSpeed 280.0
+#define kHeroProjectileLifetime 2.0 // 1.0 seconds until the projectile disappears
 #define kHeroProjectileFadeOutTime 0.6 // 0.6 seconds until the projectile starts to fade out
 
 @implementation EnemyCharacter
