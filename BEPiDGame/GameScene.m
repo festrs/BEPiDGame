@@ -60,21 +60,9 @@ typedef enum : uint8_t {
         //self.backgroundColor = [SKColor blackColor];
         self.physicsWorld.gravity = CGVectorMake(0.0f, 0.0f); // no gravity
         self.physicsWorld.contactDelegate = self;
-        
-        _world = [[SKNode alloc] init];
-        [_world setName:@"world"];
-        
-        _layers = [NSMutableArray arrayWithCapacity:kWorldLayerCount];
-        for (int i = 0; i < kWorldLayerCount; i++) {
-            SKNode *layer = [[SKNode alloc] init];
-            layer.zPosition = i - kWorldLayerCount;
-            [_world addChild:layer];
-            [(NSMutableArray *)_layers addObject:layer];
-        }
-        
-        [self addChild:_world];
-        
-        _players = [[NSMutableArray alloc] initWithCapacity:kNumPlayers];
+		self.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:self.frame];
+		self.physicsBody.categoryBitMask = ColliderTypeScenario;
+        _island.physicsBody.collisionBitMask = ColliderTypeScenario;
         
         //lava
         _lava = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.6 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(self.frame.size.width*3, self.frame.size.height*3)];
@@ -106,14 +94,21 @@ typedef enum : uint8_t {
         
         //attack button
         self.attackButton = [[JCButton alloc] initWithButtonRadius:25 color:[SKColor lightGrayColor] pressedColor:[SKColor blackColor] isTurbo:NO];
-        [self.attackButton setPosition:CGPointMake(size.width - 40,95)];
+        [self.attackButton setPosition:CGPointMake(size.width - 40,60)];
         [self addChild:self.attackButton];
-        
-        //test button
-        self.testButton = [[JCButton alloc] initWithButtonRadius:25 color:[SKColor grayColor] pressedColor:[SKColor blackColor] isTurbo:NO];
-        
-        [self.testButton setPosition:CGPointMake(size.width - 85,50)];
-        [self addChild:self.testButton];
+
+        //método que testa se os botões foram pressionados
+        SKAction *wait = [SKAction waitForDuration:0.5];
+        SKAction *checkButtons = [SKAction runBlock:^{
+            [self checkButtons];
+        }];
+        SKAction *checkButtonsAction = [SKAction sequence:@[wait,checkButtons]];
+        [self runAction:[SKAction repeatActionForever:checkButtonsAction]];
+
+        //hero
+        self.hero = [[PlayerHero alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.frame)-120,
+                                                                   CGRectGetMidY(self.frame)) withPlayer:nil];
+        [self.hero characterScene];
         [PlayerHero loadSharedAssets];
         [Boss loadSharedAssets];
         
@@ -209,32 +204,6 @@ typedef enum : uint8_t {
         self.atackIntent = TRUE;
         [self.hero performAttackAction];
     }
-    if (self.testButton.wasPressed) {
-        [self addSquareIn:CGPointMake(0,self.size.height-80) withColor:[SKColor yellowColor]];
-    }
-}
-
-- (void)addSquareIn:(CGPoint)position
-          withColor:(SKColor *)color
-{
-    Character *square = [[Character alloc] init];
-    square.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:square.frame];
-    
-    // Our object type for collisions.
-    square.physicsBody.categoryBitMask = ColliderTypeProjectile;
-    
-    // Collides with these objects.
-    square.physicsBody.collisionBitMask =  ColliderTypeHero | ColliderTypeGoblinOrBoss;
-    
-    // We want notifications for colliding with these objects.
-    square.physicsBody.contactTestBitMask =  ColliderTypeHero | ColliderTypeGoblinOrBoss;
-    
-    [square setPosition:position];
-    
-    SKAction *move = [SKAction moveTo:CGPointMake(self.size.width+square.size.width/2,position.y) duration:1];
-    SKAction *destroy = [SKAction removeFromParent];
-    [_world addChild:square];
-    [square runAction:[SKAction sequence:@[move,destroy]]];
 }
 
 static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
@@ -242,7 +211,124 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     return sSharedProjectileSparkEmitter;
 }
 
+
 - (void)didBeginContact:(SKPhysicsContact *)contact {
+
+    NSLog(@"bodyA:%u bodyB:%u",contact.bodyA.categoryBitMask,contact.bodyB.categoryBitMask);
+    
+    //chamando o método de colisão da classe se for um char (hero ou enemy)
+    SKNode *node = contact.bodyA.node;
+    if ([node isKindOfClass:[Character class]])
+        [(Character *)node collidedWith:contact.bodyB];
+    node = contact.bodyB.node;
+    if ([node isKindOfClass:[Character class]])
+        [(Character *)node collidedWith:contact.bodyA];
+    
+    SKPhysicsBody *mainBody = [[SKPhysicsBody alloc] init];
+    SKPhysicsBody *collisionBody = [[SKPhysicsBody alloc] init];
+    
+    //testa se algum character entrou da ilha
+    if (contact.bodyA.categoryBitMask & ColliderTypeIsland || contact.bodyB.categoryBitMask & ColliderTypeIsland)
+    {
+        if (contact.bodyA.categoryBitMask & ColliderTypeIsland) {
+            mainBody = contact.bodyA;
+            collisionBody = contact.bodyB;
+        }else{
+            mainBody = contact.bodyB;
+            collisionBody = contact.bodyA;
+        }
+
+        if (collisionBody.categoryBitMask & ColliderTypeHero || collisionBody.categoryBitMask & ColliderTypeGoblinOrBoss)
+        {
+            NSLog(@"Saiu da lava.");
+            [(Character *)collisionBody.node setInLava:NO];
+        }
+    }
+    
+    //colisão de projéteis do hero
+    if (contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyB.categoryBitMask & ColliderTypeProjectile)
+    {
+        if (contact.bodyA.categoryBitMask & ColliderTypeProjectile) {
+            mainBody = contact.bodyA;
+            collisionBody = contact.bodyB;
+        }else{
+            mainBody = contact.bodyB;
+            collisionBody = contact.bodyA;
+        }
+        
+        //se o corpo colidido for um projétil de inimigo, eles são jogados pra longe e não eliminados
+        if (collisionBody.categoryBitMask & ColliderTypeProjectileBoss) {
+            [collisionBody.node.physicsBody applyImpulse:CGVectorMake(
+                                                                      (contact.contactPoint.x-mainBody.node.position.x)*2,
+                                                                      (contact.contactPoint.y-mainBody.node.position.y)*2
+                                                                      ) atPoint:contact.contactPoint];
+        }else{
+            //elimina o projétil assim que toca no alvo
+            [mainBody.node runAction:[SKAction removeFromParent]];
+        }
+
+        //hud update se o alvo for um inimigo
+        if([collisionBody.node isKindOfClass:[Boss class]])
+        {
+            self.hero.score = self.hero.score + 20;
+            [self updateHUDForPlayer:self.hero];
+        }
+
+        //aplicando a força do impacto no alvo
+        [collisionBody.node.physicsBody applyImpulse:CGVectorMake(
+                                                    (contact.contactPoint.x-mainBody.node.position.x)*2,
+                                                    (contact.contactPoint.y-mainBody.node.position.y)*2
+                                                    ) atPoint:contact.contactPoint];
+        
+        //cria uma partícula para indicar onde o projétil acertou
+        SKEmitterNode *emitter = [[self sharedProjectileSparkEmitter] copy];
+        //[self addNode:emitter atWorldLayer:APAWorldLayerAboveCharacter];
+        emitter.position = mainBody.node.position;
+        APARunOneShotEmitter(emitter, 0.15f);
+    }
+    
+    //colisão de projéteis do boss
+    if (contact.bodyA.categoryBitMask & ColliderTypeProjectileBoss || contact.bodyB.categoryBitMask & ColliderTypeProjectileBoss)
+    {
+        if (contact.bodyA.categoryBitMask & ColliderTypeProjectileBoss) {
+            mainBody = contact.bodyA;
+            collisionBody = contact.bodyB;
+        }else{
+            mainBody = contact.bodyB;
+            collisionBody = contact.bodyA;
+        }
+        
+        //se o corpo colidido for um projétil de inimigo, eles são jogados pra longe e não eliminados
+        if (collisionBody.categoryBitMask & ColliderTypeProjectile) {
+            [collisionBody.node.physicsBody applyImpulse:CGVectorMake(
+                                                                      (contact.contactPoint.x-mainBody.node.position.x)*2,
+                                                                      (contact.contactPoint.y-mainBody.node.position.y)*2
+                                                                      ) atPoint:contact.contactPoint];
+        }else{
+            //elimina o projétil assim que toca no alvo
+            [mainBody.node runAction:[SKAction removeFromParent]];
+        }
+
+        //aplicando a força do impacto no alvo
+        [collisionBody.node.physicsBody applyImpulse:CGVectorMake(
+                                                                  (contact.contactPoint.x-mainBody.node.position.x)*2,
+                                                                  (contact.contactPoint.y-mainBody.node.position.y)*2
+                                                                  ) atPoint:contact.contactPoint];
+        
+        //cria uma partícula para indicar onde o projétil acertou
+        SKEmitterNode *emitter = [[self sharedProjectileSparkEmitter] copy];
+        //[self addNode:emitter atWorldLayer:APAWorldLayerAboveCharacter];
+        emitter.position = mainBody.node.position;
+        APARunOneShotEmitter(emitter, 0.15f);
+    }
+}
+
+
+
+
+- (void)OLDdidBeginContact:(SKPhysicsContact *)contact {
+    
+    NSLog(@"bodyA:%u bodyB:%u",contact.bodyA.categoryBitMask,contact.bodyB.categoryBitMask);
     
     //chamando o método de colisão da classe se for um char (hero ou enemy)
     SKNode *node = contact.bodyA.node;
@@ -255,19 +341,23 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     //testa se algum character entrou da ilha
     if (contact.bodyA.categoryBitMask & ColliderTypeIsland)
         if (contact.bodyB.categoryBitMask & ColliderTypeHero || contact.bodyB.categoryBitMask & ColliderTypeGoblinOrBoss)
+        {
+            NSLog(@"Saiu da lava.");
             [(Character *)contact.bodyB.node setInLava:NO];
+        }
     
     //colisão de projéteis
-    if (contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyB.categoryBitMask & ColliderTypeProjectile ||
-        (contact.bodyA.categoryBitMask & ColliderTypeProjectileBoss) || (contact.bodyB.categoryBitMask & ColliderTypeProjectileBoss))
+    if (contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyB.categoryBitMask & ColliderTypeProjectile || contact.bodyA.categoryBitMask & ColliderTypeProjectileBoss || contact.bodyB.categoryBitMask & ColliderTypeProjectileBoss)
     {
         SKNode *projectile = [[SKNode alloc] init];
-        if (contact.bodyA.categoryBitMask & ColliderTypeProjectile) {
+        if (contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyA.categoryBitMask & ColliderTypeProjectileBoss) {
             projectile = contact.bodyA.node;
             node = contact.bodyB.node;
+            NSLog(@"Corpo A é o projétil");
         }else{
             projectile = contact.bodyB.node;
             node = contact.bodyA.node;
+            NSLog(@"Corpo B é o projétil");
         }
         
         //elimina o projétil assim que toca no alvo
@@ -309,6 +399,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     }
 }
 
+
 -(void)didEndContact:(SKPhysicsContact *)contact
 {
     //NSLog(@"Algo se desencostou.");
@@ -316,7 +407,10 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     //testa se algum character saiu da ilha
     if (contact.bodyA.categoryBitMask & ColliderTypeIsland)
         if (contact.bodyB.categoryBitMask & ColliderTypeHero || contact.bodyB.categoryBitMask & ColliderTypeGoblinOrBoss)
+        {
+            NSLog(@"Entrou na lava.");
             [(Character *)contact.bodyB.node setInLava:YES];
+        }
 }
 
 -(void)desacelerateCharacter:(Character *)node

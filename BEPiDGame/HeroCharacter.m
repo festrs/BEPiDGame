@@ -49,8 +49,8 @@
 #import "APAGraphicsUtilities.h"
 
 
-#define kHeroProjectileSpeed 480.0
-#define kHeroProjectileLifetime 1.0 // 1.0 seconds until the projectile disappears
+#define kHeroProjectileSpeed 280.0
+#define kHeroProjectileLifetime 2.0 // 1.0 seconds until the projectile disappears
 #define kHeroProjectileFadeOutTime 0.6 // 0.6 seconds until the projectile starts to fade out
 
 @implementation HeroCharacter
@@ -83,16 +83,16 @@
     self.physicsBody.categoryBitMask = ColliderTypeHero;
     
     // Collides with these objects.
-    self.physicsBody.collisionBitMask = ColliderTypeGoblinOrBoss | ColliderTypeHero | ColliderTypeScenario;
+    self.physicsBody.collisionBitMask = ColliderTypeGoblinOrBoss | ColliderTypeHero | ColliderTypeScenario | ColliderTypeProjectileBoss;
     
     // We want notifications for colliding with these objects.
-    self.physicsBody.contactTestBitMask =  ColliderTypeProjectileBoss;
+    //self.physicsBody.contactTestBitMask =  ColliderTypeProjectileBoss;
 }
 
 - (void)collidedWith:(SKPhysicsBody *)other {
     if (other.categoryBitMask & ColliderTypeProjectileBoss) {
         if (!self.dying) {
-            [self applyDamage:5.0f];
+            [self applyDamage:4.0f];
             self.requestedAnimation = APAAnimationStateGetHit;
         }
     }

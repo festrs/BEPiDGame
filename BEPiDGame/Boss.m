@@ -96,7 +96,7 @@
     self.physicsBody.categoryBitMask = ColliderTypeGoblinOrBoss;
     
     // Collides with these objects.
-    self.physicsBody.collisionBitMask = ColliderTypeGoblinOrBoss| ColliderTypeHero | ColliderTypeProjectile | ColliderTypeScenario;
+    self.physicsBody.collisionBitMask = ColliderTypeScenario | ColliderTypeGoblinOrBoss | ColliderTypeHero | ColliderTypeProjectile;
     
     // We want notifications for colliding with these objects.
     self.physicsBody.contactTestBitMask = ColliderTypeProjectile;
@@ -151,7 +151,7 @@
         sSharedProjectile.name = @"Projectile";
         sSharedProjectile.physicsBody.categoryBitMask = ColliderTypeProjectileBoss;
         sSharedProjectile.physicsBody.collisionBitMask = ColliderTypeScenario | ColliderTypeProjectile | ColliderTypeHero;
-        //sSharedProjectile.physicsBody.contactTestBitMask = ColliderTypeHero;
+        sSharedProjectile.physicsBody.contactTestBitMask = sSharedProjectile.physicsBody.collisionBitMask;
         
         sSharedProjectileEmitter = [SKEmitterNode apa_emitterNodeWithEmitterNamed:@"ArcherProjectile"];
         
