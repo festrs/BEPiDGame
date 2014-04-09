@@ -60,9 +60,19 @@ typedef enum : uint8_t {
         //self.backgroundColor = [SKColor blackColor];
         self.physicsWorld.gravity = CGVectorMake(0.0f, 0.0f); // no gravity
         self.physicsWorld.contactDelegate = self;
-		self.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:self.frame];
-		self.physicsBody.categoryBitMask = ColliderTypeScenario;
-        _island.physicsBody.collisionBitMask = ColliderTypeScenario;
+
+        
+        _world = [[SKNode alloc] init];
+        [_world setName:@"world"];
+        _layers = [NSMutableArray arrayWithCapacity:kWorldLayerCount];
+        for (int i = 0; i < kWorldLayerCount; i++) {
+            SKNode *layer = [[SKNode alloc] init];
+            layer.zPosition = i - kWorldLayerCount;
+            [_world addChild:layer];
+            [(NSMutableArray *)_layers addObject:layer];
+        }
+        
+        [self addChild:_world];
         
         //lava
         _lava = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.6 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(self.frame.size.width*3, self.frame.size.height*3)];
@@ -258,10 +268,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         
         //se o corpo colidido for um projétil de inimigo, eles são jogados pra longe e não eliminados
         if (collisionBody.categoryBitMask & ColliderTypeProjectileBoss) {
-            [collisionBody.node.physicsBody applyImpulse:CGVectorMake(
-                                                                      (contact.contactPoint.x-mainBody.node.position.x)*2,
-                                                                      (contact.contactPoint.y-mainBody.node.position.y)*2
-                                                                      ) atPoint:contact.contactPoint];
+
         }else{
             //elimina o projétil assim que toca no alvo
             [mainBody.node runAction:[SKAction removeFromParent]];
@@ -274,11 +281,15 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
             [self updateHUDForPlayer:self.hero];
         }
 
-        //aplicando a força do impacto no alvo
-        [collisionBody.node.physicsBody applyImpulse:CGVectorMake(
-                                                    (contact.contactPoint.x-mainBody.node.position.x)*2,
-                                                    (contact.contactPoint.y-mainBody.node.position.y)*2
-                                                    ) atPoint:contact.contactPoint];
+        double angle = atan2(contact.contactPoint.y-node.position.y,contact.contactPoint.x-node.position.x);
+        
+        NSLog(@"%f",angle);
+        
+        CGVector vector = CGVectorMake(60*cos(angle), 60*sin(angle));
+        
+        NSLog(@"%f",vector.dx);
+        NSLog(@"%f",vector.dy);
+        [collisionBody.node.physicsBody applyImpulse:vector atPoint:contact.contactPoint];
         
         //cria uma partícula para indicar onde o projétil acertou
         SKEmitterNode *emitter = [[self sharedProjectileSparkEmitter] copy];
@@ -300,20 +311,24 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         
         //se o corpo colidido for um projétil de inimigo, eles são jogados pra longe e não eliminados
         if (collisionBody.categoryBitMask & ColliderTypeProjectile) {
-            [collisionBody.node.physicsBody applyImpulse:CGVectorMake(
-                                                                      (contact.contactPoint.x-mainBody.node.position.x)*2,
-                                                                      (contact.contactPoint.y-mainBody.node.position.y)*2
-                                                                      ) atPoint:contact.contactPoint];
+            
+            //aplicando a força do impacto no alvo
+            double angle = atan2(contact.contactPoint.y-node.position.y,contact.contactPoint.x-node.position.x);
+            
+            NSLog(@"%f",angle);
+            
+            CGVector vector = CGVectorMake(60*cos(angle), 60*sin(angle));
+            
+            NSLog(@"%f",vector.dx);
+            NSLog(@"%f",vector.dy);
+            [collisionBody.node.physicsBody applyImpulse:vector atPoint:contact.contactPoint];
+            
         }else{
             //elimina o projétil assim que toca no alvo
             [mainBody.node runAction:[SKAction removeFromParent]];
         }
 
-        //aplicando a força do impacto no alvo
-        [collisionBody.node.physicsBody applyImpulse:CGVectorMake(
-                                                                  (contact.contactPoint.x-mainBody.node.position.x)*2,
-                                                                  (contact.contactPoint.y-mainBody.node.position.y)*2
-                                                                  ) atPoint:contact.contactPoint];
+
         
         //cria uma partícula para indicar onde o projétil acertou
         SKEmitterNode *emitter = [[self sharedProjectileSparkEmitter] copy];
