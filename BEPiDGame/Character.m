@@ -69,6 +69,15 @@
         self.physicsBody.restitution = 0.0f;
         self.physicsBody.linearDamping = 0.1f;
         self.physicsBody.mass = 0.2f;
+        
+        SKAction *wait = [SKAction waitForDuration:0.5];
+        SKAction *isInLava = [SKAction runBlock:^{
+            if(self.isInLava == TRUE){
+                [self applyDamage:16.0f];
+            }
+        }];
+        SKAction *checkLava = [SKAction sequence:@[wait,isInLava]];
+        [self runAction:[SKAction repeatActionForever:checkLava]];
     }
     
     return self;
@@ -133,6 +142,7 @@
 }
 
 - (void)performDeath {
+    [self removeAllActions];
     self.health = 0.0f;
     self.dying = YES;
     self.requestedAnimation = APAAnimationStateDeath;
@@ -389,25 +399,6 @@
     if (!self.attacking) {
         self.requestedAnimation = APAAnimationStateWalk;
     }
-}
-
-#pragma mark - walking boss
--(void)walking
-{
-    //This is our general runAction method to make our bear walk.
-    //By using a withKey if this gets called while already running it will remove the first action before
-    //starting this again.
-    
-    [self runAction:[SKAction repeatActionForever:[SKAction animateWithTextures:[self walkAnimationFrames]
-                                                                   timePerFrame:0.01f
-                                                                         resize:NO
-                                                                        restore:YES]] withKey:@"walkingInPlace"];
-    return;
-}
-
--(void)moveEnded
-{
-    [self removeAllActions];
 }
 
 #pragma mark - Shared Assets
