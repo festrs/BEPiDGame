@@ -78,65 +78,8 @@
     return self;
 }
 
--(void) walkAction{
-    self.walking = TRUE;
-    GameScene *scene = (GameScene *)self.character.scene;
-    CGPoint point = CGPointMake(
-                                                                     random() % (unsigned int)1024+70,
-                                                                     random() % (unsigned int)640+70);
-                                         self.pointToWalk = point;
-    CGFloat multiplierForDirection;
-    
-    CGSize screenSize = scene.frame.size;
-    
-    float bearVelocity = 1024 / 6.0;
-    
-    //x and y distances for move
-    CGPoint moveDifference = CGPointMake(self.pointToWalk.x - self.character.position.x, self.pointToWalk.y - self.character.position.y);
-    float distanceToMove = sqrtf(moveDifference.x * moveDifference.x + moveDifference.y * moveDifference.y);
-    
-    float moveDuration = distanceToMove / bearVelocity;
-    
-    if (moveDifference.x < 0) {
-        multiplierForDirection = 1;
-    } else {
-        multiplierForDirection = -1;
-    }
-    //_bear.xScale = fabs(_bear.xScale) * multiplierForDirection;
-    
-    CGFloat ang = APA_POLAR_ADJUST(APARadiansBetweenPoints(self.pointToWalk, self.character.position));
-    self.character.zRotation = ang;
-    
-    if ([self.character actionForKey:@"bearMoving"]) {
-        //stop just the moving to a new location, but leave the walking legs movement running
-        [self.character removeActionForKey:@"bearMoving"];
-    }
-    
-    if (![self.character actionForKey:@"walkingInPlace"]) {
-        //if legs are not moving go ahead and start them
-        [self.character walking];  //start the bear walking
-    }
-    
-    SKAction *moveAction = [SKAction moveTo:self.pointToWalk duration:moveDuration];
-    SKAction *doneAction = [SKAction runBlock:(dispatch_block_t)^() {
-        NSLog(@"Animation Completed");
-        [self.character moveEnded];
-        self.walking = FALSE;
-    }];
-    
-    SKAction *moveActionWithDone = [SKAction sequence:@[moveAction,doneAction ]];
-    
-    [self.character runAction:moveActionWithDone withKey:@"bearMoving"];
-}
-
-
-
 #pragma mark - Loop Update
 - (void)updateWithTimeSinceLastUpdate:(CFTimeInterval)interval {
-    
-//    if(!self.walking){
-//        [self walkAction];
-//    }
     
     Character *ourCharacter = self.character;
     GameScene *scene = [ourCharacter characterScene];
@@ -145,16 +88,12 @@
         self.target = nil;
         return;
     }
+    
     if(!self.walking && !self.target){
-        
         self.walking = TRUE;
-        CGPoint point = CGPointMake(
-                                    random() % (unsigned int)scene.island.size.width+70,
-                                    random() % (unsigned int)scene.island.size.height+70);
+        CGPoint point = [self randomPointInRect:scene.island.frame];
         self.pointToWalk = point;
     }
-    
-    
     
     // Otherwise chase or attack the target, if it's near enough.
     CGFloat chaseRadius = self.chaseRadius;
@@ -171,8 +110,14 @@
             [self.character performAttackAction];
         }
     }
-    
-    
+}
+
+- (CGPoint)randomPointInRect:(CGRect)r
+{
+    CGPoint p = r.origin;
+    p.x += arc4random() % (int)r.size.width;
+    p.y += arc4random() % (int)r.size.height;
+    return p;
 }
 
 - (void)performAttackMonster {

@@ -79,7 +79,6 @@
         projectile.physicsBody.affectedByGravity=NO;
         projectile.position = self.position;
         projectile.zRotation = self.zRotation;
-        NSLog(@"%f",projectile.zRotation);
         SKEmitterNode *emitter = [[self projectileEmitter] copy];
         emitter.targetNode = [self.scene childNodeWithName:@"world"];
         [projectile addChild:emitter];

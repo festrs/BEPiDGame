@@ -8,24 +8,47 @@
 
 #import "ViewController.h"
 #import "GameScene.h"
+#import "InicialScene.h"
+@interface ViewController()
+{
+    SKView * skViewGame;
+    GameScene * sceneGame;
+    SKSpriteNode *nodoSombra;
+    SKCropNode *cropNode;
+    SKSpriteNode *textureNode;
+    NSInteger difficult;
+}
+@property (weak, nonatomic) IBOutlet UIButton *btHard;
+@property (weak, nonatomic) IBOutlet UIButton *btMedium;
+@property (weak, nonatomic) IBOutlet UIButton *btEasy;
+@property (weak, nonatomic) IBOutlet UIView *viewConfig;
+@end
 
 @implementation ViewController
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    // Configure the view.
-    SKView * skView = (SKView *)self.view;
-    skView.showsFPS = YES;
-    skView.showsNodeCount = YES;
-    skView.showsPhysics = YES;
-    // Create and configure the scene.
-    SKScene * scene = [GameScene sceneWithSize:CGSizeMake(skView.bounds.size.height,skView.bounds.size.width)];
-    scene.scaleMode = SKSceneScaleModeAspectFill;
     
-    // Present the scene.
-    [skView presentScene:scene];
+    //seta bordas redondas dos botões
+    self.btEasy.layer.borderWidth = 0.5f;
+    self.btEasy.layer.cornerRadius = 5;
+    self.btMedium.layer.borderWidth = 0.5f;
+    self.btMedium.layer.cornerRadius = 5;
+    self.btHard.layer.borderWidth = 0.5f;
+    self.btHard.layer.cornerRadius = 5;
+    
+    // Configure the view.
+    skViewGame = (SKView *)self.view;
+    skViewGame.showsFPS = YES;
+    skViewGame.showsNodeCount = YES;
+    skViewGame.showsPhysics = YES;
+    
+    // Create and configure the scene.
+    sceneGame = [GameScene sceneWithSize:CGSizeMake(skViewGame.bounds.size.height,skViewGame.bounds.size.width)];
+    sceneGame.scaleMode = SKSceneScaleModeAspectFill;
+    
+    [skViewGame presentScene:sceneGame];
 }
 
 - (BOOL)shouldAutorotate
@@ -45,7 +68,50 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Release any cached data, images, etc that aren't in use.
+}
+
+-(void)EsconderScene
+{
+    [self hideUIElements:YES animated:YES];
+}
+
+#pragma mark - UI Display and Actions
+- (void)hideUIElements:(BOOL)shouldHide animated:(BOOL)shouldAnimate {
+    CGFloat alpha = shouldHide ? 0.0f : 1.0f;
+    
+    if (shouldAnimate) {
+        [UIView animateWithDuration:2.0 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            self.btEasy.alpha = alpha;
+            self.btMedium.alpha = alpha;
+            self.btHard.alpha = alpha;
+            self.viewConfig.alpha = alpha;
+        } completion:NULL];
+    } else {
+        [self.btEasy setAlpha:alpha];
+        [self.btMedium setAlpha:alpha];
+        [self.btHard setAlpha:alpha];
+        [self.viewConfig setAlpha:alpha];
+    }
+}
+- (IBAction)TouchEasy:(id)sender
+{
+    difficult = [(UIButton *)sender tag];
+    [self EsconderScene];
+    [sceneGame startGame];
+    
+}
+- (IBAction)TouchMedium:(id)sender
+{
+    difficult = [(UIButton *)sender tag];
+    [self EsconderScene];
+    [sceneGame startGame];
+}
+
+- (IBAction)TouchHard:(id)sender
+{
+    difficult = [(UIButton *)sender tag];
+    [self EsconderScene];
+    [sceneGame startGame];
 }
 
 @end

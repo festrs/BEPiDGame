@@ -28,4 +28,5 @@ typedef enum : uint8_t {
 @property SKSpriteNode *island;
 @property SKCropNode *cropNode;
 - (void)addNode:(SKNode *)node atWorldLayer:(APAWorldLayer)layer;
+-(void) startGame;
 @end

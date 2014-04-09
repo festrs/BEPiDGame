@@ -60,10 +60,10 @@ typedef enum : uint8_t {
         //self.backgroundColor = [SKColor blackColor];
         self.physicsWorld.gravity = CGVectorMake(0.0f, 0.0f); // no gravity
         self.physicsWorld.contactDelegate = self;
-
+        
         _world = [[SKNode alloc] init];
         [_world setName:@"world"];
-     
+        
         _layers = [NSMutableArray arrayWithCapacity:kWorldLayerCount];
         for (int i = 0; i < kWorldLayerCount; i++) {
             SKNode *layer = [[SKNode alloc] init];
@@ -72,17 +72,9 @@ typedef enum : uint8_t {
             [(NSMutableArray *)_layers addObject:layer];
         }
         
-
-        //_world.position = CGPointMake(0, 0);
-        
-        
-        _world.xScale = 0.5f;
-        
-        NSLog(@"%@",_world.position);
         [self addChild:_world];
         
-
-
+        _players = [[NSMutableArray alloc] initWithCapacity:kNumPlayers];
         
         //lava
         _lava = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.6 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(self.frame.size.width*3, self.frame.size.height*3)];
@@ -94,7 +86,7 @@ typedef enum : uint8_t {
 		_lava.physicsBody.collisionBitMask = ColliderTypeScenario;
         
         [self addNode:_lava atWorldLayer:APAWorldLayerGround];
-
+        
         //island
         _island = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.3 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(_lava.frame.size.width*0.4f, _lava.frame.size.height*0.4f)];
         [_island setTexture:[SKTexture textureWithImageNamed:@"rock"]];
@@ -122,43 +114,10 @@ typedef enum : uint8_t {
         
         [self.testButton setPosition:CGPointMake(size.width - 85,50)];
         [self addChild:self.testButton];
-    
-        //scheduling the action to check buttons
-        SKAction *wait = [SKAction waitForDuration:0.3];
-        SKAction *checkButtons = [SKAction runBlock:^{
-            [self checkButtons];
-        }];
-        SKAction *checkButtonsAction = [SKAction sequence:@[wait,checkButtons]];
-        [self runAction:[SKAction repeatActionForever:checkButtonsAction]];
-
-        //hero
-        self.hero = [[PlayerHero alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.frame)-120,
-                                                                   CGRectGetMidY(self.frame)) withPlayer:nil];
-        [self.hero characterScene];
         [PlayerHero loadSharedAssets];
-        
-        
-        [self addNode:self.hero atWorldLayer:APAWorldLayerCharacter];
-        
-        
-        _players = [[NSMutableArray alloc] initWithCapacity:kNumPlayers];
-        _defaultPlayer = self.hero;
-        
-        [self centerWorldOnCharacter:self.hero];
-        
-        [(NSMutableArray *)self.heroes addObject:self.hero];
-        
-        [(NSMutableArray *)_players addObject:_defaultPlayer];
-        for (int i = 1; i < kNumPlayers; i++) {
-            [(NSMutableArray *)_players addObject:[NSNull null]];
-        }
-
-        //enemy
-        self.enemy = [[Boss alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.frame)+120,
-                                                              CGRectGetMidY(self.frame))];
         [Boss loadSharedAssets];
         
-        [self addNode:self.enemy atWorldLayer:APAWorldLayerCharacter];
+            [self addNode:self.enemy atWorldLayer:APAWorldLayerCharacter];
         //método recursivo que desacelera o character caso ele esteja com força aplicada nele
         [self desacelerateCharacter:self.hero];
         [self desacelerateCharacter:self.enemy];
@@ -167,8 +126,52 @@ typedef enum : uint8_t {
         
         [self updateHUDForPlayer:self.hero forState:APAHUDStateLocal withMessage:nil];
 
+
     }
     return self;
+}
+
+-(void) startGame{
+    //scheduling the action to check buttons
+    SKAction *wait = [SKAction waitForDuration:0.3];
+    SKAction *checkButtons = [SKAction runBlock:^{
+        [self checkButtons];
+    }];
+    SKAction *checkButtonsAction = [SKAction sequence:@[wait,checkButtons]];
+    [self runAction:[SKAction repeatActionForever:checkButtonsAction]];
+    
+    //hero
+    self.hero = [[PlayerHero alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.island.frame)-120,
+                                                               CGRectGetMidY(self.island.frame)) withPlayer:nil];
+    [self.hero characterScene];
+    
+    [self addNode:self.hero atWorldLayer:APAWorldLayerCharacter];
+    
+    
+    _defaultPlayer = self.hero;
+    
+    [self centerWorldOnCharacter:self.hero];
+    
+    [(NSMutableArray *)self.heroes addObject:self.hero];
+    
+    [(NSMutableArray *)_players addObject:_defaultPlayer];
+    for (int i = 1; i < kNumPlayers; i++) {
+        [(NSMutableArray *)_players addObject:[NSNull null]];
+    }
+    
+    //enemy
+    self.enemy = [[Boss alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.island.frame)+120,
+                                                          CGRectGetMidY(self.island.frame))];
+    
+    
+    [self addNode:self.enemy atWorldLayer:APAWorldLayerCharacter];
+    //método recursivo que desacelera o character caso ele esteja com força aplicada nele
+    [self desacelerateCharacter:self.hero];
+    [self desacelerateCharacter:self.enemy];
+    
+    [self buildHUD];
+    [self updateHUDForPlayer:self.hero forState:APAHUDStateLocal withMessage:nil];
+    
 }
 
 - (void)addNode:(SKNode *)node {
@@ -197,9 +200,8 @@ typedef enum : uint8_t {
     if (timeSinceLast > 1) { // more than a second since last update
         timeSinceLast = kMinTimeInterval;
         self.lastUpdateTimeInterval = currentTime;
-
+        
     }
-    
     if(self.imageJoystick.touchesBegin && !self.atackIntent){
         [self.hero moveTowards:CGPointMake(self.hero.position.x+self.imageJoystick.x *2, self.hero.position.y+self.imageJoystick.y *2) withTimeInterval:currentTime];
     }
@@ -211,12 +213,10 @@ typedef enum : uint8_t {
 
 - (void)checkButtons
 {
-    
     if (self.attackButton.wasPressed) {
         self.atackIntent = TRUE;
         [self.hero performAttackAction];
     }
-    
     if (self.testButton.wasPressed) {
         [self addSquareIn:CGPointMake(0,self.size.height-80) withColor:[SKColor yellowColor]];
     }
@@ -252,8 +252,6 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
 
 - (void)didBeginContact:(SKPhysicsContact *)contact {
     
-    //NSLog(@"Algo se encostou.");
-
     //chamando o método de colisão da classe se for um char (hero ou enemy)
     SKNode *node = contact.bodyA.node;
     if ([node isKindOfClass:[Character class]])
@@ -266,7 +264,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     if (contact.bodyA.categoryBitMask & ColliderTypeIsland)
         if (contact.bodyB.categoryBitMask & ColliderTypeHero || contact.bodyB.categoryBitMask & ColliderTypeGoblinOrBoss)
             [(Character *)contact.bodyB.node setInLava:NO];
-
+    
     //colisão de projéteis
     if (contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyB.categoryBitMask & ColliderTypeProjectile ||
         (contact.bodyA.categoryBitMask & ColliderTypeProjectileBoss) || (contact.bodyB.categoryBitMask & ColliderTypeProjectileBoss))
@@ -295,11 +293,15 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         }
         
         //aplicando a força do impacto no alvo
+        NSLog(@"%f",(node.position.x-contact.contactPoint.x)*0.5);
+        NSLog(@"%f",(node.position.y-contact.contactPoint.y)*0.5);
+        NSLog(@"%f",contact.contactPoint.x);
+        NSLog(@"%f",contact.contactPoint.y);
         [node.physicsBody applyImpulse:CGVectorMake(
                                                     (node.position.x-contact.contactPoint.x)*0.5,
                                                     (node.position.y-contact.contactPoint.y)*0.5
                                                     ) atPoint:contact.contactPoint];
-
+        
         // Build up a "one shot" particle to indicate where the projectile hit.
         SKEmitterNode *emitter = [[self sharedProjectileSparkEmitter] copy];
         //[self addNode:emitter atWorldLayer:APAWorldLayerAboveCharacter];
