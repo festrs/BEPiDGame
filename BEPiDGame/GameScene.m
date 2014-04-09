@@ -285,14 +285,21 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         }
         
         //aplicando a força do impacto no alvo
-        NSLog(@"%f",(node.position.x-contact.contactPoint.x)*0.5);
-        NSLog(@"%f",(node.position.y-contact.contactPoint.y)*0.5);
+        NSLog(@"%f",(node.position.x));
+        NSLog(@"%f",(node.position.y));
         NSLog(@"%f",contact.contactPoint.x);
         NSLog(@"%f",contact.contactPoint.y);
-        [node.physicsBody applyImpulse:CGVectorMake(
-                                                    (node.position.x-contact.contactPoint.x)*0.5,
-                                                    (node.position.y-contact.contactPoint.y)*0.5
-                                                    ) atPoint:contact.contactPoint];
+        
+        
+        double angle = atan2(contact.contactPoint.y-node.position.y,contact.contactPoint.x-node.position.x);
+        
+        NSLog(@"%f",angle);
+        
+        CGVector vector = CGVectorMake(60*cos(angle), 60*sin(angle));
+        
+        NSLog(@"%f",vector.dx);
+        NSLog(@"%f",vector.dy);
+        [node.physicsBody applyImpulse:vector atPoint:contact.contactPoint];
         
         // Build up a "one shot" particle to indicate where the projectile hit.
         SKEmitterNode *emitter = [[self sharedProjectileSparkEmitter] copy];
