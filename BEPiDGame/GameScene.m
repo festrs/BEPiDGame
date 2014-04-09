@@ -117,16 +117,8 @@ typedef enum : uint8_t {
         [PlayerHero loadSharedAssets];
         [Boss loadSharedAssets];
         
-            [self addNode:self.enemy atWorldLayer:APAWorldLayerCharacter];
         //método recursivo que desacelera o character caso ele esteja com força aplicada nele
-        [self desacelerateCharacter:self.hero];
-        [self desacelerateCharacter:self.enemy];
         
-        [self buildHUD];
-        
-        [self updateHUDForPlayer:self.hero forState:APAHUDStateLocal withMessage:nil];
-
-
     }
     return self;
 }
