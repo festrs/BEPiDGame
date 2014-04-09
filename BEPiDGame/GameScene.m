@@ -43,7 +43,8 @@ typedef enum : uint8_t {
 @property (nonatomic) NSArray *hudAvatars;              // keep track of the various nodes for the HUD
 @property (nonatomic) NSArray *hudLabels;               // - there are always 'kNumPlayers' instances in each array
 @property (nonatomic) NSArray *hudScores;
-@property (nonatomic) NSArray *hudLifeHeartArrays;      // an array of NSArrays of life hearts
+@property (nonatomic) NSArray *hudPercents;      // an array of NSArrays of life hearts
+@property (nonatomic) float lifeBarX;
 @end
 
 @implementation GameScene
@@ -132,7 +133,7 @@ typedef enum : uint8_t {
         [self desacelerateCharacter:self.enemy];
         
         [self buildHUD];
-        [self updateHUDForPlayer:self.hero forState:APAHUDStateLocal withMessage:nil];
+        //[self updateHUDForPlayer:self.hero forState:APAHUDStateLocal withMessage:nil];
         
     }
     return self;
@@ -242,8 +243,8 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
             [self updateHUDForPlayer:self.hero];
         }
         
-        if([node isKindOfClass:[HeroCharacter class]]){
-            
+        if([node isKindOfClass:[PlayerHero class]]){
+            [self updateHUDForPlayer:self.hero];
         }
         
         //aplicando a força do impacto no alvo
@@ -305,8 +306,8 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
 #pragma mark - HUD and Scores
 
 - (void)buildHUD {
-    NSString *iconNames[] = { @"iconWarrior_blue", @"iconWarrior_green", @"iconWarrior_pink", @"iconWarrior_red" };
-    NSArray *colors = @[ [SKColor greenColor], [SKColor blueColor], [SKColor yellowColor], [SKColor redColor] ];
+    NSString *iconNames[] = { @"iconWarrior_blue" };
+    NSArray *colors = @[ [SKColor greenColor]];
     CGFloat hudX = 0;
     CGFloat hudY = self.frame.size.height - 30;
     CGFloat hudD = self.frame.size.width / kNumPlayers;
@@ -314,7 +315,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     _hudAvatars = [NSMutableArray arrayWithCapacity:kNumPlayers];
     _hudLabels = [NSMutableArray arrayWithCapacity:kNumPlayers];
     _hudScores = [NSMutableArray arrayWithCapacity:kNumPlayers];
-    _hudLifeHeartArrays = [NSMutableArray arrayWithCapacity:kNumPlayers];
+    _hudPercents = [NSMutableArray arrayWithCapacity:kNumPlayers];
     SKNode *hud = [[SKNode alloc] init];
     
     for (int i = 0; i < kNumPlayers; i++) {
@@ -343,15 +344,25 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         [(NSMutableArray *)_hudScores addObject:score];
         [hud addChild:score];
         
-        [(NSMutableArray *)_hudLifeHeartArrays addObject:[NSMutableArray arrayWithCapacity:kStartLives]];
-        for (int j = 0; j < kStartLives; j++) {
-            SKSpriteNode *heart = [SKSpriteNode spriteNodeWithImageNamed:@"lives.png"];
-            heart.scale = 0.4;
-            heart.position = CGPointMake(hudX + i * hudD + (avatar.size.width * 1.0) + 18 + ((heart.size.width + 5) * j), hudY - 10);
-            heart.alpha = 0.1;
-            [_hudLifeHeartArrays[i] addObject:heart];
-            [hud addChild:heart];
-        }
+//        [(NSMutableArray *)_hudLifeHeartArrays addObject:[NSMutableArray arrayWithCapacity:kStartLives]];
+//        for (int j = 0; j < kStartLives; j++) {
+//            SKSpriteNode *heart = [SKSpriteNode spriteNodeWithImageNamed:@"lives.png"];
+//            heart.scale = 0.4;
+//            heart.position = CGPointMake(hudX + i * hudD + (avatar.size.width * 1.0) + 18 + ((heart.size.width + 5) * j), hudY - 10);
+//            heart.alpha = 1;
+//            [_hudLifeHeartArrays[i] addObject:heart];
+//            [hud addChild:heart];
+//        }
+        
+        SKSpriteNode *nodeTest = [[SKSpriteNode alloc]init];
+        nodeTest.size = CGSizeMake(100, 10);
+        nodeTest.color = [SKColor greenColor];
+        nodeTest.position = CGPointMake(hudX + i * hudD + (avatar.size.width * 1.0) + ((nodeTest.size.width / 2)), hudY - 10);
+        
+        self.lifeBarX = nodeTest.position.x;
+        
+        [(NSMutableArray *) _hudPercents addObject:nodeTest];
+        [hud addChild:nodeTest];
     }
     
     [self addChild:hud];
@@ -391,27 +402,41 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
             break;
     }
     
-    for (int i = 0; i < player.livesLeft; i++) {
-        SKSpriteNode *heart = self.hudLifeHeartArrays[playerIndex][i];
-        heart.alpha = heartAlpha;
-    }
+    NSLog(@"health %f", player.health);
+    
+//    for (int i = 0; i < player.livesLeft; i++) {
+//        SKSpriteNode *heart = self.hudLifeHeartArrays[playerIndex][i];
+//        heart.alpha = heartAlpha;
+//    }
 }
 
 - (void)updateHUDForPlayer:(PlayerHero *)player {
     NSUInteger playerIndex = [self.players indexOfObject:player];
     SKLabelNode *label = self.hudScores[playerIndex];
     label.text = [NSString stringWithFormat:@"SCORE: %d", player.score];
+    
+    float teste = (player.health / 100) * 100;
+    
+    float diferenca = (100 - teste);
+    
+    NSLog(@"%f , %f", teste , diferenca);
+    
+    SKSpriteNode *lblPercent = self.hudPercents[playerIndex];
+    lblPercent.size = CGSizeMake((player.health / 100) * 100 , 10);
+    lblPercent.position = CGPointMake(self.lifeBarX - (diferenca /2), lblPercent.position.y);
+    
+    
+    NSLog(@"Teste %f", player.health);
 }
 
 - (void)updateHUDAfterHeroDeathForPlayer:(PlayerHero *)player {
-    NSUInteger playerIndex = [self.players indexOfObject:player];
+    //NSUInteger playerIndex = [self.players indexOfObject:player];
     
     // Fade out the relevant heart - one-based livesLeft has already been decremented.
-    NSUInteger heartNumber = player.livesLeft;
-    
-    NSArray *heartArray = self.hudLifeHeartArrays[playerIndex];
-    SKSpriteNode *heart = heartArray[heartNumber];
-    [heart runAction:[SKAction fadeAlphaTo:0.0 duration:3.0f]];
+    //NSUInteger heartNumber = player.livesLeft;
+   // NSArray *heartArray = self.hudLifeHeartArrays[playerIndex];
+    //SKSpriteNode *heart = heartArray[heartNumber];
+    //[heart runAction:[SKAction fadeAlphaTo:0.0 duration:3.0f]];
 }
 
 - (void)addToScore:(uint32_t)amount afterEnemyKillWithProjectile:(SKNode *)projectile {
