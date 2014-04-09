@@ -222,7 +222,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
 }
 
 
-- (void)didBeginContact:(SKPhysicsContact *)contact {
+- (void)OLDdidBeginContact:(SKPhysicsContact *)contact {
 
     NSLog(@"bodyA:%u bodyB:%u",contact.bodyA.categoryBitMask,contact.bodyB.categoryBitMask);
     
@@ -341,7 +341,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
 
 
 
-- (void)OLDdidBeginContact:(SKPhysicsContact *)contact {
+- (void)didBeginContact:(SKPhysicsContact *)contact {
     
     NSLog(@"bodyA:%u bodyB:%u",contact.bodyA.categoryBitMask,contact.bodyB.categoryBitMask);
     
@@ -353,16 +353,30 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     if ([node isKindOfClass:[Character class]])
         [(Character *)node collidedWith:contact.bodyA];
     
+    SKPhysicsBody *mainBody = [[SKPhysicsBody alloc] init];
+    SKPhysicsBody *collisionBody = [[SKPhysicsBody alloc] init];
+    
     //testa se algum character entrou da ilha
-    if (contact.bodyA.categoryBitMask & ColliderTypeIsland)
-        if (contact.bodyB.categoryBitMask & ColliderTypeHero || contact.bodyB.categoryBitMask & ColliderTypeGoblinOrBoss)
+    if (contact.bodyA.categoryBitMask & ColliderTypeIsland || contact.bodyB.categoryBitMask & ColliderTypeIsland)
+    {
+        if (contact.bodyA.categoryBitMask & ColliderTypeIsland) {
+            mainBody = contact.bodyA;
+            collisionBody = contact.bodyB;
+        }else{
+            mainBody = contact.bodyB;
+            collisionBody = contact.bodyA;
+        }
+        
+        if (collisionBody.categoryBitMask & ColliderTypeHero || collisionBody.categoryBitMask & ColliderTypeGoblinOrBoss)
         {
             NSLog(@"Saiu da lava.");
-            [(Character *)contact.bodyB.node setInLava:NO];
+            [(Character *)collisionBody.node setInLava:NO];
         }
+    }
     
-    //colisão de projéteis
-    if (contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyB.categoryBitMask & ColliderTypeProjectile || contact.bodyA.categoryBitMask & ColliderTypeProjectileBoss || contact.bodyB.categoryBitMask & ColliderTypeProjectileBoss)
+    //colisão de projéteis nos character
+    if ((contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyB.categoryBitMask & ColliderTypeProjectile || contact.bodyA.categoryBitMask & ColliderTypeProjectileBoss || contact.bodyB.categoryBitMask & ColliderTypeProjectileBoss)
+        && ([contact.bodyA.node isKindOfClass:[Character class]] || [contact.bodyB.node isKindOfClass:[Character class]]))
     {
         SKNode *projectile = [[SKNode alloc] init];
         if (contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyA.categoryBitMask & ColliderTypeProjectileBoss) {
@@ -411,6 +425,10 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         //[self addNode:emitter atWorldLayer:APAWorldLayerAboveCharacter];
         emitter.position = projectile.position;
         APARunOneShotEmitter(emitter, 0.15f);
+    }else{
+        // projeteis se tocando
+        //[contact.bodyA.node runAction:[SKAction removeFromParent]];
+        //[contact.bodyB.node runAction:[SKAction removeFromParent]];
     }
 }
 
