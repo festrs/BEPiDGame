@@ -74,28 +74,31 @@
 - (void)fireProjectile {
     GameScene *scene = [self characterScene];
     
-    SKSpriteNode *projectile = [[self projectile] copy];
-    projectile.physicsBody.affectedByGravity=NO;
-    projectile.position = self.position;
-    projectile.zRotation = self.zRotation;
-    
-    SKEmitterNode *emitter = [[self projectileEmitter] copy];
-    emitter.targetNode = [self.scene childNodeWithName:@"world"];
-    [projectile addChild:emitter];
-    
-    
-    [scene addNode:projectile];
-    
-    CGFloat rot = self.zRotation;
-    
-    [projectile runAction:[SKAction moveByX:-sinf(rot)*kHeroProjectileSpeed*kHeroProjectileLifetime
-                                          y:cosf(rot)*kHeroProjectileSpeed*kHeroProjectileLifetime
-                                   duration:kHeroProjectileLifetime]];
-    
-    [projectile runAction:[SKAction sequence:@[[SKAction waitForDuration:kHeroProjectileFadeOutTime],
-                                               [SKAction fadeOutWithDuration:kHeroProjectileLifetime - kHeroProjectileFadeOutTime],
-                                               [SKAction removeFromParent]]]];
-    [projectile runAction:[self projectileSoundAction]];
+    //sfor (int i = -4; i <=5 ; i++) {
+        SKSpriteNode *projectile = [[self projectile] copy];
+        projectile.physicsBody.affectedByGravity=NO;
+        projectile.position = self.position;
+        projectile.zRotation = self.zRotation;
+        NSLog(@"%f",projectile.zRotation);
+        SKEmitterNode *emitter = [[self projectileEmitter] copy];
+        emitter.targetNode = [self.scene childNodeWithName:@"world"];
+        [projectile addChild:emitter];
+        
+        
+        [scene addNode:projectile];
+        
+        CGFloat rot = projectile.zRotation;
+        
+        [projectile runAction:[SKAction moveByX:-sinf(rot)*kHeroProjectileSpeed*kHeroProjectileLifetime
+                                              y:cosf(rot)*kHeroProjectileSpeed*kHeroProjectileLifetime
+                                       duration:kHeroProjectileLifetime]];
+        
+        [projectile runAction:[SKAction sequence:@[[SKAction waitForDuration:kHeroProjectileFadeOutTime],
+                                                   [SKAction fadeOutWithDuration:kHeroProjectileLifetime - kHeroProjectileFadeOutTime],
+                                                   [SKAction removeFromParent]]]];
+        [projectile runAction:[self projectileSoundAction]];
+    //}
+
     self.intelligence.target = nil;
     //projectile.userData = [NSMutableDictionary dictionaryWithObject:self.player forKey:kPlayer];
 }
@@ -114,6 +117,8 @@ static SKAction *sSharedProjectileSoundAction = nil;
 - (SKAction *)projectileSoundAction {
     return sSharedProjectileSoundAction;
 }
+
+
 
 
 @end
