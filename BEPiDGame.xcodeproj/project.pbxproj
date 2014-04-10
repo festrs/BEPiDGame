@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3A717FEC18F6DA6D00750B07 /* SKButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A717FEB18F6DA6D00750B07 /* SKButton.m */; };
 		3ADCDBA318E44EDD000ED44E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3ADCDBA218E44EDD000ED44E /* Foundation.framework */; };
 		3ADCDBA518E44EDD000ED44E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3ADCDBA418E44EDD000ED44E /* CoreGraphics.framework */; };
 		3ADCDBA718E44EDD000ED44E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3ADCDBA618E44EDD000ED44E /* UIKit.framework */; };
@@ -103,6 +104,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3A717FEA18F6DA6D00750B07 /* SKButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKButton.h; sourceTree = "<group>"; };
+		3A717FEB18F6DA6D00750B07 /* SKButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKButton.m; sourceTree = "<group>"; };
 		3ADCDB9F18E44EDD000ED44E /* BEPiDGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BEPiDGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3ADCDBA218E44EDD000ED44E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		3ADCDBA418E44EDD000ED44E /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -328,6 +331,8 @@
 				3ADCDBE118E44F80000ED44E /* JCJoystick.m */,
 				3ADCDBE218E44F80000ED44E /* JCImageJoystick.h */,
 				3ADCDBE318E44F80000ED44E /* JCImageJoystick.m */,
+				3A717FEA18F6DA6D00750B07 /* SKButton.h */,
+				3A717FEB18F6DA6D00750B07 /* SKButton.m */,
 			);
 			name = JoyStick;
 			sourceTree = "<group>";
@@ -656,6 +661,7 @@
 				7CEBF7FE18EDA0670027E139 /* InicialScene.m in Sources */,
 				3ADCDBEA18E45055000ED44E /* GameScene.m in Sources */,
 				3ADCDC0018E454CD000ED44E /* ParallaxSprite.m in Sources */,
+				3A717FEC18F6DA6D00750B07 /* SKButton.m in Sources */,
 				3ADCDBB118E44EDD000ED44E /* main.m in Sources */,
 				3ADCDBE618E44F80000ED44E /* JCImageJoystick.m in Sources */,
 				3ADCDC0318E454CD000ED44E /* PlayerHero.m in Sources */,

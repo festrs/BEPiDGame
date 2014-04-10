@@ -7,7 +7,7 @@
 //
 
 #import <SpriteKit/SpriteKit.h>
-
+#import "ViewController.h"
 #define kMinTimeInterval (1.0f / 60.0f)
 #define kStartLives 3
 
@@ -21,12 +21,16 @@ typedef enum : uint8_t {
 	kWorldLayerCount
 } APAWorldLayer;
 
+@class HeroCharacter, Character;
 
 @interface GameScene : SKScene <SKPhysicsContactDelegate>
+@property (nonatomic, readonly) ViewController *myVC;
 @property (nonatomic, readonly) NSArray *heroes;  
 - (void)addNode:(SKNode *)node;
 @property SKSpriteNode *island;
 @property SKCropNode *cropNode;
 - (void)addNode:(SKNode *)node atWorldLayer:(APAWorldLayer)layer;
--(void) startGame;
+- (void)heroWasKilled:(HeroCharacter *)hero;
+-(void) startGame: (NSInteger )level;
+@property (nonatomic, copy) void (^gameOverBlock)(BOOL didWin);
 @end

@@ -22,6 +22,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *btMedium;
 @property (weak, nonatomic) IBOutlet UIButton *btEasy;
 @property (weak, nonatomic) IBOutlet UIView *viewConfig;
+
 @end
 
 @implementation ViewController
@@ -49,6 +50,7 @@
     sceneGame.scaleMode = SKSceneScaleModeAspectFill;
     
     [skViewGame presentScene:sceneGame];
+    
 }
 
 - (BOOL)shouldAutorotate
@@ -75,17 +77,30 @@
     [self hideUIElements:YES animated:YES];
 }
 
+-(void)MostrarScene
+{
+    [self hideUIElements:NO animated:YES];
+}
+
 #pragma mark - UI Display and Actions
+
 - (void)hideUIElements:(BOOL)shouldHide animated:(BOOL)shouldAnimate {
     CGFloat alpha = shouldHide ? 0.0f : 1.0f;
     
     if (shouldAnimate) {
-        [UIView animateWithDuration:2.0 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        [UIView animateKeyframesWithDuration:2.0 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
             self.btEasy.alpha = alpha;
             self.btMedium.alpha = alpha;
             self.btHard.alpha = alpha;
             self.viewConfig.alpha = alpha;
-        } completion:NULL];
+        } completion:^(BOOL finished) {
+            if(shouldHide){
+                [sceneGame startGame:difficult];
+            }
+            sceneGame.gameOverBlock = ^(BOOL didWin) {
+                [self MostrarScene];
+            };
+        }];
     } else {
         [self.btEasy setAlpha:alpha];
         [self.btMedium setAlpha:alpha];
@@ -93,25 +108,23 @@
         [self.viewConfig setAlpha:alpha];
     }
 }
+
+
 - (IBAction)TouchEasy:(id)sender
 {
     difficult = [(UIButton *)sender tag];
     [self EsconderScene];
-    [sceneGame startGame];
-    
 }
 - (IBAction)TouchMedium:(id)sender
 {
     difficult = [(UIButton *)sender tag];
     [self EsconderScene];
-    [sceneGame startGame];
 }
 
 - (IBAction)TouchHard:(id)sender
 {
     difficult = [(UIButton *)sender tag];
     [self EsconderScene];
-    [sceneGame startGame];
 }
 
 @end
