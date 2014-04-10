@@ -210,10 +210,10 @@ typedef enum : uint8_t {
 //}
 - (void)centerWorldOnPosition:(CGPoint)position {
         [self.world setPosition:CGPointMake(
-                                            -( position.x ) + ( (CGRectGetMidX(self.frame)+170.40)*0.6f),
+                                            -(position.x) + (CGRectGetMidX(self.frame)*0.6f),
                                             -(position.y) + (CGRectGetMidY(self.frame))
                                             )];
-    NSLog(@"\nwx: %.2f \npx: %.2f",self.world.position.x,-position.x);
+    //NSLog(@"\nwx: %.2f \npx: %.2f",self.world.position.x,-position.x);
 }
 
 
@@ -483,9 +483,6 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
                                        );
         [contact.bodyA.node.physicsBody applyImpulse:vector atPoint:contact.contactPoint];
         [contact.bodyB.node.physicsBody applyImpulse:negativeVector atPoint:contact.contactPoint];
-        
-        //[contact.bodyA.node runAction:[SKAction removeFromParent]];
-        //[contact.bodyB.node runAction:[SKAction removeFromParent]];
     }
 }
 
