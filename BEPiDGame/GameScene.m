@@ -60,7 +60,6 @@ typedef enum : uint8_t {
         //self.backgroundColor = [SKColor blackColor];
         self.physicsWorld.gravity = CGVectorMake(0.0f, 0.0f); // no gravity
         self.physicsWorld.contactDelegate = self;
-
         
         _world = [[SKNode alloc] init];
         [_world setName:@"world"];
@@ -119,8 +118,6 @@ typedef enum : uint8_t {
 
         [PlayerHero loadSharedAssets];
         [Boss loadSharedAssets];
-        
-        //método recursivo que desacelera o character caso ele esteja com força aplicada nele
     }
     return self;
 }
@@ -197,7 +194,7 @@ typedef enum : uint8_t {
         
     }
     if(self.imageJoystick.touchesBegin && !self.atackIntent){
-        [self.hero moveTowards:CGPointMake(self.hero.position.x+self.imageJoystick.x *2, self.hero.position.y+self.imageJoystick.y *2) withTimeInterval:currentTime];
+        [self.hero moveTowards:CGPointMake(self.hero.position.x+self.imageJoystick.x *4, self.hero.position.y+self.imageJoystick.y *4) withTimeInterval:currentTime];
     }
     [self.hero updateWithTimeSinceLastUpdate:currentTime];
     [self.enemy updateWithTimeSinceLastUpdate:currentTime];
@@ -340,7 +337,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
 
 - (void)didBeginContact:(SKPhysicsContact *)contact {
     
-    NSLog(@"bodyA:%u bodyB:%u",contact.bodyA.categoryBitMask,contact.bodyB.categoryBitMask);
+    //NSLog(@"bodyA:%u bodyB:%u",contact.bodyA.categoryBitMask,contact.bodyB.categoryBitMask);
     
     //chamando o método de colisão da classe se for um char (hero ou enemy)
     SKNode *node = contact.bodyA.node;
@@ -366,7 +363,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         
         if (collisionBody.categoryBitMask & ColliderTypeHero || collisionBody.categoryBitMask & ColliderTypeGoblinOrBoss)
         {
-            NSLog(@"Saiu da lava.");
+            //NSLog(@"Saiu da lava.");
             [(Character *)collisionBody.node setInLava:NO];
         }
     }
@@ -399,24 +396,21 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         if([node isKindOfClass:[PlayerHero class]]){
             [self updateHUDForPlayer:self.hero];
         }
-        
-        //aplicando a força do impacto no alvo
-        NSLog(@"%f",(node.position.x));
-        NSLog(@"%f",(node.position.y));
-        NSLog(@"%f",contact.contactPoint.x);
-        NSLog(@"%f",contact.contactPoint.y);
-        
-        double angle = atan2((contact.contactPoint.y * _world.yScale)-(node.position.y),(contact.contactPoint.x * _world.xScale)-(node.position.x))
-        ;
-        
-        NSLog(@"%f",angle);
-        
-        CGVector vector = CGVectorMake(-(60*cos(angle)), -(60*sin(angle)));
-        
-        NSLog(@"%f",vector.dx);
-        NSLog(@"%f",vector.dy);
-        [node.physicsBody applyImpulse:vector atPoint:node.position];
-        
+
+        //log de posição
+        //NSLog(@"%f",(node.position.x));
+        //NSLog(@"%f",(node.position.y));
+        //NSLog(@"%f",contact.contactPoint.x);
+        //NSLog(@"%f",contact.contactPoint.y);
+
+        //aplicando a força do impacto no alvo - método alisson
+        CGVector vector = CGVectorMake(
+                                        (node.position.x-projectile.position.x)*0.4,
+                                        (node.position.y-projectile.position.y)*0.4
+                                        );
+        [node.physicsBody applyImpulse:vector atPoint:contact.contactPoint];
+        //NSLog(@"v2.x:%.1f v2.y:%.1f",vector.dx,vector.dy);
+
         // Build up a "one shot" particle to indicate where the projectile hit.
         SKEmitterNode *emitter = [[self sharedProjectileSparkEmitter] copy];
         //[self addNode:emitter atWorldLayer:APAWorldLayerAboveCharacter];
@@ -438,7 +432,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     if (contact.bodyA.categoryBitMask & ColliderTypeIsland)
         if (contact.bodyB.categoryBitMask & ColliderTypeHero || contact.bodyB.categoryBitMask & ColliderTypeGoblinOrBoss)
         {
-            NSLog(@"Entrou na lava.");
+            //NSLog(@"Entrou na lava.");
             [(Character *)contact.bodyB.node setInLava:YES];
         }
 }
@@ -574,7 +568,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
             break;
     }
     
-    NSLog(@"health %f", player.health);
+    //NSLog(@"health %f", player.health);
     
 //    for (int i = 0; i < player.livesLeft; i++) {
 //        SKSpriteNode *heart = self.hudLifeHeartArrays[playerIndex][i];
@@ -591,14 +585,14 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     
     float diferenca = (100 - teste);
     
-    NSLog(@"%f , %f", teste , diferenca);
+    //NSLog(@"%f , %f", teste , diferenca);
     
     SKSpriteNode *lblPercent = self.hudPercents[playerIndex];
     lblPercent.size = CGSizeMake((player.health / 100) * 100 , 10);
     lblPercent.position = CGPointMake(self.lifeBarX - (diferenca /2), lblPercent.position.y);
     
     
-    NSLog(@"Teste %f", player.health);
+    //NSLog(@"Teste %f", player.health);
 }
 
 - (void)updateHUDAfterHeroDeathForPlayer:(PlayerHero *)player {
