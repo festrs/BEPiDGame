@@ -67,17 +67,23 @@
         _walking = FALSE;
         _attacking = FALSE;
         //scheduling the action to Attack
-        float atackRate = arc4random() % 5;
         
+        [self creatAtack];
+    }
+    return self;
+}
+
+-(void)creatAtack{
+    if(!self.character.isDying){
+        float atackRate = arc4random() % 8;
         SKAction *wait = [SKAction waitForDuration:atackRate];
         SKAction *attack = [SKAction runBlock:^{
             [self performAttackMonster];
+            [self creatAtack];
         }];
         SKAction *checkAttack = [SKAction sequence:@[wait,attack]];
-        [self.character runAction:[SKAction repeatActionForever:checkAttack]];
-        
+        [self.character runAction:[SKAction repeatAction:checkAttack count:1]];
     }
-    return self;
 }
 
 #pragma mark - Loop Update
