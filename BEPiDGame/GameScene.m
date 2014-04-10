@@ -38,6 +38,7 @@ typedef enum : uint8_t {
 @property SKSpriteNode *lava;
 @property (strong,nonatomic) NSMutableArray *enemys;
 @property BOOL atackIntent;
+@property BOOL attackDelayed;
 @property (nonatomic, readwrite) NSMutableArray *heroes;
 @property (nonatomic) NSMutableArray *players;          // array of player objects or NSNull for no player
 @property (nonatomic) PlayerHero *defaultPlayer;         // player '1' controlled by keyboard/touch
@@ -54,6 +55,7 @@ typedef enum : uint8_t {
 
 -(id)initWithSize:(CGSize)size {
     if (self = [super initWithSize:size]) {
+
         //heros
         _heroes = [[NSMutableArray alloc] init];
         _enemys = [[NSMutableArray alloc] init];
@@ -111,61 +113,50 @@ typedef enum : uint8_t {
         [self addChild:self.attackButton];
 
         //método que testa se os botões foram pressionados
-//        SKAction *wait = [SKAction waitForDuration:1.5];
-//        SKAction *checkButtons = [SKAction runBlock:^{
-//            [self checkButtons];
-//        }];
-//        SKAction *checkButtonsAction = [SKAction sequence:@[wait,checkButtons]];
-//        [self runAction:[SKAction repeatActionForever:checkButtonsAction]];
+        SKAction *wait = [SKAction waitForDuration:0.1];
+        SKAction *checkButtons = [SKAction runBlock:^{
+            [self checkButtons];
+        }];
+        SKAction *checkButtonsAction = [SKAction sequence:@[wait,checkButtons]];
+        [self runAction:[SKAction repeatActionForever:checkButtonsAction]];
 
         [PlayerHero loadSharedAssets];
         [Boss loadSharedAssets];
+        
+        [self buildHUD];
+        
+        _attackDelayed = FALSE;
     }
     return self;
 }
 
 -(void) startGame: (NSInteger )level{
-    
-    //scheduling the action to check buttons
-    SKAction *wait = [SKAction waitForDuration:0.8];
-    SKAction *checkButtons = [SKAction runBlock:^{
-        [self checkButtons];
-    }];
-    SKAction *checkButtonsAction = [SKAction sequence:@[wait,checkButtons]];
-    [self runAction:[SKAction repeatActionForever:checkButtonsAction]];
-    
+
     //hero
     PlayerHero *hero = [[PlayerHero alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.island.frame)-120,
                                                                CGRectGetMidY(self.island.frame)) withPlayer:nil];
+    
     [hero characterScene];
-    
     [self addNode:hero atWorldLayer:APAWorldLayerCharacter];
-    
+    [self desacelerateCharacter:hero];
     
     //_defaultPlayer = self.hero;
     
     [self centerWorldOnCharacter:hero];
     
     [(NSMutableArray *)self.heroes addObject:hero];
-    
-    
+
     //enemy
     for(int i = 0; i < level; i++){
         Boss * enemy = [[Boss alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.island.frame)+120*i,
                                                           CGRectGetMidY(self.island.frame))];
-    
-    
+        
         [self addNode:enemy atWorldLayer:APAWorldLayerCharacter];
         [self desacelerateCharacter:enemy];
         [self.enemys addObject:enemy];
     }
-    //método recursivo que desacelera o character caso ele esteja com força aplicada nele
-    [self desacelerateCharacter:hero];
 
-    
-    [self buildHUD];
     [self updateHUDForPlayer:hero forState:APAHUDStateLocal withMessage:nil];
-    
 }
 
 -(void)monsterWasKilled:(Boss *)monster{
@@ -207,16 +198,15 @@ typedef enum : uint8_t {
 #pragma mark - Mapping
 - (void)centerWorldOnPosition:(CGPoint)position {
 
-    if (CGRectContainsPoint(_island.frame, position)) {
+    //if (CGRectContainsPoint(_island.frame, position)) {
         [self.world setPosition:CGPointMake(
                                             -(position.x) + (CGRectGetMidX(self.frame)*0.6f),
                                             -(position.y) + (CGRectGetMidY(self.frame))
                                             )];
-    }
+    //}
 
     //NSLog(@"\nwx: %.2f \npx: %.2f",self.world.position.x,-position.x);
     //NSLog(@"\nwx: %.2f \nwy: %.2f",self.world.position.x,self.world.position.y);
-    //NSLog(@"%.2f",_island.frame.size.width);
 }
 
 
@@ -252,16 +242,24 @@ typedef enum : uint8_t {
     if(self.enemys.count == 0 && self.heroes.count > 0){
         [self heroWasKilled:hero];
     }
-    
+
     self.atackIntent = FALSE;
 }
 
 - (void)checkButtons
 {
-    if (self.attackButton.wasPressed) {
+    if (self.attackButton.wasPressed && self.attackDelayed == FALSE) {
         self.atackIntent = TRUE;
+        self.attackDelayed = TRUE;
         PlayerHero *hero = [self.heroes objectAtIndex:0];
         [hero performAttackAction];
+        
+        SKAction *wait = [SKAction waitForDuration:0.5];
+        SKAction *attackRelease = [SKAction runBlock:^{
+            self.attackDelayed = FALSE;
+        }];
+        SKAction *attackReleasedAction = [SKAction sequence:@[wait,attackRelease]];
+        [self runAction:attackReleasedAction];
     }
 }
 
