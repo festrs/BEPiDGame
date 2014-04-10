@@ -74,6 +74,8 @@ typedef enum : uint8_t {
         
         [self addChild:_world];
         
+        _world.xScale = 0.6f;
+        _world.yScale = 0.6f;
         //lava
         _lava = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.6 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(self.frame.size.width*3, self.frame.size.height*3)];
         [_lava setTexture:[SKTexture textureWithImageNamed:@"lava"]];
@@ -115,15 +117,10 @@ typedef enum : uint8_t {
         SKAction *checkButtonsAction = [SKAction sequence:@[wait,checkButtons]];
         [self runAction:[SKAction repeatActionForever:checkButtonsAction]];
 
-        //hero
-        self.hero = [[PlayerHero alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.frame)-120,
-                                                                   CGRectGetMidY(self.frame)) withPlayer:nil];
-        [self.hero characterScene];
         [PlayerHero loadSharedAssets];
         [Boss loadSharedAssets];
         
         //método recursivo que desacelera o character caso ele esteja com força aplicada nele
-        
     }
     return self;
 }
@@ -182,8 +179,8 @@ typedef enum : uint8_t {
 
 #pragma mark - Mapping
 - (void)centerWorldOnPosition:(CGPoint)position {
-    [self.world setPosition:CGPointMake(-(position.x) + CGRectGetMidX(self.frame),
-                                        -(position.y) + CGRectGetMidY(self.frame))];
+    [self.world setPosition:CGPointMake(-(position.x) + (CGRectGetMidX(self.frame) * 0.6f),
+                                        -(position.y) + (CGRectGetMidY(self.frame) * 0.6f))];
 }
 
 - (void)centerWorldOnCharacter:(Character *)character {
@@ -222,7 +219,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
 }
 
 
-- (void)didBeginContact:(SKPhysicsContact *)contact {
+- (void)OLDdidBeginContact:(SKPhysicsContact *)contact {
 
     NSLog(@"bodyA:%u bodyB:%u",contact.bodyA.categoryBitMask,contact.bodyB.categoryBitMask);
     
@@ -341,7 +338,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
 
 
 
-- (void)OLDdidBeginContact:(SKPhysicsContact *)contact {
+- (void)didBeginContact:(SKPhysicsContact *)contact {
     
     NSLog(@"bodyA:%u bodyB:%u",contact.bodyA.categoryBitMask,contact.bodyB.categoryBitMask);
     
@@ -353,16 +350,30 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     if ([node isKindOfClass:[Character class]])
         [(Character *)node collidedWith:contact.bodyA];
     
+    SKPhysicsBody *mainBody = [[SKPhysicsBody alloc] init];
+    SKPhysicsBody *collisionBody = [[SKPhysicsBody alloc] init];
+    
     //testa se algum character entrou da ilha
-    if (contact.bodyA.categoryBitMask & ColliderTypeIsland)
-        if (contact.bodyB.categoryBitMask & ColliderTypeHero || contact.bodyB.categoryBitMask & ColliderTypeGoblinOrBoss)
+    if (contact.bodyA.categoryBitMask & ColliderTypeIsland || contact.bodyB.categoryBitMask & ColliderTypeIsland)
+    {
+        if (contact.bodyA.categoryBitMask & ColliderTypeIsland) {
+            mainBody = contact.bodyA;
+            collisionBody = contact.bodyB;
+        }else{
+            mainBody = contact.bodyB;
+            collisionBody = contact.bodyA;
+        }
+        
+        if (collisionBody.categoryBitMask & ColliderTypeHero || collisionBody.categoryBitMask & ColliderTypeGoblinOrBoss)
         {
             NSLog(@"Saiu da lava.");
-            [(Character *)contact.bodyB.node setInLava:NO];
+            [(Character *)collisionBody.node setInLava:NO];
         }
+    }
     
-    //colisão de projéteis
-    if (contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyB.categoryBitMask & ColliderTypeProjectile || contact.bodyA.categoryBitMask & ColliderTypeProjectileBoss || contact.bodyB.categoryBitMask & ColliderTypeProjectileBoss)
+    //colisão de projéteis nos character
+    if ((contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyB.categoryBitMask & ColliderTypeProjectile || contact.bodyA.categoryBitMask & ColliderTypeProjectileBoss || contact.bodyB.categoryBitMask & ColliderTypeProjectileBoss)
+        && ([contact.bodyA.node isKindOfClass:[Character class]] || [contact.bodyB.node isKindOfClass:[Character class]]))
     {
         SKNode *projectile = [[SKNode alloc] init];
         if (contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyA.categoryBitMask & ColliderTypeProjectileBoss) {
@@ -395,22 +406,26 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         NSLog(@"%f",contact.contactPoint.x);
         NSLog(@"%f",contact.contactPoint.y);
         
-        
-        double angle = atan2(contact.contactPoint.y-node.position.y,contact.contactPoint.x-node.position.x);
+        double angle = atan2((contact.contactPoint.y * _world.yScale)-(node.position.y),(contact.contactPoint.x * _world.xScale)-(node.position.x))
+        ;
         
         NSLog(@"%f",angle);
         
-        CGVector vector = CGVectorMake(60*cos(angle), 60*sin(angle));
+        CGVector vector = CGVectorMake(-(60*cos(angle)), -(60*sin(angle)));
         
         NSLog(@"%f",vector.dx);
         NSLog(@"%f",vector.dy);
-        [node.physicsBody applyImpulse:vector atPoint:contact.contactPoint];
+        [node.physicsBody applyImpulse:vector atPoint:node.position];
         
         // Build up a "one shot" particle to indicate where the projectile hit.
         SKEmitterNode *emitter = [[self sharedProjectileSparkEmitter] copy];
         //[self addNode:emitter atWorldLayer:APAWorldLayerAboveCharacter];
         emitter.position = projectile.position;
         APARunOneShotEmitter(emitter, 0.15f);
+    }else if((contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyB.categoryBitMask & ColliderTypeProjectile) && (contact.bodyA.categoryBitMask & ColliderTypeProjectileBoss || contact.bodyB.categoryBitMask & ColliderTypeProjectileBoss)){
+        // projeteis se tocando
+        [contact.bodyA.node runAction:[SKAction removeFromParent]];
+        [contact.bodyB.node runAction:[SKAction removeFromParent]];
     }
 }
 
