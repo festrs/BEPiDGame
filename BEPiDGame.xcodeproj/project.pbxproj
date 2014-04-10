@@ -90,6 +90,7 @@
 		7CEBF80118EDA07C0027E139 /* FundoLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CEBF7FF18EDA07C0027E139 /* FundoLogo.png */; };
 		7CEBF80218EDA07C0027E139 /* logoInicial.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CEBF80018EDA07C0027E139 /* logoInicial.png */; };
 		7CEBF80518F324E00027E139 /* LogoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CEBF80418F324E00027E139 /* LogoViewController.m */; };
+		BA17071318F5915900931285 /* lifebar.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA17071218F5915900931285 /* lifebar.sks */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -207,6 +208,7 @@
 		7CEBF80018EDA07C0027E139 /* logoInicial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logoInicial.png; sourceTree = "<group>"; };
 		7CEBF80318F324E00027E139 /* LogoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LogoViewController.h; path = ../LogoViewController.h; sourceTree = "<group>"; };
 		7CEBF80418F324E00027E139 /* LogoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LogoViewController.m; path = ../LogoViewController.m; sourceTree = "<group>"; };
+		BA17071218F5915900931285 /* lifebar.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = lifebar.sks; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -417,6 +419,7 @@
 				3ADCDC2018E45938000ED44E /* Spawn.sks */,
 				3ADCDC2118E45938000ED44E /* star.png */,
 				3ADCDC2218E45938000ED44E /* WarriorProjectile.sks */,
+				BA17071218F5915900931285 /* lifebar.sks */,
 			);
 			path = Particles;
 			sourceTree = "<group>";
@@ -598,6 +601,7 @@
 				3ADCDC7918E45938000ED44E /* Assets - iOS.xcassets in Resources */,
 				3ADCDC5E18E45938000ED44E /* spark.png in Resources */,
 				3ADCDC6818E45938000ED44E /* Boss_Attack.atlas in Resources */,
+				BA17071318F5915900931285 /* lifebar.sks in Resources */,
 				3ADCDC5518E45938000ED44E /* CaveFireSmoke.sks in Resources */,
 				3ADCDC8518E45938000ED44E /* logo.png in Resources */,
 				3ADCDC8018E45938000ED44E /* iconWarrior_blue.png in Resources */,
