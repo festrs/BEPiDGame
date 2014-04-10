@@ -175,10 +175,18 @@ typedef enum : uint8_t {
 }
 
 #pragma mark - Mapping
+//- (void)centerWorldOnPosition:(CGPoint)position {
+//    [self.world setPosition:CGPointMake(-(position.x) + (CGRectGetMidX(self.frame) * 0.6f),
+//                                        -(position.y) + (CGRectGetMidY(self.frame) * 0.6f))];
+//}
 - (void)centerWorldOnPosition:(CGPoint)position {
-    [self.world setPosition:CGPointMake(-(position.x) + (CGRectGetMidX(self.frame) * 0.6f),
-                                        -(position.y) + (CGRectGetMidY(self.frame) * 0.6f))];
+        [self.world setPosition:CGPointMake(
+                                            -( position.x ) + ( (CGRectGetMidX(self.frame)+170.40)*0.6f),
+                                            -(position.y) + (CGRectGetMidY(self.frame))
+                                            )];
+    NSLog(@"\nwx: %.2f \npx: %.2f",self.world.position.x,-position.x);
 }
+
 
 - (void)centerWorldOnCharacter:(Character *)character {
     [self centerWorldOnPosition:character.position];
@@ -418,8 +426,20 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         APARunOneShotEmitter(emitter, 0.15f);
     }else if((contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyB.categoryBitMask & ColliderTypeProjectile) && (contact.bodyA.categoryBitMask & ColliderTypeProjectileBoss || contact.bodyB.categoryBitMask & ColliderTypeProjectileBoss)){
         // projeteis se tocando
-        [contact.bodyA.node runAction:[SKAction removeFromParent]];
-        [contact.bodyB.node runAction:[SKAction removeFromParent]];
+
+        CGVector vector = CGVectorMake(
+                                       (contact.bodyA.node.position.x-contact.bodyB.node.position.x)*0.4,
+                                       (contact.bodyA.node.position.y-contact.bodyB.node.position.y)*0.4
+                                       );
+        CGVector negativeVector = CGVectorMake(
+                                       -(contact.bodyA.node.position.x-contact.bodyB.node.position.x)*0.4,
+                                       -(contact.bodyA.node.position.y-contact.bodyB.node.position.y)*0.4
+                                       );
+        [contact.bodyA.node.physicsBody applyImpulse:vector atPoint:contact.contactPoint];
+        [contact.bodyB.node.physicsBody applyImpulse:negativeVector atPoint:contact.contactPoint];
+        
+        //[contact.bodyA.node runAction:[SKAction removeFromParent]];
+        //[contact.bodyB.node runAction:[SKAction removeFromParent]];
     }
 }
 
