@@ -448,19 +448,15 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
             [self updateHUDForPlayer:hero];
         }
 
-        //log de posição
-        //NSLog(@"%f",(node.position.x));
-        //NSLog(@"%f",(node.position.y));
-        //NSLog(@"%f",contact.contactPoint.x);
-        //NSLog(@"%f",contact.contactPoint.y);
-
-        //aplicando a força do impacto no alvo - método alisson
-        CGVector vector = CGVectorMake(
-                                        (node.position.x-projectile.position.x)*0.4,
-                                        (node.position.y-projectile.position.y)*0.4
-                                        );
-        [node.physicsBody applyImpulse:vector atPoint:contact.contactPoint];
-        //NSLog(@"v2.x:%.1f v2.y:%.1f",vector.dx,vector.dy);
+        //aplicando a força do impacto no alvo se não estiver morto
+        Character *nodeChar = (Character *)node;
+        if (!nodeChar.isDying) {
+            CGVector vector = CGVectorMake(
+                                           (node.position.x-projectile.position.x)*0.4,
+                                           (node.position.y-projectile.position.y)*0.4
+                                           );
+            [node.physicsBody applyImpulse:vector atPoint:contact.contactPoint];
+        }
 
         // Build up a "one shot" particle to indicate where the projectile hit.
         SKEmitterNode *emitter = [[self sharedProjectileSparkEmitter] copy];
