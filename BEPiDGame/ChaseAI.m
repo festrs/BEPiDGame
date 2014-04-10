@@ -50,7 +50,9 @@
 #import "APAGraphicsUtilities.h"
 #import "HeroCharacter.h"
 
-@interface ChaseAI ()
+@interface ChaseAI (){
+    float atackRate;
+}
 @property CGPoint pointToWalk;
 @property BOOL walking;
 @property BOOL attacking;

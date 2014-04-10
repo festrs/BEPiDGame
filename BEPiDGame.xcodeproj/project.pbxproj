@@ -552,7 +552,7 @@
 				ORGANIZATIONNAME = "Felipe Dias Pereira";
 				TargetAttributes = {
 					3ADCDB9E18E44EDD000ED44E = {
-						DevelopmentTeam = 439F5NHE7E;
+						DevelopmentTeam = 5EUEY3M354;
 					};
 					3ADCDBC618E44EDD000ED44E = {
 						TestTargetID = 3ADCDB9E18E44EDD000ED44E;

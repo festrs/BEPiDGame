@@ -111,12 +111,12 @@ typedef enum : uint8_t {
         [self addChild:self.attackButton];
 
         //método que testa se os botões foram pressionados
-        SKAction *wait = [SKAction waitForDuration:0.5];
-        SKAction *checkButtons = [SKAction runBlock:^{
-            [self checkButtons];
-        }];
-        SKAction *checkButtonsAction = [SKAction sequence:@[wait,checkButtons]];
-        [self runAction:[SKAction repeatActionForever:checkButtonsAction]];
+//        SKAction *wait = [SKAction waitForDuration:1.5];
+//        SKAction *checkButtons = [SKAction runBlock:^{
+//            [self checkButtons];
+//        }];
+//        SKAction *checkButtonsAction = [SKAction sequence:@[wait,checkButtons]];
+//        [self runAction:[SKAction repeatActionForever:checkButtonsAction]];
 
         [PlayerHero loadSharedAssets];
         [Boss loadSharedAssets];
@@ -125,8 +125,9 @@ typedef enum : uint8_t {
 }
 
 -(void) startGame: (NSInteger )level{
+    
     //scheduling the action to check buttons
-    SKAction *wait = [SKAction waitForDuration:0.3];
+    SKAction *wait = [SKAction waitForDuration:0.8];
     SKAction *checkButtons = [SKAction runBlock:^{
         [self checkButtons];
     }];
@@ -204,21 +205,23 @@ typedef enum : uint8_t {
 }
 
 #pragma mark - Mapping
-//- (void)centerWorldOnPosition:(CGPoint)position {
-//    [self.world setPosition:CGPointMake(-(position.x) + (CGRectGetMidX(self.frame) * 0.6f),
-//                                        -(position.y) + (CGRectGetMidY(self.frame) * 0.6f))];
-//}
 - (void)centerWorldOnPosition:(CGPoint)position {
+
+    if (CGRectContainsPoint(_island.frame, position)) {
         [self.world setPosition:CGPointMake(
                                             -(position.x) + (CGRectGetMidX(self.frame)*0.6f),
                                             -(position.y) + (CGRectGetMidY(self.frame))
                                             )];
+    }
+
     //NSLog(@"\nwx: %.2f \npx: %.2f",self.world.position.x,-position.x);
+    //NSLog(@"\nwx: %.2f \nwy: %.2f",self.world.position.x,self.world.position.y);
+    //NSLog(@"%.2f",_island.frame.size.width);
 }
 
 
 - (void)centerWorldOnCharacter:(Character *)character {
-    [self centerWorldOnPosition:character.position];
+        [self centerWorldOnPosition:character.position];
 }
 
 -(void)update:(CFTimeInterval)currentTime {
@@ -237,7 +240,7 @@ typedef enum : uint8_t {
 
     if(!hero.isDying){
         if(self.imageJoystick.touchesBegin && !self.atackIntent){
-            [hero moveTowards:CGPointMake(hero.position.x+self.imageJoystick.x *2, hero.position.y+self.imageJoystick.y *2) withTimeInterval:currentTime];
+            [hero moveTowards:CGPointMake(hero.position.x+self.imageJoystick.x *3, hero.position.y+self.imageJoystick.y *3) withTimeInterval:currentTime];
         }
         [hero updateWithTimeSinceLastUpdate:currentTime];
         [self centerWorldOnCharacter:hero];
@@ -429,11 +432,11 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         if (contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyA.categoryBitMask & ColliderTypeProjectileBoss) {
             projectile = contact.bodyA.node;
             node = contact.bodyB.node;
-            NSLog(@"Corpo A é o projétil");
+            //NSLog(@"Corpo A é o projétil");
         }else{
             projectile = contact.bodyB.node;
             node = contact.bodyA.node;
-            NSLog(@"Corpo B é o projétil");
+            //NSLog(@"Corpo B é o projétil");
         }
         
         //elimina o projétil assim que toca no alvo
@@ -451,19 +454,15 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
             [self updateHUDForPlayer:hero];
         }
 
-        //log de posição
-        //NSLog(@"%f",(node.position.x));
-        //NSLog(@"%f",(node.position.y));
-        //NSLog(@"%f",contact.contactPoint.x);
-        //NSLog(@"%f",contact.contactPoint.y);
-
-        //aplicando a força do impacto no alvo - método alisson
-        CGVector vector = CGVectorMake(
-                                        (node.position.x-projectile.position.x)*0.4,
-                                        (node.position.y-projectile.position.y)*0.4
-                                        );
-        [node.physicsBody applyImpulse:vector atPoint:contact.contactPoint];
-        //NSLog(@"v2.x:%.1f v2.y:%.1f",vector.dx,vector.dy);
+        //aplicando a força do impacto no alvo se não estiver morto
+        Character *nodeChar = (Character *)node;
+        if (!nodeChar.isDying) {
+            CGVector vector = CGVectorMake(
+                                           (node.position.x-projectile.position.x)*0.4,
+                                           (node.position.y-projectile.position.y)*0.4
+                                           );
+            [node.physicsBody applyImpulse:vector atPoint:contact.contactPoint];
+        }
 
         // Build up a "one shot" particle to indicate where the projectile hit.
         SKEmitterNode *emitter = [[self sharedProjectileSparkEmitter] copy];
