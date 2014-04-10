@@ -137,6 +137,7 @@
     self.requestedAnimation = APAAnimationStateAttack;
 }
 
+
 - (void)collidedWith:(SKPhysicsBody *)other {
     // Handle a collision with another character, projectile, wall, etc (usually overidden).
 }
@@ -146,6 +147,7 @@
     self.health = 0.0f;
     self.dying = YES;
     self.requestedAnimation = APAAnimationStateDeath;
+    [self resolveRequestedAnimation];
 }
 
 #pragma mark - Damage
@@ -306,10 +308,6 @@
 }
 
 #pragma mark - Working with Scenes
-- (void)addToScene:(APAMultiplayerLayeredCharacterScene *)scene {
-//    [scene addNode:self atWorldLayer:APAWorldLayerCharacter];
-//    [scene addNode:self.shadowBlob atWorldLayer:APAWorldLayerBelowCharacter];
-}
 
 - (void)removeFromParent {
     [self.shadowBlob removeFromParent];
@@ -327,35 +325,6 @@
 }
 
 #pragma mark - Orientation and Movement
-- (void)move:(APAMoveDirection)direction withTimeInterval:(NSTimeInterval)timeInterval {
-    CGFloat rot = self.zRotation;
-
-    SKAction *action = nil;
-    // Build up the movement action.
-    switch (direction) {
-        case APAMoveDirectionForward:
-            action = [SKAction moveByX:-sinf(rot)*self.movementSpeed*timeInterval y:cosf(rot)*self.movementSpeed*timeInterval duration:timeInterval];
-            break;
-            
-        case APAMoveDirectionBack:
-            action = [SKAction moveByX:sinf(rot)*self.movementSpeed*timeInterval y:-cosf(rot)*self.movementSpeed*timeInterval duration:timeInterval];
-            break;
-            
-        case APAMoveDirectionLeft:
-            action = [SKAction rotateByAngle:kRotationSpeed duration:timeInterval];
-            break;
-            
-        case APAMoveDirectionRight:
-            action = [SKAction rotateByAngle:-kRotationSpeed duration:timeInterval];
-            break;
-    }
-    
-    // Play the resulting action.
-    if (action) {
-        self.requestedAnimation = APAAnimationStateWalk;
-        [self runAction:action];
-    }
-}
 
 - (CGFloat)faceTo:(CGPoint)position {
     CGFloat ang = APA_POLAR_ADJUST(APARadiansBetweenPoints(position, self.position));

@@ -101,7 +101,7 @@
 - (void)animationDidComplete:(APAAnimationState)animationState {
     switch (animationState) {
         case APAAnimationStateDeath:{
-            //APAMultiplayerLayeredCharacterScene *scene = (APAMultiplayerLayeredCharacterScene *)[self characterScene];
+            GameScene *scene = [self characterScene];
             
             SKEmitterNode *emitter = [[self deathEmitter] copy];
             emitter.zPosition = -0.8;
@@ -111,7 +111,7 @@
             [self runAction:[SKAction sequence:@[
                                                  [SKAction waitForDuration:4.0f],
                                                  [SKAction runBlock:^{
-                                                     //[scene heroWasKilled:self];
+                                                     [scene heroWasKilled:self];
                                                  }],
                                                  [SKAction removeFromParent],
                                                  ]]];

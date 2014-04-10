@@ -14,6 +14,7 @@
 #import "EnemyCharacter.h"
 #import "Boss.h"
 #import "APAGraphicsUtilities.h"
+#import "SKButton.h"
 
 #define kNumPlayers 1
 
@@ -30,12 +31,12 @@ typedef enum : uint8_t {
 @property (strong, nonatomic) JCImageJoystick *imageJoystick;
 @property (strong, nonatomic) JCButton *attackButton;
 @property (strong, nonatomic) JCButton *testButton;
+@property (nonatomic, strong) ViewController *myVC;
 @property (nonatomic) NSTimeInterval lastUpdateTimeInterval;
 @property (nonatomic, readonly) SKNode *world;
 @property (nonatomic) NSMutableArray *layers;
 @property SKSpriteNode *lava;
-@property PlayerHero *hero;
-@property EnemyCharacter *enemy;
+@property (strong,nonatomic) NSMutableArray *enemys;
 @property BOOL atackIntent;
 @property (nonatomic, readwrite) NSMutableArray *heroes;
 @property (nonatomic) NSMutableArray *players;          // array of player objects or NSNull for no player
@@ -55,12 +56,13 @@ typedef enum : uint8_t {
     if (self = [super initWithSize:size]) {
         //heros
         _heroes = [[NSMutableArray alloc] init];
+        _enemys = [[NSMutableArray alloc] init];
         
         //world sets
         //self.backgroundColor = [SKColor blackColor];
         self.physicsWorld.gravity = CGVectorMake(0.0f, 0.0f); // no gravity
         self.physicsWorld.contactDelegate = self;
-        
+
         _world = [[SKNode alloc] init];
         [_world setName:@"world"];
         _layers = [NSMutableArray arrayWithCapacity:kWorldLayerCount];
@@ -122,7 +124,7 @@ typedef enum : uint8_t {
     return self;
 }
 
--(void) startGame{
+-(void) startGame: (NSInteger )level{
     //scheduling the action to check buttons
     SKAction *wait = [SKAction waitForDuration:0.3];
     SKAction *checkButtons = [SKAction runBlock:^{
@@ -132,37 +134,56 @@ typedef enum : uint8_t {
     [self runAction:[SKAction repeatActionForever:checkButtonsAction]];
     
     //hero
-    self.hero = [[PlayerHero alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.island.frame)-120,
+    PlayerHero *hero = [[PlayerHero alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.island.frame)-120,
                                                                CGRectGetMidY(self.island.frame)) withPlayer:nil];
-    [self.hero characterScene];
+    [hero characterScene];
     
-    [self addNode:self.hero atWorldLayer:APAWorldLayerCharacter];
+    [self addNode:hero atWorldLayer:APAWorldLayerCharacter];
     
     
-    _defaultPlayer = self.hero;
+    //_defaultPlayer = self.hero;
     
-    [self centerWorldOnCharacter:self.hero];
+    [self centerWorldOnCharacter:hero];
     
-    [(NSMutableArray *)self.heroes addObject:self.hero];
+    [(NSMutableArray *)self.heroes addObject:hero];
     
-    [(NSMutableArray *)_players addObject:_defaultPlayer];
-    for (int i = 1; i < kNumPlayers; i++) {
-        [(NSMutableArray *)_players addObject:[NSNull null]];
-    }
     
     //enemy
-    self.enemy = [[Boss alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.island.frame)+120,
+    for(int i = 0; i < level; i++){
+        Boss * enemy = [[Boss alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.island.frame)+120*i,
                                                           CGRectGetMidY(self.island.frame))];
     
     
-    [self addNode:self.enemy atWorldLayer:APAWorldLayerCharacter];
+        [self addNode:enemy atWorldLayer:APAWorldLayerCharacter];
+        [self desacelerateCharacter:enemy];
+        [self.enemys addObject:enemy];
+    }
     //método recursivo que desacelera o character caso ele esteja com força aplicada nele
-    [self desacelerateCharacter:self.hero];
-    [self desacelerateCharacter:self.enemy];
+    [self desacelerateCharacter:hero];
+
     
     [self buildHUD];
-    [self updateHUDForPlayer:self.hero forState:APAHUDStateLocal withMessage:nil];
+    [self updateHUDForPlayer:hero forState:APAHUDStateLocal withMessage:nil];
     
+}
+
+- (void)heroWasKilled:(HeroCharacter *)hero {
+    
+    [self removeAllNodeatWorldLayer:APAWorldLayerCharacter];
+    NSLog(@"%@",self.children);
+    [self.enemys removeAllObjects];
+    [(NSMutableArray *)self.heroes removeObject:hero];
+    self.gameOverBlock(TRUE);
+}
+
+-(void)buttonAction{
+    [self startGame:8];
+    
+}
+
+-(void)setMyVC:(ViewController *)myVC
+{
+    _myVC = myVC;
 }
 
 - (void)addNode:(SKNode *)node {
@@ -172,6 +193,11 @@ typedef enum : uint8_t {
 - (void)addNode:(SKNode *)node atWorldLayer:(APAWorldLayer)layer {
     SKNode *layerNode = self.layers[layer];
     [layerNode addChild:node];
+}
+
+- (void)removeAllNodeatWorldLayer:(APAWorldLayer )layer{
+    SKNode *layerNode = self.layers[layer];
+    [layerNode removeAllChildren];
 }
 
 #pragma mark - Mapping
@@ -201,20 +227,35 @@ typedef enum : uint8_t {
         self.lastUpdateTimeInterval = currentTime;
         
     }
-    if(self.imageJoystick.touchesBegin && !self.atackIntent){
-        [self.hero moveTowards:CGPointMake(self.hero.position.x+self.imageJoystick.x *4, self.hero.position.y+self.imageJoystick.y *4) withTimeInterval:currentTime];
+        PlayerHero *hero = nil;
+    if ([self.heroes count] > 0) {
+        hero = [self.heroes objectAtIndex:0];
     }
-    [self.hero updateWithTimeSinceLastUpdate:currentTime];
-    [self.enemy updateWithTimeSinceLastUpdate:currentTime];
+
+    if(!hero.isDying){
+        if(self.imageJoystick.touchesBegin && !self.atackIntent){
+            [hero moveTowards:CGPointMake(hero.position.x+self.imageJoystick.x *2, hero.position.y+self.imageJoystick.y *2) withTimeInterval:currentTime];
+        }
+        [hero updateWithTimeSinceLastUpdate:currentTime];
+        [self centerWorldOnCharacter:hero];
+    }
+    
+        for (Boss *boss in self.enemys) {
+            [boss updateWithTimeSinceLastUpdate:currentTime];
+        }
+    if(self.enemys.count == 0 && self.heroes.count > 0){
+        [self heroWasKilled:hero];
+    }
+    
     self.atackIntent = FALSE;
-    [self centerWorldOnCharacter:self.hero];
 }
 
 - (void)checkButtons
 {
     if (self.attackButton.wasPressed) {
         self.atackIntent = TRUE;
-        [self.hero performAttackAction];
+        PlayerHero *hero = [self.heroes objectAtIndex:0];
+        [hero performAttackAction];
     }
 }
 
@@ -279,8 +320,9 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         //hud update se o alvo for um inimigo
         if([collisionBody.node isKindOfClass:[Boss class]])
         {
-            self.hero.score = self.hero.score + 20;
-            [self updateHUDForPlayer:self.hero];
+            PlayerHero *hero = [self.heroes objectAtIndex:0];
+            hero.score = hero.score + 20;
+            [self updateHUDForPlayer:hero];
         }
 
         double angle = atan2(contact.contactPoint.y-node.position.y,contact.contactPoint.x-node.position.x);
@@ -395,14 +437,15 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         [projectile runAction:[SKAction removeFromParent]];
         
         //hud update se o alvo for um inimigo
+        PlayerHero *hero = [self.heroes objectAtIndex:0];
         if([node isKindOfClass:[Boss class]])
         {
-            self.hero.score = self.hero.score + 20;
-            [self updateHUDForPlayer:self.hero];
+            hero.score = hero.score + 20;
+            [self updateHUDForPlayer:hero];
         }
         
         if([node isKindOfClass:[PlayerHero class]]){
-            [self updateHUDForPlayer:self.hero];
+            [self updateHUDForPlayer:hero];
         }
 
         //log de posição
