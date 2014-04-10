@@ -271,13 +271,13 @@
         return; // we already have a running animation or there aren't any frames to animate
     }
     self.activeAnimationKey = key;
-    if(!([self isKindOfClass:[Boss class]] && self.attacking && animationState != APAAnimationStateAttack)){
+    //if(!([self isKindOfClass:[Boss class]] && self.attacking && (animationState != APAAnimationStateAttack || animationState != APAAnimationStateDeath))){
         [self runAction:[SKAction sequence:@[
                                              [SKAction animateWithTextures:frames timePerFrame:self.animationSpeed resize:YES restore:NO],
                                              [SKAction runBlock:^{
             [self animationHasCompleted:animationState];
         }]]] withKey:key];
-    }
+    //}
 }
 
 - (void)fadeIn:(CGFloat)duration {

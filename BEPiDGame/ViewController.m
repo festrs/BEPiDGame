@@ -43,7 +43,7 @@
     skViewGame = (SKView *)self.view;
     skViewGame.showsFPS = YES;
     skViewGame.showsNodeCount = YES;
-    skViewGame.showsPhysics = YES;
+    //skViewGame.showsPhysics = YES;
     
     // Create and configure the scene.
     sceneGame = [GameScene sceneWithSize:CGSizeMake(skViewGame.bounds.size.height,skViewGame.bounds.size.width)];

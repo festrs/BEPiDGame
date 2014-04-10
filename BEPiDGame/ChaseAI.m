@@ -67,7 +67,9 @@
         _walking = FALSE;
         _attacking = FALSE;
         //scheduling the action to Attack
-        SKAction *wait = [SKAction waitForDuration:5.3];
+        float atackRate = arc4random() % 5;
+        
+        SKAction *wait = [SKAction waitForDuration:atackRate];
         SKAction *attack = [SKAction runBlock:^{
             [self performAttackMonster];
         }];

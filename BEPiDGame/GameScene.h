@@ -21,7 +21,7 @@ typedef enum : uint8_t {
 	kWorldLayerCount
 } APAWorldLayer;
 
-@class HeroCharacter, Character;
+@class HeroCharacter, Character, Boss;
 
 @interface GameScene : SKScene <SKPhysicsContactDelegate>
 @property (nonatomic, readonly) ViewController *myVC;
@@ -31,6 +31,7 @@ typedef enum : uint8_t {
 @property SKCropNode *cropNode;
 - (void)addNode:(SKNode *)node atWorldLayer:(APAWorldLayer)layer;
 - (void)heroWasKilled:(HeroCharacter *)hero;
+-(void)monsterWasKilled:(Boss *)monster;
 -(void) startGame: (NSInteger )level;
 @property (nonatomic, copy) void (^gameOverBlock)(BOOL didWin);
 @end

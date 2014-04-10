@@ -108,12 +108,11 @@
         // In a real game, you'd complete the level here, maybe as shown by commented code below.
         [self removeAllActions];
         [self runAction:[SKAction sequence:@[
-                                             [SKAction waitForDuration:3.00],
+                                             [SKAction waitForDuration:1.00],
                                              [SKAction fadeOutWithDuration:2.0f],
-                                             [SKAction removeFromParent],
-                                             /*[SKAction runBlock:^{
-                                                 [[self characterScene] gameOver];
-                                             }]*/
+                                             [SKAction runBlock:^{
+                                                 [[self characterScene] monsterWasKilled:self];
+                                             }]
                                             ]]];
     }
 }
