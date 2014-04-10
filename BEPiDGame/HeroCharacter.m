@@ -106,10 +106,10 @@
             SKEmitterNode *emitter = [[self deathEmitter] copy];
             emitter.zPosition = -0.8;
             [self addChild:emitter];
-            APARunOneShotEmitter(emitter, 4.5f);
+            APARunOneShotEmitter(emitter, 1.5f);
             
             [self runAction:[SKAction sequence:@[
-                                                 [SKAction waitForDuration:4.0f],
+                                                 [SKAction waitForDuration:2.0f],
                                                  [SKAction runBlock:^{
                                                      [scene heroWasKilled:self];
                                                  }],

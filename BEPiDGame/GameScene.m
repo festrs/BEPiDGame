@@ -167,18 +167,21 @@ typedef enum : uint8_t {
     
 }
 
+-(void)monsterWasKilled:(Boss *)monster{
+    [self.enemys removeObject:monster];
+}
+
 - (void)heroWasKilled:(HeroCharacter *)hero {
-    
     [self removeAllNodeatWorldLayer:APAWorldLayerCharacter];
-    NSLog(@"%@",self.children);
     [self.enemys removeAllObjects];
-    [(NSMutableArray *)self.heroes removeObject:hero];
+    if(self.heroes.count >0){
+        [(NSMutableArray *)self.heroes removeObject:hero];
+    }
     self.gameOverBlock(TRUE);
 }
 
 -(void)buttonAction{
     [self startGame:8];
-    
 }
 
 -(void)setMyVC:(ViewController *)myVC
