@@ -64,24 +64,24 @@
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesEnded:touches withEvent:event];
-    if ([[touches allObjects] containsObject:self.onlyTouch]) {
+    //if ([[touches allObjects] containsObject:self.onlyTouch]) {
         self.onlyTouch = nil;
         self.joystick.position=CGPointMake(0,0);
         self.x = 0;
         self.y = 0;
-    }
+    //}
     self.touchesBegin = NO;
 }
 
 -(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesCancelled:touches withEvent:event];
-    if ([[touches allObjects] containsObject:self.onlyTouch]) {
+    //if ([[touches allObjects] containsObject:self.onlyTouch]) {
         self.onlyTouch = nil;
         self.joystick.position=CGPointMake(0,0);
         self.x = 0;
         self.y = 0;
-    }
+    //}
 }
 
 - (UIImage *)image:(UIImage*)originalImage scaledToSize:(CGSize)size

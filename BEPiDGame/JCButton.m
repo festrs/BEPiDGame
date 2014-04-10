@@ -98,7 +98,6 @@
         self.onlyTouch = nil;
         self.isOn = NO;
         self.wasRead = YES;
-        
     }
 }
 

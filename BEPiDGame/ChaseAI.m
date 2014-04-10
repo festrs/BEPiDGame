@@ -50,7 +50,9 @@
 #import "APAGraphicsUtilities.h"
 #import "HeroCharacter.h"
 
-@interface ChaseAI ()
+@interface ChaseAI (){
+    float atackRate;
+}
 @property CGPoint pointToWalk;
 @property BOOL walking;
 @property BOOL attacking;
@@ -67,7 +69,7 @@
         _walking = FALSE;
         _attacking = FALSE;
         //scheduling the action to Attack
-        float atackRate = arc4random() % 5;
+        atackRate = arc4random() % 9;
         
         SKAction *wait = [SKAction waitForDuration:atackRate];
         SKAction *attack = [SKAction runBlock:^{
