@@ -92,6 +92,7 @@
 		7CEBF80218EDA07C0027E139 /* logoInicial.png in Resources */ = {isa = PBXBuildFile; fileRef = 7CEBF80018EDA07C0027E139 /* logoInicial.png */; };
 		7CEBF80518F324E00027E139 /* LogoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CEBF80418F324E00027E139 /* LogoViewController.m */; };
 		BA17071318F5915900931285 /* lifebar.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA17071218F5915900931285 /* lifebar.sks */; };
+		BA3CDF2618F87470003E96C2 /* manabar.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA3CDF2518F87470003E96C2 /* manabar.sks */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -211,6 +212,7 @@
 		7CEBF80318F324E00027E139 /* LogoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LogoViewController.h; path = ../LogoViewController.h; sourceTree = "<group>"; };
 		7CEBF80418F324E00027E139 /* LogoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LogoViewController.m; path = ../LogoViewController.m; sourceTree = "<group>"; };
 		BA17071218F5915900931285 /* lifebar.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = lifebar.sks; sourceTree = "<group>"; };
+		BA3CDF2518F87470003E96C2 /* manabar.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = manabar.sks; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -403,6 +405,7 @@
 		3ADCDC1018E45938000ED44E /* Particles */ = {
 			isa = PBXGroup;
 			children = (
+				BA3CDF2518F87470003E96C2 /* manabar.sks */,
 				360A4E7518F81F17004B0176 /* BossProjectile.sks */,
 				3ADCDC1218E45938000ED44E /* BossDamage.sks */,
 				360A4E7918F825BC004B0176 /* HeroProjectile.sks */,
@@ -550,7 +553,7 @@
 				ORGANIZATIONNAME = "Felipe Dias Pereira";
 				TargetAttributes = {
 					3ADCDB9E18E44EDD000ED44E = {
-						DevelopmentTeam = 439F5NHE7E;
+						DevelopmentTeam = CBSFV8387P;
 					};
 					3ADCDBC618E44EDD000ED44E = {
 						TestTargetID = 3ADCDB9E18E44EDD000ED44E;
@@ -597,6 +600,7 @@
 				3ADCDC8418E45938000ED44E /* lives.png in Resources */,
 				3ADCDC5218E45938000ED44E /* CaveDamage.sks in Resources */,
 				7CEBF80118EDA07C0027E139 /* FundoLogo.png in Resources */,
+				BA3CDF2618F87470003E96C2 /* manabar.sks in Resources */,
 				3ADCDC6D18E45938000ED44E /* Environment.atlas in Resources */,
 				3ADCDC6518E45938000ED44E /* Archer_GetHit.atlas in Resources */,
 				3ADCDC7818E45938000ED44E /* Warrior_Walk.atlas in Resources */,
