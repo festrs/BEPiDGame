@@ -159,9 +159,9 @@ typedef enum : uint8_t {
     if(level == 3){
         [enemy configDifficult:200.0f movementSpeed:100.0f atackSpeed:1.0f/78.f atackDamage:2.0f Mass:0.2f projectileSpeed:280.f];
     }else if(level == 4){
-        [enemy configDifficult:300.0f movementSpeed:50.0f atackSpeed:1.0f/88.f atackDamage:3.0f Mass:0.3f projectileSpeed:380.f];
+        [enemy configDifficult:300.0f movementSpeed:100.0f atackSpeed:1.0f/88.f atackDamage:3.0f Mass:0.3f projectileSpeed:380.f];
     }else{
-        [enemy configDifficult:400.0f movementSpeed:25.0f atackSpeed:1.0f/98.f atackDamage:4.0f Mass:0.4f projectileSpeed:480.f];
+        [enemy configDifficult:400.0f movementSpeed:100.0f atackSpeed:1.0f/98.f atackDamage:4.0f Mass:0.4f projectileSpeed:480.f];
     }
     [self updateHUDForPlayer:hero forState:APAHUDStateLocal withMessage:nil];
 }
