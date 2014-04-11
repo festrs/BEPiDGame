@@ -200,8 +200,8 @@ typedef enum : uint8_t {
 
     //if (CGRectContainsPoint(_island.frame, position)) {
         [self.world setPosition:CGPointMake(
-                                            -(position.x) + (CGRectGetMidX(self.frame)*0.6f),
-                                            -(position.y) + (CGRectGetMidY(self.frame))
+                                            -(position.x*0.6f) + (CGRectGetMidX(self.frame)),
+                                            -(position.y*0.6f) + (CGRectGetMidY(self.frame))
                                             )];
     //}
 
@@ -523,15 +523,15 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     float teste = (player.health / 100) * 100;
     
     float diferenca = (100 - teste);
-    
-    //NSLog(@"%f , %f", teste , diferenca);
-    
+    NSLog(@"%f , %f", teste , diferenca);
+    if(teste <= 0){
+        
+        teste = 0;
+    }
     SKSpriteNode *lblPercent = self.hudPercents[playerIndex];
     lblPercent.size = CGSizeMake((player.health / 100) * 100 , 10);
     lblPercent.position = CGPointMake(self.lifeBarX - (diferenca /2), lblPercent.position.y);
-    
-    
-    //NSLog(@"Teste %f", player.health);
+    NSLog(@"Teste %f", player.health);
 }
 
 - (void)updateHUDAfterHeroDeathForPlayer:(PlayerHero *)player {

@@ -87,6 +87,14 @@
     return self;
 }
 
+-(void)configDifficult{
+    self.health;
+    self.movementSpeed;
+    self.atackSpeed;
+    self.atackDamage;
+    
+}
+
 
 #pragma mark - Overridden Methods
 - (void)configurePhysicsBody {
@@ -125,7 +133,7 @@
     if (other.categoryBitMask & ColliderTypeProjectile) {
         self.requestedAnimation = APAAnimationStateGetHit;
         CGFloat damage = 2.0f;
-        BOOL killed = [self applyDamage:damage fromProjectile:other.node];
+        BOOL killed = [self applyDamage:self.atackDamage fromProjectile:other.node];
         if (killed) {
             //[[self characterScene] addToScore:100 afterEnemyKillWithProjectile:other.node];
         }

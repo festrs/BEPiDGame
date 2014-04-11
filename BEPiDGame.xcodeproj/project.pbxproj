@@ -35,7 +35,6 @@
 		3ADCDC0518E454CD000ED44E /* Boss.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ADCDBF718E454CD000ED44E /* Boss.m */; };
 		3ADCDC0618E454CD000ED44E /* ArtificialIntelligence.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ADCDBF918E454CD000ED44E /* ArtificialIntelligence.m */; };
 		3ADCDC0718E454CD000ED44E /* ChaseAI.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ADCDBFB18E454CD000ED44E /* ChaseAI.m */; };
-		3ADCDC0818E454CD000ED44E /* SpawnAI.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ADCDBFD18E454CD000ED44E /* SpawnAI.m */; };
 		3ADCDC0918E454CD000ED44E /* APAGraphicsUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ADCDBFF18E454CD000ED44E /* APAGraphicsUtilities.m */; };
 		3ADCDC4E18E45938000ED44E /* map_level.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC0E18E45938000ED44E /* map_level.png */; };
 		3ADCDC4F18E45938000ED44E /* map_trees.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC0F18E45938000ED44E /* map_trees.png */; };
@@ -151,8 +150,6 @@
 		3ADCDBF918E454CD000ED44E /* ArtificialIntelligence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArtificialIntelligence.m; sourceTree = "<group>"; };
 		3ADCDBFA18E454CD000ED44E /* ChaseAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChaseAI.h; sourceTree = "<group>"; };
 		3ADCDBFB18E454CD000ED44E /* ChaseAI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChaseAI.m; sourceTree = "<group>"; };
-		3ADCDBFC18E454CD000ED44E /* SpawnAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpawnAI.h; sourceTree = "<group>"; };
-		3ADCDBFD18E454CD000ED44E /* SpawnAI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpawnAI.m; sourceTree = "<group>"; };
 		3ADCDBFE18E454CD000ED44E /* APAGraphicsUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APAGraphicsUtilities.h; sourceTree = "<group>"; };
 		3ADCDBFF18E454CD000ED44E /* APAGraphicsUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APAGraphicsUtilities.m; sourceTree = "<group>"; };
 		3ADCDC0E18E45938000ED44E /* map_level.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = map_level.png; sourceTree = "<group>"; };
@@ -367,8 +364,6 @@
 				3ADCDBF918E454CD000ED44E /* ArtificialIntelligence.m */,
 				3ADCDBFA18E454CD000ED44E /* ChaseAI.h */,
 				3ADCDBFB18E454CD000ED44E /* ChaseAI.m */,
-				3ADCDBFC18E454CD000ED44E /* SpawnAI.h */,
-				3ADCDBFD18E454CD000ED44E /* SpawnAI.m */,
 			);
 			name = AI;
 			sourceTree = "<group>";
@@ -672,7 +667,6 @@
 				3ADCDBB118E44EDD000ED44E /* main.m in Sources */,
 				3ADCDBE618E44F80000ED44E /* JCImageJoystick.m in Sources */,
 				3ADCDC0318E454CD000ED44E /* PlayerHero.m in Sources */,
-				3ADCDC0818E454CD000ED44E /* SpawnAI.m in Sources */,
 				3ADCDBE418E44F80000ED44E /* JCButton.m in Sources */,
 				3ADCDC0618E454CD000ED44E /* ArtificialIntelligence.m in Sources */,
 				3ADCDC0718E454CD000ED44E /* ChaseAI.m in Sources */,

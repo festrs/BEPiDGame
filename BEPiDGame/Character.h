@@ -105,6 +105,8 @@ typedef enum : uint8_t {
 @property (nonatomic, getter=isInLava) BOOL inLava;
 @property (nonatomic) CGFloat animationSpeed;
 @property (nonatomic) CGFloat movementSpeed;
+@property (nonatomic) CGFloat atackSpeed;
+@property (nonatomic) CGFloat atackDamage;
 
 @property (nonatomic) NSString *activeAnimationKey;
 @property (nonatomic) APAAnimationState requestedAnimation;

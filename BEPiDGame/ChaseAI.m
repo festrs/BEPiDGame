@@ -110,8 +110,8 @@
     CGFloat distance = APADistanceBetweenPoints(position, self.pointToWalk);
 
     if (distance > chaseRadius && self.walking && !self.target) {
-        CGFloat pointX = (self.pointToWalk.x - position.x)/150 + position.x;
-        CGFloat pointY = (self.pointToWalk.y - position.y)/150 + position.y;
+        CGFloat pointX = (self.pointToWalk.x - position.x)/(ourCharacter.movementSpeed) + position.x;
+        CGFloat pointY = (self.pointToWalk.y - position.y)/(ourCharacter.movementSpeed) + position.y;
         [self.character moveTowards:CGPointMake(pointX, pointY) withTimeInterval:interval];
     }else{
         self.walking = FALSE;

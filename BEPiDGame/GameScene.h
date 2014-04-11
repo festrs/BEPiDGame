@@ -21,7 +21,7 @@ typedef enum : uint8_t {
 	kWorldLayerCount
 } APAWorldLayer;
 
-@class HeroCharacter, Character, Boss;
+@class HeroCharacter, Character, Boss, PlayerHero;
 
 @interface GameScene : SKScene <SKPhysicsContactDelegate>
 @property (nonatomic, readonly) ViewController *myVC;
@@ -34,4 +34,5 @@ typedef enum : uint8_t {
 -(void)monsterWasKilled:(Boss *)monster;
 -(void) startGame: (NSInteger )level;
 @property (nonatomic, copy) void (^gameOverBlock)(BOOL didWin);
+- (void)updateHUDForPlayer:(PlayerHero *)player;
 @end

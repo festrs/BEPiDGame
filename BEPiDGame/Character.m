@@ -50,6 +50,7 @@
 #import "APAGraphicsUtilities.h"
 #import "ParallaxSprite.h"
 #import "Boss.h"
+#import "PlayerHero.h"
 
 
 @interface Character ()
@@ -104,7 +105,8 @@
     _movementSpeed = kMovementSpeed;
     _animated = YES;
     _animationSpeed = 1.0f/28.0f;
-    
+    _atackSpeed = 1.0f/78.f;
+    _atackDamage = 2.0f;
     [self configurePhysicsBody];
 }
 
@@ -158,7 +160,10 @@
 - (BOOL)applyDamage:(CGFloat)damage {
     // Apply damage and return YES if death.
     self.health -= damage;
-    
+    if([self isKindOfClass:[PlayerHero class]]){
+        GameScene *scene = (GameScene *)self.scene;
+        [scene updateHUDForPlayer:(PlayerHero *)self];
+    }
     if (self.health > 0.0f) {
         //APAMultiplayerLayeredCharacterScene *scene = (APAMultiplayerLayeredCharacterScene *)[self characterScene];
         
@@ -176,16 +181,8 @@
         if (damageAction) {
             [self runAction:damageAction];
         }
-
-        SKAction *wait = [SKAction waitForDuration:0.5];
-        SKAction *isInLava = [SKAction runBlock:^{
-            if(self.isInLava == TRUE){
-                [self applyDamage:16.0f];
-            }
-        }];
-        SKAction *checkLava = [SKAction sequence:@[wait,isInLava]];
-        [self runAction:[SKAction repeatActionForever:checkLava]];
-
+        
+        
         return NO;
     }
     
@@ -240,9 +237,7 @@
         case APAAnimationStateAttack:
             animationKey = @"anim_attack";
             if([self isKindOfClass:[Boss class]]){
-                self.animationSpeed = 1.0f/68.0f;
-            }else{
-                self.animationSpeed = 1.0f/48.0f;
+                self.animationSpeed = self.atackSpeed;
             }
             animationFrames = [self attackAnimationFrames];
             break;
