@@ -126,7 +126,6 @@
         self.requestedAnimation = APAAnimationStateGetHit;
         CGFloat damage = 2.0f;
         BOOL killed = [self applyDamage:damage fromProjectile:other.node];
-        //[self moveTowards:CGPointMake(self.position.x *1.1, self.position.y *1.1)];
         if (killed) {
             //[[self characterScene] addToScore:100 afterEnemyKillWithProjectile:other.node];
         }
@@ -160,9 +159,9 @@
         sharedGetHitAnimationFrames = APALoadFramesFromAtlas(@"Boss_GetHit", @"boss_getHit_", kBossGetHitFrames);
         sharedDeathAnimationFrames = APALoadFramesFromAtlas(@"Boss_Death", @"boss_death_", kBossDeathFrames);
         sSharedDamageEmitter = [SKEmitterNode apa_emitterNodeWithEmitterNamed:@"BossDamage"];
-        sSharedDamageAction = [SKAction sequence:@[[SKAction colorizeWithColor:[SKColor whiteColor] colorBlendFactor:1.0 duration:0.0],
-                                                   [SKAction waitForDuration:0.5],
-                                                   [SKAction colorizeWithColorBlendFactor:0.0 duration:0.1]
+        sSharedDamageAction = [SKAction sequence:@[[SKAction colorizeWithColor:[SKColor redColor] colorBlendFactor:10.0 duration:0.0],
+                                                   [SKAction waitForDuration:0.25],
+                                                   [SKAction colorizeWithColorBlendFactor:0.0 duration:0.25]
                                                    ]];
     });
 }

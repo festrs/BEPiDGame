@@ -50,15 +50,15 @@
 
 #define kWarriorIdleFrames 29
 #define kWarriorThrowFrames 10
-#define kWarriorGetHitFrames 20
-#define kWarriorDeathFrames 90
+#define kWarriorGetHitFrames 18
+#define kWarriorDeathFrames 42
 
 @implementation PlayerHero
 
 #pragma mark - Initialization
 - (id)initAtPosition:(CGPoint)position withPlayer:(APAPlayer *)player {
-    SKTextureAtlas *atlas = [SKTextureAtlas atlasNamed:@"Warrior_Idle"];
-    SKTexture *texture = [atlas textureNamed:@"warrior_idle_0001.png"];
+    SKTextureAtlas *atlas = [SKTextureAtlas atlasNamed:@"Archer_Idle"];
+    SKTexture *texture = [atlas textureNamed:@"archer_idle_0001.png"];
     return [super initWithTexture:texture atPosition:position withPlayer:player];
 }
 
@@ -77,14 +77,14 @@
         sSharedProjectile.physicsBody.collisionBitMask = ColliderTypeScenario | ColliderTypeProjectileBoss | ColliderTypeGoblinOrBoss;
         sSharedProjectile.physicsBody.contactTestBitMask = sSharedProjectile.physicsBody.collisionBitMask;
         
-        sSharedProjectileEmitter = [SKEmitterNode apa_emitterNodeWithEmitterNamed:@"WarriorProjectile"];
-        sSharedIdleAnimationFrames = APALoadFramesFromAtlas(@"Warrior_Idle", @"warrior_idle_", kWarriorIdleFrames);
-        sSharedWalkAnimationFrames = APALoadFramesFromAtlas(@"Warrior_Walk", @"warrior_walk_", kDefaultNumberOfWalkFrames);
-        sharedAttackAnimationFrames = APALoadFramesFromAtlas(@"Warrior_Attack", @"warrior_attack_", kWarriorThrowFrames);
-        sharedGetHitAnimationFrames = APALoadFramesFromAtlas(@"Warrior_GetHit", @"warrior_getHit_", kWarriorGetHitFrames);
-        sharedDeathAnimationFrames = APALoadFramesFromAtlas(@"Warrior_Death", @"warrior_death_", kWarriorDeathFrames);
+        sSharedProjectileEmitter = [SKEmitterNode apa_emitterNodeWithEmitterNamed:@"ArcherProjectile"];
+        sSharedIdleAnimationFrames = APALoadFramesFromAtlas(@"Archer_Idle", @"archer_idle_", kDefaultNumberOfIdleFrames);
+        sSharedWalkAnimationFrames = APALoadFramesFromAtlas(@"Archer_Walk", @"archer_walk_", kDefaultNumberOfWalkFrames);
+        sharedAttackAnimationFrames = APALoadFramesFromAtlas(@"Archer_Attack", @"archer_attack_", kWarriorThrowFrames);
+        sharedGetHitAnimationFrames = APALoadFramesFromAtlas(@"Archer_GetHit", @"archer_getHit_", kWarriorGetHitFrames);
+        sharedDeathAnimationFrames = APALoadFramesFromAtlas(@"Archer_Death", @"archer_death_", kWarriorDeathFrames);
         sSharedDamageAction = [SKAction sequence:@[[SKAction colorizeWithColor:[SKColor redColor] colorBlendFactor:10.0 duration:0.0],
-                                                   [SKAction waitForDuration:0.5],
+                                                   [SKAction waitForDuration:0.25],
                                                    [SKAction colorizeWithColorBlendFactor:0.0 duration:0.25]
                                                    ]];
     });
