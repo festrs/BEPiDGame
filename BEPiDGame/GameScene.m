@@ -164,6 +164,7 @@ typedef enum : uint8_t {
     }else{
         [enemy configDifficult:400.0f movementSpeed:100.0f atackSpeed:1.0f/98.f atackDamage:4.0f Mass:0.4f projectileSpeed:480.f];
     }
+}
 
 -(void)monsterWasKilled:(Boss *)monster{
     [self.enemys removeObject:monster];
