@@ -51,5 +51,10 @@
 @interface Boss : EnemyCharacter
 
 - (id)initAtPosition:(CGPoint)position;
-
+-(void)configDifficult:(CGFloat )health
+         movementSpeed:(CGFloat)movementSpeed
+            atackSpeed:(CGFloat)atackSpeed
+           atackDamage:(CGFloat)atackDamage
+                  Mass:(CGFloat)physicsBodyMass
+       projectileSpeed:(CGFloat)projectileSpeed;
 @end

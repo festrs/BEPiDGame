@@ -53,4 +53,5 @@
 
 @property (nonatomic) ArtificialIntelligence *intelligence;
 - (void)fireProjectile;
+
 @end

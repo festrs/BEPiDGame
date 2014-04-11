@@ -77,7 +77,7 @@
 
 -(void)creatAtack{
     if(!self.character.isDying){
-        float atackRate = arc4random() % 8;
+        float atackRate = arc4random() % 5;
         SKAction *wait = [SKAction waitForDuration:atackRate];
         SKAction *attack = [SKAction runBlock:^{
             [self performAttackMonster];

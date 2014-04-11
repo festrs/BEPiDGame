@@ -88,8 +88,8 @@
         
         CGFloat rot = projectile.zRotation;
         
-        [projectile runAction:[SKAction moveByX:-sinf(rot)*kHeroProjectileSpeed*kHeroProjectileLifetime
-                                              y:cosf(rot)*kHeroProjectileSpeed*kHeroProjectileLifetime
+        [projectile runAction:[SKAction moveByX:-sinf(rot)*self.projectileSpeed*kHeroProjectileLifetime
+                                              y:cosf(rot)*self.projectileSpeed*kHeroProjectileLifetime
                                        duration:kHeroProjectileLifetime]];
         
         [projectile runAction:[SKAction sequence:@[[SKAction waitForDuration:kHeroProjectileFadeOutTime],

@@ -70,7 +70,7 @@
     if (self) {
         self.movementSpeed = kMovementSpeed * 0.35f;
         self.animationSpeed = 1.0f/35.0f;
-        
+        self.physicsBody.mass = 0.2f;
         self.zPosition = -0.25f;
         self.name = @"Boss";
         
@@ -87,12 +87,18 @@
     return self;
 }
 
--(void)configDifficult{
-    self.health;
-    self.movementSpeed;
-    self.atackSpeed;
-    self.atackDamage;
-    
+-(void)configDifficult:(CGFloat )health
+         movementSpeed:(CGFloat)movementSpeed
+            atackSpeed:(CGFloat)atackSpeed
+           atackDamage:(CGFloat)atackDamage
+                  Mass:(CGFloat)physicsBodyMass
+       projectileSpeed:(CGFloat)projectileSpeed{
+    self.health = health;
+    self.movementSpeed = movementSpeed;
+    self.atackSpeed = atackSpeed;
+    self.atackDamage = atackDamage;
+    self.physicsBody.mass = physicsBodyMass;
+    self.projectileSpeed =projectileSpeed;
 }
 
 

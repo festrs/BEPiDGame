@@ -80,7 +80,7 @@ typedef enum : uint8_t {
         _world.xScale = 0.6f;
         _world.yScale = 0.6f;
         //lava
-        _lava = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.6 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(self.frame.size.width*3, self.frame.size.height*3)];
+        _lava = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.6 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(self.frame.size.width*6, self.frame.size.height*6)];
         [_lava setTexture:[SKTexture textureWithImageNamed:@"lava"]];
         _lava.position = CGPointMake(_world.position.x, _world.position.y);
         //_lava.zPosition = -2; // pra lava ficar abaixo da ilha
@@ -91,7 +91,7 @@ typedef enum : uint8_t {
         [self addNode:_lava atWorldLayer:APAWorldLayerGround];
         
         //island
-        _island = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.3 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(_lava.frame.size.width*0.4f, _lava.frame.size.height*0.4f)];
+        _island = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.3 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(_lava.frame.size.width*0.25f, _lava.frame.size.height*0.25f)];
         [_island setTexture:[SKTexture textureWithImageNamed:@"rock"]];
         //_island.position = CGPointMake(_lava.frame.size.width/2, _lava.frame.size.height/2);
         //_island.zPosition = -1; // pra ilha ficar embaixo dos personagens
@@ -147,15 +147,21 @@ typedef enum : uint8_t {
     [(NSMutableArray *)self.heroes addObject:hero];
 
     //enemy
-    for(int i = 0; i < level; i++){
-        Boss * enemy = [[Boss alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.island.frame)+120*i,
+    
+   
+    Boss * enemy = [[Boss alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.island.frame)+120,
                                                           CGRectGetMidY(self.island.frame))];
         
-        [self addNode:enemy atWorldLayer:APAWorldLayerCharacter];
-        [self desacelerateCharacter:enemy];
-        [self.enemys addObject:enemy];
+    [self addNode:enemy atWorldLayer:APAWorldLayerCharacter];
+    [self desacelerateCharacter:enemy];
+    [self.enemys addObject:enemy];
+    if(level == 3){
+        [enemy configDifficult:200.0f movementSpeed:100.0f atackSpeed:1.0f/78.f atackDamage:2.0f Mass:0.2f projectileSpeed:280.f];
+    }else if(level == 4){
+        [enemy configDifficult:300.0f movementSpeed:50.0f atackSpeed:1.0f/88.f atackDamage:3.0f Mass:0.3f projectileSpeed:380.f];
+    }else{
+        [enemy configDifficult:400.0f movementSpeed:25.0f atackSpeed:1.0f/98.f atackDamage:4.0f Mass:0.4f projectileSpeed:480.f];
     }
-
     [self updateHUDForPlayer:hero forState:APAHUDStateLocal withMessage:nil];
 }
 
@@ -335,8 +341,8 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         Character *nodeChar = (Character *)node;
         if (!nodeChar.isDying) {
             CGVector vector = CGVectorMake(
-                                           (node.position.x-projectile.position.x)*0.7,
-                                           (node.position.y-projectile.position.y)*0.7
+                                           (node.position.x-projectile.position.x)*2.0,
+                                           (node.position.y-projectile.position.y)*2.0
                                            );
             [node.physicsBody applyImpulse:vector atPoint:contact.contactPoint];
         }
@@ -523,7 +529,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     float teste = (player.health / 100) * 100;
     
     float diferenca = (100 - teste);
-    NSLog(@"%f , %f", teste , diferenca);
+    //NSLog(@"%f , %f", teste , diferenca);
     if(teste <= 0){
         
         teste = 0;
@@ -531,7 +537,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     SKSpriteNode *lblPercent = self.hudPercents[playerIndex];
     lblPercent.size = CGSizeMake((player.health / 100) * 100 , 10);
     lblPercent.position = CGPointMake(self.lifeBarX - (diferenca /2), lblPercent.position.y);
-    NSLog(@"Teste %f", player.health);
+    //NSLog(@"Teste %f", player.health);
 }
 
 - (void)updateHUDAfterHeroDeathForPlayer:(PlayerHero *)player {

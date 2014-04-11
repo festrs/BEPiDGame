@@ -107,6 +107,7 @@ typedef enum : uint8_t {
 @property (nonatomic) CGFloat movementSpeed;
 @property (nonatomic) CGFloat atackSpeed;
 @property (nonatomic) CGFloat atackDamage;
+@property (nonatomic) CGFloat projectileSpeed;
 
 @property (nonatomic) NSString *activeAnimationKey;
 @property (nonatomic) APAAnimationState requestedAnimation;
