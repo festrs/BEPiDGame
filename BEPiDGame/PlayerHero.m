@@ -68,16 +68,14 @@
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        SKTextureAtlas *atlas = [SKTextureAtlas atlasNamed:@"Environment"];
-
-        sSharedProjectile = [SKSpriteNode spriteNodeWithTexture:[atlas textureNamed:@"warrior_throw_hammer.png"]];
+        sSharedProjectile = [SKSpriteNode spriteNodeWithColor:[SKColor whiteColor] size:CGSizeMake(1, 1)];
         sSharedProjectile.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:kProjectileCollisionRadius];
         sSharedProjectile.name = @"Projectile";
         sSharedProjectile.physicsBody.categoryBitMask = ColliderTypeProjectile;
         sSharedProjectile.physicsBody.collisionBitMask = ColliderTypeScenario | ColliderTypeProjectileBoss | ColliderTypeGoblinOrBoss;
         sSharedProjectile.physicsBody.contactTestBitMask = sSharedProjectile.physicsBody.collisionBitMask;
         
-        sSharedProjectileEmitter = [SKEmitterNode apa_emitterNodeWithEmitterNamed:@"ArcherProjectile"];
+        sSharedProjectileEmitter = [SKEmitterNode apa_emitterNodeWithEmitterNamed:@"HeroProjectile"];
         sSharedIdleAnimationFrames = APALoadFramesFromAtlas(@"Archer_Idle", @"archer_idle_", kDefaultNumberOfIdleFrames);
         sSharedWalkAnimationFrames = APALoadFramesFromAtlas(@"Archer_Walk", @"archer_walk_", kDefaultNumberOfWalkFrames);
         sharedAttackAnimationFrames = APALoadFramesFromAtlas(@"Archer_Attack", @"archer_attack_", kWarriorThrowFrames);
