@@ -144,14 +144,15 @@
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sSharedProjectile = [SKSpriteNode spriteNodeWithColor:[SKColor whiteColor] size:CGSizeMake(2.0, 24.0)];
+        sSharedProjectile = [SKSpriteNode spriteNodeWithColor:[SKColor redColor] size:CGSizeMake(1, 1)];
+
         sSharedProjectile.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:kProjectileCollisionRadius];
         sSharedProjectile.name = @"Projectile";
         sSharedProjectile.physicsBody.categoryBitMask = ColliderTypeProjectileBoss;
         sSharedProjectile.physicsBody.collisionBitMask = ColliderTypeScenario | ColliderTypeProjectile | ColliderTypeHero;
         sSharedProjectile.physicsBody.contactTestBitMask = sSharedProjectile.physicsBody.collisionBitMask;
         
-        sSharedProjectileEmitter = [SKEmitterNode apa_emitterNodeWithEmitterNamed:@"ArcherProjectile"];
+        sSharedProjectileEmitter = [SKEmitterNode apa_emitterNodeWithEmitterNamed:@"BossDamage"];
         
         sSharedIdleAnimationFrames = APALoadFramesFromAtlas(@"Boss_Idle", @"boss_idle_", kBossIdleFrames);
         sSharedWalkAnimationFrames = APALoadFramesFromAtlas(@"Boss_Walk", @"boss_walk_", kBossWalkFrames);
