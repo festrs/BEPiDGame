@@ -152,7 +152,7 @@
         sSharedProjectile.physicsBody.collisionBitMask = ColliderTypeScenario | ColliderTypeProjectile | ColliderTypeHero;
         sSharedProjectile.physicsBody.contactTestBitMask = sSharedProjectile.physicsBody.collisionBitMask;
         
-        sSharedProjectileEmitter = [SKEmitterNode apa_emitterNodeWithEmitterNamed:@"BossDamage"];
+        sSharedProjectileEmitter = [SKEmitterNode apa_emitterNodeWithEmitterNamed:@"BossProjectile"];
         
         sSharedIdleAnimationFrames = APALoadFramesFromAtlas(@"Boss_Idle", @"boss_idle_", kBossIdleFrames);
         sSharedWalkAnimationFrames = APALoadFramesFromAtlas(@"Boss_Walk", @"boss_walk_", kBossWalkFrames);

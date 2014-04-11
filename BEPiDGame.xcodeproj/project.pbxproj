@@ -411,9 +411,9 @@
 			isa = PBXGroup;
 			children = (
 				360A4E7518F81F17004B0176 /* BossProjectile.sks */,
+				3ADCDC1218E45938000ED44E /* BossDamage.sks */,
 				360A4E7918F825BC004B0176 /* HeroProjectile.sks */,
 				3ADCDC1118E45938000ED44E /* ArcherProjectile.sks */,
-				3ADCDC1218E45938000ED44E /* BossDamage.sks */,
 				3ADCDC1318E45938000ED44E /* CaveDamage.sks */,
 				3ADCDC1418E45938000ED44E /* CaveDeathSmoke.sks */,
 				3ADCDC1518E45938000ED44E /* CaveFire.sks */,
