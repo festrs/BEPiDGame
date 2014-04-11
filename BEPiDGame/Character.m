@@ -74,7 +74,7 @@
         SKAction *wait = [SKAction waitForDuration:0.5];
         SKAction *isInLava = [SKAction runBlock:^{
             if(self.isInLava == TRUE){
-                [self applyDamage:16.0f];
+                [self applyDamage:10.0f];
             }
         }];
         SKAction *checkLava = [SKAction sequence:@[wait,isInLava]];

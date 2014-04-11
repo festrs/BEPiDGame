@@ -75,7 +75,6 @@
 		3ADCDC7618E45938000ED44E /* Warrior_GetHit.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC3D18E45938000ED44E /* Warrior_GetHit.atlas */; };
 		3ADCDC7718E45938000ED44E /* Warrior_Idle.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC3E18E45938000ED44E /* Warrior_Idle.atlas */; };
 		3ADCDC7818E45938000ED44E /* Warrior_Walk.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC3F18E45938000ED44E /* Warrior_Walk.atlas */; };
-		3ADCDC7918E45938000ED44E /* Assets - iOS.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC4118E45938000ED44E /* Assets - iOS.xcassets */; };
 		3ADCDC7A18E45938000ED44E /* Assets - OS X.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC4218E45938000ED44E /* Assets - OS X.xcassets */; };
 		3ADCDC7B18E45938000ED44E /* button_archer.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC4318E45938000ED44E /* button_archer.png */; };
 		3ADCDC7C18E45938000ED44E /* button_warrior.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC4418E45938000ED44E /* button_warrior.png */; };
@@ -193,7 +192,6 @@
 		3ADCDC3D18E45938000ED44E /* Warrior_GetHit.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Warrior_GetHit.atlas; sourceTree = "<group>"; };
 		3ADCDC3E18E45938000ED44E /* Warrior_Idle.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Warrior_Idle.atlas; sourceTree = "<group>"; };
 		3ADCDC3F18E45938000ED44E /* Warrior_Walk.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Warrior_Walk.atlas; sourceTree = "<group>"; };
-		3ADCDC4118E45938000ED44E /* Assets - iOS.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Assets - iOS.xcassets"; sourceTree = "<group>"; };
 		3ADCDC4218E45938000ED44E /* Assets - OS X.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Assets - OS X.xcassets"; sourceTree = "<group>"; };
 		3ADCDC4318E45938000ED44E /* button_archer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = button_archer.png; sourceTree = "<group>"; };
 		3ADCDC4418E45938000ED44E /* button_warrior.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = button_warrior.png; sourceTree = "<group>"; };
@@ -488,7 +486,6 @@
 		3ADCDC4018E45938000ED44E /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				3ADCDC4118E45938000ED44E /* Assets - iOS.xcassets */,
 				3ADCDC4218E45938000ED44E /* Assets - OS X.xcassets */,
 				3ADCDC4318E45938000ED44E /* button_archer.png */,
 				3ADCDC4418E45938000ED44E /* button_warrior.png */,
@@ -605,7 +602,6 @@
 				3ADCDC7818E45938000ED44E /* Warrior_Walk.atlas in Resources */,
 				3ADCDC6C18E45938000ED44E /* Boss_Walk.atlas in Resources */,
 				3ADCDC7618E45938000ED44E /* Warrior_GetHit.atlas in Resources */,
-				3ADCDC7918E45938000ED44E /* Assets - iOS.xcassets in Resources */,
 				3ADCDC5E18E45938000ED44E /* spark.png in Resources */,
 				3ADCDC6818E45938000ED44E /* Boss_Attack.atlas in Resources */,
 				BA17071318F5915900931285 /* lifebar.sks in Resources */,

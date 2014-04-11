@@ -77,8 +77,8 @@ typedef enum : uint8_t {
         
         [self addChild:_world];
         
-        _world.xScale = 0.6f;
-        _world.yScale = 0.6f;
+        _world.xScale = 0.4f;
+        _world.yScale = 0.4f;
         //lava
         _lava = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.6 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(self.frame.size.width*6, self.frame.size.height*6)];
         [_lava setTexture:[SKTexture textureWithImageNamed:@"lava"]];
@@ -206,8 +206,8 @@ typedef enum : uint8_t {
 
     //if (CGRectContainsPoint(_island.frame, position)) {
         [self.world setPosition:CGPointMake(
-                                            -(position.x*0.6f) + (CGRectGetMidX(self.frame)),
-                                            -(position.y*0.6f) + (CGRectGetMidY(self.frame))
+                                            -(position.x*0.4) + (CGRectGetMidX(self.frame)),
+                                            -(position.y*0.4) + (CGRectGetMidY(self.frame))
                                             )];
     //}
 
