@@ -77,8 +77,6 @@ typedef enum : uint8_t {
         
         [self addChild:_world];
         
-        _world.xScale = 0.4f;
-        _world.yScale = 0.4f;
         //lava
         _lava = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.6 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(self.frame.size.width*6, self.frame.size.height*6)];
         [_lava setTexture:[SKTexture textureWithImageNamed:@"lava"]];
@@ -132,6 +130,9 @@ typedef enum : uint8_t {
 
 -(void) startGame: (NSInteger )level{
 
+    
+    _world.xScale = 0.6f;
+    _world.yScale = 0.6f;
     //hero
     PlayerHero *hero = [[PlayerHero alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.island.frame)-120,
                                                                CGRectGetMidY(self.island.frame)) withPlayer:nil];
@@ -172,7 +173,7 @@ typedef enum : uint8_t {
 - (void)heroWasKilled:(HeroCharacter *)hero {
     [self removeAllNodeatWorldLayer:APAWorldLayerCharacter];
     [self.enemys removeAllObjects];
-    if(self.heroes.count >0){
+    if(self.heroes.count > 0){
         [(NSMutableArray *)self.heroes removeObject:hero];
     }
     self.gameOverBlock(TRUE);
@@ -206,8 +207,8 @@ typedef enum : uint8_t {
 
     //if (CGRectContainsPoint(_island.frame, position)) {
         [self.world setPosition:CGPointMake(
-                                            -(position.x*0.4) + (CGRectGetMidX(self.frame)),
-                                            -(position.y*0.4) + (CGRectGetMidY(self.frame))
+                                            -(position.x*self.world.xScale) + (CGRectGetMidX(self.frame)),
+                                            -(position.y*self.world.yScale) + (CGRectGetMidY(self.frame))
                                             )];
     //}
 
@@ -242,14 +243,33 @@ typedef enum : uint8_t {
         [self centerWorldOnCharacter:hero];
     }
     
-        for (Boss *boss in self.enemys) {
-            [boss updateWithTimeSinceLastUpdate:currentTime];
-        }
+    for (Boss *boss in self.enemys) {
+        [boss updateWithTimeSinceLastUpdate:currentTime];
+    }
     if(self.enemys.count == 0 && self.heroes.count > 0){
         [self heroWasKilled:hero];
     }
+    
+    if(self.enemys.count >0 && self.heroes.count >0){
+        [self updateScale];
+    }
+    
 
     self.atackIntent = FALSE;
+}
+
+-(void)updateScale{
+    
+    Boss *boss = [self.enemys objectAtIndex:0];
+    PlayerHero *hero = [self.heroes objectAtIndex:0];
+    
+    double dist = sqrt ( pow((boss.position.x-hero.position.x), 2) + pow((boss.position.y-hero.position.y), 2) );
+    
+    float scale = 1-(dist / 1000);
+    if(scale >= 0.25 && scale <= 0.6){
+        self.world.xScale = scale;
+        self.world.yScale = scale;
+    }
 }
 
 - (void)checkButtons
