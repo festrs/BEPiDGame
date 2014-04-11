@@ -50,8 +50,8 @@
 
 #define kWarriorIdleFrames 29
 #define kWarriorThrowFrames 10
-#define kWarriorGetHitFrames 20
-#define kWarriorDeathFrames 90
+#define kWarriorGetHitFrames 18
+#define kWarriorDeathFrames 42
 
 @implementation PlayerHero
 
