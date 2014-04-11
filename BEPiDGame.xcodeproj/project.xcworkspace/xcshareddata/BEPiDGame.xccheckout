@@ -5,37 +5,29 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>A4CA02DD-4518-4CF3-9900-06C4296C7E57</string>
+	<string>352DF656-E01C-461C-BC37-7C99E9A9DB66</string>
 	<key>IDESourceControlProjectName</key>
 	<string>BEPiDGame</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>FBBFBFC3-1FC5-4FAA-80DE-D0C3D0D9AD32</key>
-		<string>https://github.com/festrs/BEPiDGame.git</string>
+		<key>7F460A49-10F6-488C-A737-78ADBCF148CE</key>
+		<string>https://github.com/festrs/BEPiDGame</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>BEPiDGame4/BEPiDGame.xcodeproj/project.xcworkspace</string>
+	<string>BEPiDGame.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>7F460A49-10F6-488C-A737-78ADBCF148CE</key>
-		<string>../../..</string>
+		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/festrs/BEPiDGame.git</string>
+	<string>https://github.com/festrs/BEPiDGame</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>FBBFBFC3-1FC5-4FAA-80DE-D0C3D0D9AD32</string>
+	<string>7F460A49-10F6-488C-A737-78ADBCF148CE</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
-		<dict>
-			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
-			<string>public.vcs.git</string>
-			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>FBBFBFC3-1FC5-4FAA-80DE-D0C3D0D9AD32</string>
-			<key>IDESourceControlWCCName</key>
-			<string>BEPiDGame</string>
-		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
