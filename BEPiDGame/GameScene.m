@@ -135,11 +135,12 @@ typedef enum : uint8_t {
     //hero
     PlayerHero *hero = [[PlayerHero alloc] initAtPosition:CGPointMake(CGRectGetMidX(self.island.frame)-120,
                                                                CGRectGetMidY(self.island.frame)) withPlayer:nil];
-    
+
     [hero characterScene];
     [self addNode:hero atWorldLayer:APAWorldLayerCharacter];
     [self desacelerateCharacter:hero];
-    
+    [self updateHUDForPlayer:hero];
+
     //_defaultPlayer = self.hero;
     
     [self centerWorldOnCharacter:hero];
@@ -158,12 +159,11 @@ typedef enum : uint8_t {
     if(level == 3){
         [enemy configDifficult:200.0f movementSpeed:100.0f atackSpeed:1.0f/78.f atackDamage:2.0f Mass:0.2f projectileSpeed:280.f];
     }else if(level == 4){
-        [enemy configDifficult:300.0f movementSpeed:50.0f atackSpeed:1.0f/88.f atackDamage:3.0f Mass:0.3f projectileSpeed:380.f];
+        [enemy configDifficult:300.0f movementSpeed:100.0f atackSpeed:1.0f/88.f atackDamage:3.0f Mass:0.3f projectileSpeed:380.f];
     }else{
-        [enemy configDifficult:400.0f movementSpeed:25.0f atackSpeed:1.0f/98.f atackDamage:4.0f Mass:0.4f projectileSpeed:480.f];
+        [enemy configDifficult:400.0f movementSpeed:100.0f atackSpeed:1.0f/98.f atackDamage:4.0f Mass:0.4f projectileSpeed:480.f];
     }
-    [self updateHUDForPlayer:hero forState:APAHUDStateLocal withMessage:nil];
-}
+    }
 
 -(void)monsterWasKilled:(Boss *)monster{
     [self.enemys removeObject:monster];
@@ -441,6 +441,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         label.text = @"NO PLAYER";
         label.fontColor = colors[i];
         label.fontSize = 16;
+        label.hidden = YES;
         label.horizontalAlignmentMode = SKLabelHorizontalAlignmentModeLeft;
         label.position = CGPointMake(hudX + i * hudD + (avatar.size.width * 1.0), hudY + 10 );
         [(NSMutableArray *)_hudLabels addObject:label];
@@ -448,6 +449,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         
         SKLabelNode *score = [SKLabelNode labelNodeWithFontNamed:@"Copperplate"];
         score.text = @"SCORE: 0";
+        score.hidden = YES;
         score.fontColor = colors[i];
         score.fontSize = 16;
         score.horizontalAlignmentMode = SKLabelHorizontalAlignmentModeLeft;
@@ -470,10 +472,30 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         nodeTest.color = [SKColor greenColor];
         nodeTest.position = CGPointMake(hudX + i * hudD + (avatar.size.width * 1.0) + ((nodeTest.size.width / 2)), hudY - 10);
         
-        self.lifeBarX = nodeTest.position.x;
+        NSString *burstPath =
+        [[NSBundle mainBundle] pathForResource:@"lifebar" ofType:@"sks"];
         
-        [(NSMutableArray *) _hudPercents addObject:nodeTest];
-        [hud addChild:nodeTest];
+        SKEmitterNode *lifeEmitter =
+        [NSKeyedUnarchiver unarchiveObjectWithFile:burstPath];
+        
+        lifeEmitter.position = CGPointMake(hudX + i * hudD + (avatar.size.width * 1.0 + 50) + ((lifeEmitter.frame.size.width / 2)), hudY +10);
+        
+        [hud addChild:lifeEmitter];
+        
+        NSString *manaPath =
+        [[NSBundle mainBundle] pathForResource:@"manabar" ofType:@"sks"];
+
+        
+        SKEmitterNode *manaEmitter=
+        [NSKeyedUnarchiver unarchiveObjectWithFile:manaPath];
+        
+        manaEmitter.position = CGPointMake(hudX + i * hudD + (avatar.size.width * 1.0 + 50) + ((manaEmitter.frame.size.width / 2)), hudY -10);
+        
+        [hud addChild:manaEmitter];
+
+        self.lifeBarX = lifeEmitter.position.x ;
+        [(NSMutableArray *) _hudPercents addObject:lifeEmitter];
+      
     }
     
     [self addChild:hud];
@@ -531,12 +553,17 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     float diferenca = (100 - teste);
     //NSLog(@"%f , %f", teste , diferenca);
     if(teste <= 0){
-        
         teste = 0;
     }
-    SKSpriteNode *lblPercent = self.hudPercents[playerIndex];
-    lblPercent.size = CGSizeMake((player.health / 100) * 100 , 10);
+    SKEmitterNode *lblPercent = self.hudPercents[playerIndex];
+    lblPercent.particlePositionRange = CGVectorMake((player.health / 100) * 100 , 10);
+    
     lblPercent.position = CGPointMake(self.lifeBarX - (diferenca /2), lblPercent.position.y);
+
+    if(diferenca > 95){
+        [lblPercent removeFromParent];
+    }
+
     //NSLog(@"Teste %f", player.health);
 }
 
