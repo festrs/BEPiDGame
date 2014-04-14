@@ -298,6 +298,8 @@
             animationKey = @"anim_attack";
             if([self isKindOfClass:[Boss class]]){
                 self.animationSpeed = self.atackSpeed;
+            }else{
+                self.animationSpeed = 1.0f/78.0f;
             }
             animationFrames = [self attackAnimationFrames];
             break;
