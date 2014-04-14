@@ -9,7 +9,6 @@
 #import "LogoViewController.h"
 @interface LogoViewController ()
 @property (weak, nonatomic) IBOutlet UIImageView *gameLogo;
-@property (weak, nonatomic) IBOutlet UIButton *btSair;
 @property (weak, nonatomic) IBOutlet UIButton *btJogar;
 @end
 
@@ -18,8 +17,7 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     //seta bordas redondas dos botões
-    self.btSair.layer.borderWidth = 0.5f;
-    self.btSair.layer.cornerRadius = 5;
+    self.btJogar.backgroundColor = [UIColor redColor];
     self.btJogar.layer.borderWidth = 0.5f;
     self.btJogar.layer.cornerRadius = 5;
 }
@@ -34,10 +32,6 @@
     [super didReceiveMemoryWarning];
 }
 
-- (IBAction)TouchSair:(id)sender
-{
-
-}
 
 - (IBAction)TouchJogar:(id)sender
 {
