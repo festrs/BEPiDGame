@@ -71,6 +71,9 @@
         self.physicsBody.linearDamping = 0.1f;
         self.physicsBody.mass = 0.2f;
         
+        if([self isKindOfClass:[PlayerHero class]])
+            [self increaseMana];
+        
         SKAction *wait = [SKAction waitForDuration:0.5];
         SKAction *isInLava = [SKAction runBlock:^{
             if(self.isInLava == TRUE){
@@ -102,6 +105,7 @@
     self.position = position;
     
     _health = 100.0f;
+    _mana = 100.0f;
     _movementSpeed = kMovementSpeed;
     _animated = YES;
     _animationSpeed = 1.0f/28.0f;
@@ -113,6 +117,7 @@
 - (void)reset {
     // Reset some base states (used when recycling character instances).
     self.health = 100.0f;
+    self.mana = 100.0f;
     self.dying = NO;
     self.attacking = NO;
     self.inLava = NO;
@@ -130,11 +135,27 @@
     // Called when a requested animation has completed (usually overriden).
 }
 
-- (void)performAttackAction {
+- (void)performHeroAttackAction {
     if (self.attacking) {
         return;
     }
+    
+    if (self.mana < kManaToProjectile) {
+        return;
+    }
+    
+    NSLog(@"Mana: %.2f",self.mana);
+    
+    self.mana -= kManaToProjectile;
+    self.attacking = YES;
+    self.requestedAnimation = APAAnimationStateAttack;
+}
 
+- (void)performEnemyAttackAction {
+    if (self.attacking) {
+        return;
+    }
+    
     self.attacking = YES;
     self.requestedAnimation = APAAnimationStateAttack;
 }
@@ -189,6 +210,45 @@
     [self performDeath];
     
     return YES;
+}
+
+#pragma mark - Mana
+- (BOOL)decreaseMana:(CGFloat)mana {
+    
+    // Decrease mana and return YES, if the have enought mana, return NO
+    if ((self.mana - mana) >= 0) {
+        
+        self.mana -= mana;
+        if([self isKindOfClass:[PlayerHero class]]){
+            GameScene *scene = (GameScene *)self.scene;
+            [scene updateHUDForPlayer:(PlayerHero *)self];
+        }
+        return YES;
+
+    }else{
+        return NO;
+    }
+}
+
+- (void)increaseMana {
+    
+    if (self.mana < 100) {
+        
+        if (self.mana + kIncreaseManaAmount >= 100) {
+            self.mana += 100 - self.mana;
+        }else{
+            self.mana += kIncreaseManaAmount;
+        }
+        
+        if([self isKindOfClass:[PlayerHero class]]){
+            GameScene *scene = (GameScene *)self.scene;
+            [scene updateHUDForPlayer:(PlayerHero *)self];
+        }
+    }
+    
+    if (!self.isDying) {
+        [self performSelector:@selector(increaseMana) withObject:nil afterDelay:kIncreaseManaInterval];
+    }
 }
 
 #pragma mark - Setting Shadow Blob properties

@@ -117,7 +117,7 @@
         self.walking = FALSE;
         if(self.target !=nil){
             [self.character faceTo:self.target.position];
-            [self.character performAttackAction];
+            [self.character performEnemyAttackAction];
         }
     }
 }
