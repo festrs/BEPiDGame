@@ -327,64 +327,77 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         }
     }
     
-    //colisão de projéteis nos character
-    if ((contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyB.categoryBitMask & ColliderTypeProjectile || contact.bodyA.categoryBitMask & ColliderTypeProjectileBoss || contact.bodyB.categoryBitMask & ColliderTypeProjectileBoss)
-        && ([contact.bodyA.node isKindOfClass:[Character class]] || [contact.bodyB.node isKindOfClass:[Character class]]))
+    //colisão de projéteis
+    if ((contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyB.categoryBitMask & ColliderTypeProjectile || contact.bodyA.categoryBitMask & ColliderTypeProjectileBoss || contact.bodyB.categoryBitMask & ColliderTypeProjectileBoss))
     {
+        
         SKNode *projectile = [[SKNode alloc] init];
         if (contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyA.categoryBitMask & ColliderTypeProjectileBoss) {
             projectile = contact.bodyA.node;
             node = contact.bodyB.node;
-            //NSLog(@"Corpo A é o projétil");
         }else{
             projectile = contact.bodyB.node;
             node = contact.bodyA.node;
-            //NSLog(@"Corpo B é o projétil");
         }
         
-        //elimina o projétil assim que toca no alvo
-        [projectile runAction:[SKAction removeFromParent]];
-        
-        //hud update se o alvo for um inimigo
-        PlayerHero *hero = [self.heroes objectAtIndex:0];
-        if([node isKindOfClass:[Boss class]])
-        {
-            hero.score = hero.score + 20;
-            [self updateHUDForPlayer:hero];
-        }
-        
-        if([node isKindOfClass:[PlayerHero class]]){
-            [self updateHUDForPlayer:hero];
-        }
-
-        //aplicando a força do impacto no alvo se não estiver morto
-        Character *nodeChar = (Character *)node;
-        if (!nodeChar.isDying) {
+        //colisão de projéteis nos characters (hero e monsters)
+        if ([contact.bodyA.node isKindOfClass:[Character class]] || [contact.bodyB.node isKindOfClass:[Character class]]) {
+            
+            //elimina o projétil assim que toca no alvo
+            [projectile runAction:[SKAction removeFromParent]];
+            
+            //hud update se o alvo for um inimigo
+            PlayerHero *hero = [self.heroes objectAtIndex:0];
+            if([node isKindOfClass:[Boss class]])
+            {
+                hero.score = hero.score + 20;
+                [self updateHUDForPlayer:hero];
+            }
+            
+            if([node isKindOfClass:[PlayerHero class]]){
+                [self updateHUDForPlayer:hero];
+            }
+            
+            //aplicando a força do impacto no alvo se não estiver morto
+            Character *nodeChar = (Character *)node;
+            if (!nodeChar.isDying) {
+                CGVector vector = CGVectorMake(
+                                               (node.position.x-projectile.position.x)*2.0,
+                                               (node.position.y-projectile.position.y)*2.0
+                                               );
+                [node.physicsBody applyImpulse:vector atPoint:contact.contactPoint];
+                
+                NSLog(@"Força aplicada.");
+            }
+            
+            // Build up a "one shot" particle to indicate where the projectile hit.
+            SKEmitterNode *emitter = [[self sharedProjectileSparkEmitter] copy];
+            //[self addNode:emitter atWorldLayer:APAWorldLayerAboveCharacter];
+            emitter.position = projectile.position;
+            APARunOneShotEmitter(emitter, 0.15f);
+            
+        }else if((contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyB.categoryBitMask & ColliderTypeProjectile) && (contact.bodyA.categoryBitMask & ColliderTypeProjectileBoss || contact.bodyB.categoryBitMask & ColliderTypeProjectileBoss)){
+            
+            // projeteis se tocando
+            NSLog(@"Força aplicada.");
+            
             CGVector vector = CGVectorMake(
-                                           (node.position.x-projectile.position.x)*2.0,
-                                           (node.position.y-projectile.position.y)*2.0
+                                           (contact.bodyA.node.position.x-contact.bodyB.node.position.x)*0.4,
+                                           (contact.bodyA.node.position.y-contact.bodyB.node.position.y)*0.4
                                            );
-            [node.physicsBody applyImpulse:vector atPoint:contact.contactPoint];
+            CGVector negativeVector = CGVectorMake(
+                                                   -(contact.bodyA.node.position.x-contact.bodyB.node.position.x)*0.4,
+                                                   -(contact.bodyA.node.position.y-contact.bodyB.node.position.y)*0.4
+                                                   );
+            [contact.bodyA.node.physicsBody applyImpulse:vector atPoint:contact.contactPoint];
+            [contact.bodyB.node.physicsBody applyImpulse:negativeVector atPoint:contact.contactPoint];
+            
+        }else{
+            
+            //elimina o projétil assim que toca no alvo
+            [projectile runAction:[SKAction removeFromParent]];
+            
         }
-
-        // Build up a "one shot" particle to indicate where the projectile hit.
-        SKEmitterNode *emitter = [[self sharedProjectileSparkEmitter] copy];
-        //[self addNode:emitter atWorldLayer:APAWorldLayerAboveCharacter];
-        emitter.position = projectile.position;
-        APARunOneShotEmitter(emitter, 0.15f);
-    }else if((contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyB.categoryBitMask & ColliderTypeProjectile) && (contact.bodyA.categoryBitMask & ColliderTypeProjectileBoss || contact.bodyB.categoryBitMask & ColliderTypeProjectileBoss)){
-        // projeteis se tocando
-
-        CGVector vector = CGVectorMake(
-                                       (contact.bodyA.node.position.x-contact.bodyB.node.position.x)*0.4,
-                                       (contact.bodyA.node.position.y-contact.bodyB.node.position.y)*0.4
-                                       );
-        CGVector negativeVector = CGVectorMake(
-                                       -(contact.bodyA.node.position.x-contact.bodyB.node.position.x)*0.4,
-                                       -(contact.bodyA.node.position.y-contact.bodyB.node.position.y)*0.4
-                                       );
-        [contact.bodyA.node.physicsBody applyImpulse:vector atPoint:contact.contactPoint];
-        [contact.bodyB.node.physicsBody applyImpulse:negativeVector atPoint:contact.contactPoint];
     }
 }
 
