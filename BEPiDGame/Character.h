@@ -141,7 +141,7 @@ typedef enum : uint8_t {
 - (void)updateWithTimeSinceLastUpdate:(CFTimeInterval)interval;
 
 /* Orientation, Movement, and Attacking. */
-- (void)move:(APAMoveDirection)direction withTimeInterval:(NSTimeInterval)timeInterval;
+//- (void)move:(APAMoveDirection)direction withTimeInterval:(NSTimeInterval)timeInterval;
 - (CGFloat)faceTo:(CGPoint)position;
 - (void)moveTowards:(CGPoint)position withTimeInterval:(NSTimeInterval)timeInterval;
 - (void)moveInDirection:(CGPoint)direction withTimeInterval:(NSTimeInterval)timeInterval;
@@ -149,7 +149,7 @@ typedef enum : uint8_t {
 - (void)performEnemyAttackAction;
 
 /* Scenes. */
-- (void)addToScene:(APAMultiplayerLayeredCharacterScene *)scene; // also adds the shadow blob
+//- (void)addToScene:(APAMultiplayerLayeredCharacterScene *)scene; // also adds the shadow blob
 - (GameScene *)characterScene; // returns the MultiplayerLayeredCharacterScene this character is in
 /* Animation. */
 - (void)fadeIn:(CGFloat)duration;
