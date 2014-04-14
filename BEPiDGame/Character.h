@@ -74,6 +74,9 @@ typedef enum : uint8_t {
 
 #define kMovementSpeed 200.0
 #define kRotationSpeed 0.06
+
+#define kIncreaseManaInterval 0.5
+#define kIncreaseManaAmount 10
 #define kManaToProjectile 40.0
 
 #define kCharacterCollisionRadius   25
