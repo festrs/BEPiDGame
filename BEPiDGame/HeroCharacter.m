@@ -174,7 +174,7 @@
     dispatch_once(&onceToken, ^{
         sSharedProjectileSoundAction = [SKAction playSoundFileNamed:@"magicmissile.caf" waitForCompletion:NO];
         sSharedDeathEmitter = [SKEmitterNode apa_emitterNodeWithEmitterNamed:@"Death"];
-        sSharedDamageEmitter = [SKEmitterNode apa_emitterNodeWithEmitterNamed:@"Damage"];
+        sSharedDamageEmitter = [SKEmitterNode apa_emitterNodeWithEmitterNamed:@"LavaDamage"];
     });
 }
 

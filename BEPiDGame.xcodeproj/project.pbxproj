@@ -40,19 +40,10 @@
 		3ADCDC0918E454CD000ED44E /* APAGraphicsUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ADCDBFF18E454CD000ED44E /* APAGraphicsUtilities.m */; };
 		3ADCDC4E18E45938000ED44E /* map_level.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC0E18E45938000ED44E /* map_level.png */; };
 		3ADCDC4F18E45938000ED44E /* map_trees.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC0F18E45938000ED44E /* map_trees.png */; };
-		3ADCDC5018E45938000ED44E /* ArcherProjectile.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC1118E45938000ED44E /* ArcherProjectile.sks */; };
-		3ADCDC5118E45938000ED44E /* BossDamage.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC1218E45938000ED44E /* BossDamage.sks */; };
-		3ADCDC5218E45938000ED44E /* CaveDamage.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC1318E45938000ED44E /* CaveDamage.sks */; };
-		3ADCDC5318E45938000ED44E /* CaveDeathSmoke.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC1418E45938000ED44E /* CaveDeathSmoke.sks */; };
 		3ADCDC5418E45938000ED44E /* CaveFire.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC1518E45938000ED44E /* CaveFire.sks */; };
-		3ADCDC5518E45938000ED44E /* CaveFireSmoke.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC1618E45938000ED44E /* CaveFireSmoke.sks */; };
 		3ADCDC5618E45938000ED44E /* Damage.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC1718E45938000ED44E /* Damage.sks */; };
 		3ADCDC5718E45938000ED44E /* Death.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC1818E45938000ED44E /* Death.sks */; };
 		3ADCDC5818E45938000ED44E /* hardCircle.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC1918E45938000ED44E /* hardCircle.png */; };
-		3ADCDC5918E45938000ED44E /* leaf_00.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC1A18E45938000ED44E /* leaf_00.png */; };
-		3ADCDC5A18E45938000ED44E /* leaf_02.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC1B18E45938000ED44E /* leaf_02.png */; };
-		3ADCDC5B18E45938000ED44E /* Leaves_01.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC1C18E45938000ED44E /* Leaves_01.sks */; };
-		3ADCDC5C18E45938000ED44E /* Leaves_02.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC1D18E45938000ED44E /* Leaves_02.sks */; };
 		3ADCDC5D18E45938000ED44E /* ProjectileSplat.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC1E18E45938000ED44E /* ProjectileSplat.sks */; };
 		3ADCDC5E18E45938000ED44E /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC1F18E45938000ED44E /* spark.png */; };
 		3ADCDC5F18E45938000ED44E /* Spawn.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3ADCDC2018E45938000ED44E /* Spawn.sks */; };
@@ -93,6 +84,7 @@
 		7CEBF80518F324E00027E139 /* LogoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CEBF80418F324E00027E139 /* LogoViewController.m */; };
 		BA17071318F5915900931285 /* lifebar.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA17071218F5915900931285 /* lifebar.sks */; };
 		BA3CDF2618F87470003E96C2 /* manabar.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA3CDF2518F87470003E96C2 /* manabar.sks */; };
+		F8B50F5D18FC48A500D54CBA /* LavaDamage.sks in Resources */ = {isa = PBXBuildFile; fileRef = F8B50F5C18FC48A500D54CBA /* LavaDamage.sks */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -158,19 +150,10 @@
 		3ADCDBFF18E454CD000ED44E /* APAGraphicsUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APAGraphicsUtilities.m; sourceTree = "<group>"; };
 		3ADCDC0E18E45938000ED44E /* map_level.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = map_level.png; sourceTree = "<group>"; };
 		3ADCDC0F18E45938000ED44E /* map_trees.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = map_trees.png; sourceTree = "<group>"; };
-		3ADCDC1118E45938000ED44E /* ArcherProjectile.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ArcherProjectile.sks; sourceTree = "<group>"; };
-		3ADCDC1218E45938000ED44E /* BossDamage.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = BossDamage.sks; sourceTree = "<group>"; };
-		3ADCDC1318E45938000ED44E /* CaveDamage.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = CaveDamage.sks; sourceTree = "<group>"; };
-		3ADCDC1418E45938000ED44E /* CaveDeathSmoke.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = CaveDeathSmoke.sks; sourceTree = "<group>"; };
 		3ADCDC1518E45938000ED44E /* CaveFire.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = CaveFire.sks; sourceTree = "<group>"; };
-		3ADCDC1618E45938000ED44E /* CaveFireSmoke.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = CaveFireSmoke.sks; sourceTree = "<group>"; };
 		3ADCDC1718E45938000ED44E /* Damage.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Damage.sks; sourceTree = "<group>"; };
 		3ADCDC1818E45938000ED44E /* Death.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Death.sks; sourceTree = "<group>"; };
 		3ADCDC1918E45938000ED44E /* hardCircle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hardCircle.png; sourceTree = "<group>"; };
-		3ADCDC1A18E45938000ED44E /* leaf_00.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = leaf_00.png; sourceTree = "<group>"; };
-		3ADCDC1B18E45938000ED44E /* leaf_02.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = leaf_02.png; sourceTree = "<group>"; };
-		3ADCDC1C18E45938000ED44E /* Leaves_01.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Leaves_01.sks; sourceTree = "<group>"; };
-		3ADCDC1D18E45938000ED44E /* Leaves_02.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Leaves_02.sks; sourceTree = "<group>"; };
 		3ADCDC1E18E45938000ED44E /* ProjectileSplat.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ProjectileSplat.sks; sourceTree = "<group>"; };
 		3ADCDC1F18E45938000ED44E /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
 		3ADCDC2018E45938000ED44E /* Spawn.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Spawn.sks; sourceTree = "<group>"; };
@@ -213,6 +196,7 @@
 		7CEBF80418F324E00027E139 /* LogoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LogoViewController.m; path = ../LogoViewController.m; sourceTree = "<group>"; };
 		BA17071218F5915900931285 /* lifebar.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = lifebar.sks; sourceTree = "<group>"; };
 		BA3CDF2518F87470003E96C2 /* manabar.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = manabar.sks; sourceTree = "<group>"; };
+		F8B50F5C18FC48A500D54CBA /* LavaDamage.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = LavaDamage.sks; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -406,27 +390,19 @@
 			isa = PBXGroup;
 			children = (
 				BA3CDF2518F87470003E96C2 /* manabar.sks */,
+				BA17071218F5915900931285 /* lifebar.sks */,
 				360A4E7518F81F17004B0176 /* BossProjectile.sks */,
-				3ADCDC1218E45938000ED44E /* BossDamage.sks */,
 				360A4E7918F825BC004B0176 /* HeroProjectile.sks */,
-				3ADCDC1118E45938000ED44E /* ArcherProjectile.sks */,
-				3ADCDC1318E45938000ED44E /* CaveDamage.sks */,
-				3ADCDC1418E45938000ED44E /* CaveDeathSmoke.sks */,
+				F8B50F5C18FC48A500D54CBA /* LavaDamage.sks */,
 				3ADCDC1518E45938000ED44E /* CaveFire.sks */,
-				3ADCDC1618E45938000ED44E /* CaveFireSmoke.sks */,
 				3ADCDC1718E45938000ED44E /* Damage.sks */,
 				3ADCDC1818E45938000ED44E /* Death.sks */,
 				3ADCDC1918E45938000ED44E /* hardCircle.png */,
-				3ADCDC1A18E45938000ED44E /* leaf_00.png */,
-				3ADCDC1B18E45938000ED44E /* leaf_02.png */,
-				3ADCDC1C18E45938000ED44E /* Leaves_01.sks */,
-				3ADCDC1D18E45938000ED44E /* Leaves_02.sks */,
 				3ADCDC1E18E45938000ED44E /* ProjectileSplat.sks */,
 				3ADCDC1F18E45938000ED44E /* spark.png */,
 				3ADCDC2018E45938000ED44E /* Spawn.sks */,
 				3ADCDC2118E45938000ED44E /* star.png */,
 				3ADCDC2218E45938000ED44E /* WarriorProjectile.sks */,
-				BA17071218F5915900931285 /* lifebar.sks */,
 			);
 			path = Particles;
 			sourceTree = "<group>";
@@ -553,7 +529,7 @@
 				ORGANIZATIONNAME = "Felipe Dias Pereira";
 				TargetAttributes = {
 					3ADCDB9E18E44EDD000ED44E = {
-						DevelopmentTeam = CBSFV8387P;
+						DevelopmentTeam = 5EUEY3M354;
 					};
 					3ADCDBC618E44EDD000ED44E = {
 						TestTargetID = 3ADCDB9E18E44EDD000ED44E;
@@ -590,15 +566,14 @@
 				3ADCDC7B18E45938000ED44E /* button_archer.png in Resources */,
 				3ADCDC6618E45938000ED44E /* Archer_Idle.atlas in Resources */,
 				3ADCDC5418E45938000ED44E /* CaveFire.sks in Resources */,
+				F8B50F5D18FC48A500D54CBA /* LavaDamage.sks in Resources */,
 				3ADCDC7E18E45938000ED44E /* Default.png in Resources */,
 				3ADCDC7718E45938000ED44E /* Warrior_Idle.atlas in Resources */,
 				3ADCDC7D18E45938000ED44E /* Default-568h@2x.png in Resources */,
 				3ADCDC8318E45938000ED44E /* iconWarrior_red.png in Resources */,
 				3ADCDC7418E45938000ED44E /* Warrior_Attack.atlas in Resources */,
-				3ADCDC5118E45938000ED44E /* BossDamage.sks in Resources */,
 				360A4E7618F81F17004B0176 /* BossProjectile.sks in Resources */,
 				3ADCDC8418E45938000ED44E /* lives.png in Resources */,
-				3ADCDC5218E45938000ED44E /* CaveDamage.sks in Resources */,
 				7CEBF80118EDA07C0027E139 /* FundoLogo.png in Resources */,
 				BA3CDF2618F87470003E96C2 /* manabar.sks in Resources */,
 				3ADCDC6D18E45938000ED44E /* Environment.atlas in Resources */,
@@ -609,18 +584,14 @@
 				3ADCDC5E18E45938000ED44E /* spark.png in Resources */,
 				3ADCDC6818E45938000ED44E /* Boss_Attack.atlas in Resources */,
 				BA17071318F5915900931285 /* lifebar.sks in Resources */,
-				3ADCDC5518E45938000ED44E /* CaveFireSmoke.sks in Resources */,
 				3ADCDC8518E45938000ED44E /* logo.png in Resources */,
 				3ADCDC8018E45938000ED44E /* iconWarrior_blue.png in Resources */,
 				3ADCDC5818E45938000ED44E /* hardCircle.png in Resources */,
-				3ADCDC5A18E45938000ED44E /* leaf_02.png in Resources */,
 				3ADCDC6018E45938000ED44E /* star.png in Resources */,
 				3ADCDC7C18E45938000ED44E /* button_warrior.png in Resources */,
-				3ADCDC5318E45938000ED44E /* CaveDeathSmoke.sks in Resources */,
 				3ADCDBC218E44EDD000ED44E /* Images.xcassets in Resources */,
 				3ADCDC6A18E45938000ED44E /* Boss_GetHit.atlas in Resources */,
 				3ADCDC5618E45938000ED44E /* Damage.sks in Resources */,
-				3ADCDC5B18E45938000ED44E /* Leaves_01.sks in Resources */,
 				3ADCDC7F18E45938000ED44E /* Default@2x.png in Resources */,
 				3ADCDC4F18E45938000ED44E /* map_trees.png in Resources */,
 				3ADCDC6B18E45938000ED44E /* Boss_Idle.atlas in Resources */,
@@ -629,14 +600,11 @@
 				3ADCDC6418E45938000ED44E /* Archer_Death.atlas in Resources */,
 				3ADCDBB818E44EDD000ED44E /* Main.storyboard in Resources */,
 				3ADCDC5718E45938000ED44E /* Death.sks in Resources */,
-				3ADCDC5918E45938000ED44E /* leaf_00.png in Resources */,
-				3ADCDC5018E45938000ED44E /* ArcherProjectile.sks in Resources */,
 				3ADCDC5D18E45938000ED44E /* ProjectileSplat.sks in Resources */,
 				3ADCDC6718E45938000ED44E /* Archer_Walk.atlas in Resources */,
 				3ADCDC6118E45938000ED44E /* WarriorProjectile.sks in Resources */,
 				360A4E7A18F825BC004B0176 /* HeroProjectile.sks in Resources */,
 				3ADCDC6318E45938000ED44E /* Archer_Attack.atlas in Resources */,
-				3ADCDC5C18E45938000ED44E /* Leaves_02.sks in Resources */,
 				3ADCDC7A18E45938000ED44E /* Assets - OS X.xcassets in Resources */,
 				3ADCDC6918E45938000ED44E /* Boss_Death.atlas in Resources */,
 				3ADCDC5F18E45938000ED44E /* Spawn.sks in Resources */,
