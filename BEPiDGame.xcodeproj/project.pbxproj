@@ -84,6 +84,7 @@
 		BA17071318F5915900931285 /* lifebar.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA17071218F5915900931285 /* lifebar.sks */; };
 		BA3CDF2618F87470003E96C2 /* manabar.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA3CDF2518F87470003E96C2 /* manabar.sks */; };
 		BAEE31CF18FC4C4B00C1400C /* Viking War Music.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BAEE31CE18FC4C4B00C1400C /* Viking War Music.mp3 */; };
+		F8B50F5F18FC550700D54CBA /* LavaDamage.sks in Resources */ = {isa = PBXBuildFile; fileRef = F8B50F5E18FC550700D54CBA /* LavaDamage.sks */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -195,6 +196,7 @@
 		BA17071218F5915900931285 /* lifebar.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = lifebar.sks; sourceTree = "<group>"; };
 		BA3CDF2518F87470003E96C2 /* manabar.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = manabar.sks; sourceTree = "<group>"; };
 		BAEE31CE18FC4C4B00C1400C /* Viking War Music.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Viking War Music.mp3"; sourceTree = "<group>"; };
+		F8B50F5E18FC550700D54CBA /* LavaDamage.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = LavaDamage.sks; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -386,11 +388,11 @@
 		3ADCDC1018E45938000ED44E /* Particles */ = {
 			isa = PBXGroup;
 			children = (
+				F8B50F5E18FC550700D54CBA /* LavaDamage.sks */,
 				BA3CDF2518F87470003E96C2 /* manabar.sks */,
 				BA17071218F5915900931285 /* lifebar.sks */,
 				360A4E7518F81F17004B0176 /* BossProjectile.sks */,
 				360A4E7918F825BC004B0176 /* HeroProjectile.sks */,
-				F8B50F5C18FC48A500D54CBA /* LavaDamage.sks */,
 				3ADCDC1518E45938000ED44E /* CaveFire.sks */,
 				3ADCDC1718E45938000ED44E /* Damage.sks */,
 				3ADCDC1818E45938000ED44E /* Death.sks */,
@@ -558,22 +560,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F8B50F5F18FC550700D54CBA /* LavaDamage.sks in Resources */,
 				3ADCDBAF18E44EDD000ED44E /* InfoPlist.strings in Resources */,
 				3ADCDC4E18E45938000ED44E /* map_level.png in Resources */,
 				3ADCDC7B18E45938000ED44E /* button_archer.png in Resources */,
 				3ADCDC6618E45938000ED44E /* Archer_Idle.atlas in Resources */,
 				3ADCDC5418E45938000ED44E /* CaveFire.sks in Resources */,
-				F8B50F5D18FC48A500D54CBA /* LavaDamage.sks in Resources */,
 				3ADCDC7E18E45938000ED44E /* Default.png in Resources */,
 				3ADCDC7718E45938000ED44E /* Warrior_Idle.atlas in Resources */,
 				3ADCDC7D18E45938000ED44E /* Default-568h@2x.png in Resources */,
 				3ADCDC8318E45938000ED44E /* iconWarrior_red.png in Resources */,
 				3ADCDC7418E45938000ED44E /* Warrior_Attack.atlas in Resources */,
-				3ADCDC5118E45938000ED44E /* BossDamage.sks in Resources */,
 				BAEE31CF18FC4C4B00C1400C /* Viking War Music.mp3 in Resources */,
 				360A4E7618F81F17004B0176 /* BossProjectile.sks in Resources */,
 				3ADCDC8418E45938000ED44E /* lives.png in Resources */,
-				3ADCDC5218E45938000ED44E /* CaveDamage.sks in Resources */,
 				BA3CDF2618F87470003E96C2 /* manabar.sks in Resources */,
 				3ADCDC6D18E45938000ED44E /* Environment.atlas in Resources */,
 				3ADCDC6518E45938000ED44E /* Archer_GetHit.atlas in Resources */,
