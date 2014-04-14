@@ -52,8 +52,6 @@
 #define kWarriorThrowFrames 10
 #define kWarriorGetHitFrames 18
 #define kWarriorDeathFrames 42
-#define kIncreaseManaInterval 0.5
-#define kIncreaseManaAmount 10
 
 @implementation PlayerHero
 
@@ -61,24 +59,7 @@
 - (id)initAtPosition:(CGPoint)position withPlayer:(APAPlayer *)player {
     SKTextureAtlas *atlas = [SKTextureAtlas atlasNamed:@"Archer_Idle"];
     SKTexture *texture = [atlas textureNamed:@"archer_idle_0001.png"];
-    [self increaseMana];
     return [super initWithTexture:texture atPosition:position withPlayer:player];
-}
-
-- (void)increaseMana {
-    
-    if (self.mana < 100) {
-
-        if (self.mana + kIncreaseManaAmount >= 100) {
-            self.mana += 100 - self.mana;
-        }else{
-            self.mana += kIncreaseManaAmount;
-        }
-    }
-
-    if (!self.isDying) {
-        [self performSelector:@selector(increaseMana) withObject:nil afterDelay:kIncreaseManaInterval];
-    }
 }
 
 #pragma mark - Shared Assets

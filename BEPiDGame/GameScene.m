@@ -275,6 +275,7 @@ typedef enum : uint8_t {
     if (self.attackButton.wasPressed) {
         self.atackIntent = TRUE;
         PlayerHero *hero = [self.heroes objectAtIndex:0];
+        
         [hero performHeroAttackAction];
     }
 }

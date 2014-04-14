@@ -71,6 +71,9 @@
         self.physicsBody.linearDamping = 0.1f;
         self.physicsBody.mass = 0.2f;
         
+        if([self isKindOfClass:[PlayerHero class]])
+            [self increaseMana];
+        
         SKAction *wait = [SKAction waitForDuration:0.5];
         SKAction *isInLava = [SKAction runBlock:^{
             if(self.isInLava == TRUE){
@@ -140,6 +143,8 @@
     if (self.mana < kManaToProjectile) {
         return;
     }
+    
+    NSLog(@"Mana: %.2f",self.mana);
     
     self.mana -= kManaToProjectile;
     self.attacking = YES;
@@ -222,6 +227,27 @@
 
     }else{
         return NO;
+    }
+}
+
+- (void)increaseMana {
+    
+    if (self.mana < 100) {
+        
+        if (self.mana + kIncreaseManaAmount >= 100) {
+            self.mana += 100 - self.mana;
+        }else{
+            self.mana += kIncreaseManaAmount;
+        }
+        
+        if([self isKindOfClass:[PlayerHero class]]){
+            GameScene *scene = (GameScene *)self.scene;
+            [scene updateHUDForPlayer:(PlayerHero *)self];
+        }
+    }
+    
+    if (!self.isDying) {
+        [self performSelector:@selector(increaseMana) withObject:nil afterDelay:kIncreaseManaInterval];
     }
 }
 
