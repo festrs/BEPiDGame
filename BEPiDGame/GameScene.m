@@ -577,7 +577,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     /*---Fim Update Life----*/
    
     /*---Update Mana----*/
-    float mana = (player.health / 100) * 100;
+    float mana = (player.mana / 100) * 100;
     float diffMana = (100 - mana);
     
     SKEmitterNode *manaBar = self.hudManas[playerIndex];
