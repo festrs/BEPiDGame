@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "GameScene.h"
 #import "InicialScene.h"
+@import AVFoundation;
 @interface ViewController()
 {
     SKView * skViewGame;
@@ -22,6 +23,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *btMedium;
 @property (weak, nonatomic) IBOutlet UIButton *btEasy;
 @property (weak, nonatomic) IBOutlet UIView *viewConfig;
+
+@property (nonatomic) AVAudioPlayer * backgroundMusicPlayer;
 
 @end
 
@@ -125,6 +128,15 @@
 {
     difficult = [(UIButton *)sender tag];
     [self EsconderScene];
+}
+
+-(void)viewWillLayoutSubviews{
+    NSError *error;
+    NSURL * backgroundMusicURL = [[NSBundle mainBundle] URLForResource:@"Viking War Music" withExtension:@"mp3"];
+    self.backgroundMusicPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:backgroundMusicURL error:&error];
+    self.backgroundMusicPlayer.numberOfLoops = -1;
+    [self.backgroundMusicPlayer prepareToPlay];
+    [self.backgroundMusicPlayer play];
 }
 
 @end

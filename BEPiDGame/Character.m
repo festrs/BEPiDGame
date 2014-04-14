@@ -77,6 +77,37 @@
         SKAction *wait = [SKAction waitForDuration:0.5];
         SKAction *isInLava = [SKAction runBlock:^{
             if(self.isInLava == TRUE){
+
+                //partícula da lava
+                SKEmitterNode *emitter = [[self damageEmitter] copy];
+                if (emitter) {
+
+                    //emitter.zPosition = 5;
+                    [self addChild:emitter];
+                    APARunOneShotEmitter(emitter, 1.5f);
+                }
+                
+                
+                
+                
+                
+                
+//                SKEmitterNode *emitter = [[self deathEmitter] copy];
+//                emitter.zPosition = -0.8;
+//                [self addChild:emitter];
+//                APARunOneShotEmitter(emitter, 1.5f);
+                
+//                [self runAction:[SKAction sequence:@[
+//                                                     [SKAction waitForDuration:2.0f],
+//                                                     [SKAction runBlock:^{
+//                    [scene heroWasKilled:self];
+//                }],
+//                                                     [SKAction removeFromParent],
+//                                                     ]]];
+                
+                
+                
+                
                 [self applyDamage:10.0f];
             }
         }];
