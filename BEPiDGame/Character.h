@@ -63,17 +63,6 @@ typedef enum : uint8_t {
     kAnimationStateCount
 } APAAnimationState;
 
-/* Bitmask for the different entities with physics bodies. */
-//typedef enum : uint8_t {
-//    APAColliderTypeHero             = 1,
-//    APAColliderTypeGoblinOrBoss     = 2,
-//    APAColliderTypeProjectile       = 4,
-//    APAColliderTypeWall             = 8,
-//    APAColliderTypeCave             = 16,
-//    APAColliderTypeScenario         = 32,
-//    APAColliderTypeIsland           = 64
-//} APAColliderType;
-
 typedef enum : uint8_t {
     ColliderTypeHero             = 1,
     ColliderTypeGoblinOrBoss     = 2,
@@ -101,6 +90,7 @@ typedef enum : uint8_t {
 @property (nonatomic, getter=isDying) BOOL dying;
 @property (nonatomic, getter=isAttacking) BOOL attacking;
 @property (nonatomic) CGFloat health;
+@property (nonatomic) CGFloat mana;
 @property (nonatomic, getter=isAnimated) BOOL animated;
 @property (nonatomic, getter=isInLava) BOOL inLava;
 @property (nonatomic) CGFloat animationSpeed;
@@ -142,6 +132,9 @@ typedef enum : uint8_t {
 /* Applying Damage - i.e., decrease health. */
 - (BOOL)applyDamage:(CGFloat)damage;
 - (BOOL)applyDamage:(CGFloat)damage fromProjectile:(SKNode *)projectile; // use projectile alpha to determine potency
+
+/* Decreasing Mana */
+- (BOOL)decreaseMana:(CGFloat)mana;
 
 /* Loop Update - called once per frame. */
 - (void)updateWithTimeSinceLastUpdate:(CFTimeInterval)interval;

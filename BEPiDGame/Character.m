@@ -102,6 +102,7 @@
     self.position = position;
     
     _health = 100.0f;
+    _mana = 100.0f;
     _movementSpeed = kMovementSpeed;
     _animated = YES;
     _animationSpeed = 1.0f/28.0f;
@@ -113,6 +114,7 @@
 - (void)reset {
     // Reset some base states (used when recycling character instances).
     self.health = 100.0f;
+    self.mana = 100.0f;
     self.dying = NO;
     self.attacking = NO;
     self.inLava = NO;
@@ -189,6 +191,24 @@
     [self performDeath];
     
     return YES;
+}
+
+#pragma mark - Mana
+- (BOOL)decreaseMana:(CGFloat)mana {
+    
+    // Decrease mana and return YES, if the have enought mana, return NO
+    if ((self.mana - mana) >= 0) {
+        
+        self.mana -= mana;
+        if([self isKindOfClass:[PlayerHero class]]){
+            GameScene *scene = (GameScene *)self.scene;
+            [scene updateHUDForPlayer:(PlayerHero *)self];
+        }
+        return YES;
+
+    }else{
+        return NO;
+    }
 }
 
 #pragma mark - Setting Shadow Blob properties
