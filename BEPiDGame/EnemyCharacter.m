@@ -74,7 +74,7 @@
 - (void)fireProjectile {
     GameScene *scene = [self characterScene];
     
-    //sfor (int i = -4; i <=5 ; i++) {
+    //for (int i = -4; i <=5 ; i++) {
         SKSpriteNode *projectile = [[self projectile] copy];
         projectile.physicsBody.affectedByGravity=NO;
         projectile.position = self.position;

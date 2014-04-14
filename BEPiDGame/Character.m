@@ -171,13 +171,11 @@
         return;
     }
     
-    if (self.mana < kManaToProjectile) {
+    if (self.mana < kManaToProjectile && [self isKindOfClass:[PlayerHero class]]) {
         return;
+    }else{
+        self.mana -= kManaToProjectile;
     }
-    
-    NSLog(@"Mana: %.2f",self.mana);
-    
-    self.mana -= kManaToProjectile;
     self.attacking = YES;
     self.requestedAnimation = APAAnimationStateAttack;
 }

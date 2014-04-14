@@ -76,39 +76,6 @@ typedef enum : uint8_t {
         }
         
         [self addChild:_world];
-        
-        //lava
-        _lava = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.6 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(self.frame.size.width*6, self.frame.size.height*6)];
-        [_lava setTexture:[SKTexture textureWithImageNamed:@"lava"]];
-        _lava.position = CGPointMake(_world.position.x, _world.position.y);
-        //_lava.zPosition = -2; // pra lava ficar abaixo da ilha
-        _lava.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:_lava.frame];
-        _lava.physicsBody.categoryBitMask = ColliderTypeScenario;
-		_lava.physicsBody.collisionBitMask = ColliderTypeScenario;
-        
-        [self addNode:_lava atWorldLayer:APAWorldLayerGround];
-        
-        //island
-        _island = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.3 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(_lava.frame.size.width*0.25f, _lava.frame.size.height*0.25f)];
-        [_island setTexture:[SKTexture textureWithImageNamed:@"rock"]];
-        //_island.position = CGPointMake(_lava.frame.size.width/2, _lava.frame.size.height/2);
-        //_island.zPosition = -1; // pra ilha ficar embaixo dos personagens
-        //island body
-        _island.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:_island.frame.size];
-		_island.physicsBody.categoryBitMask = ColliderTypeIsland;
-		_island.physicsBody.collisionBitMask = ColliderTypeIsland;
-		_island.physicsBody.contactTestBitMask = ColliderTypeHero | ColliderTypeGoblinOrBoss;
-        [self addNode:_island atWorldLayer:APAWorldLayerBelowCharacter];
-        
-        //direcionalz
-        self.imageJoystick = [[JCImageJoystick alloc]initWithJoystickImage:(@"joystick.png") baseImage:@"dpad.png"];
-        [self.imageJoystick setPosition:CGPointMake(70, 70)];
-        [self addChild:self.imageJoystick];
-        
-        //attack button
-        self.attackButton = [[JCButton alloc] initWithButtonRadius:35 color:[SKColor lightGrayColor] pressedColor:[SKColor blackColor] isTurbo:NO];
-        [self.attackButton setPosition:CGPointMake(size.width - 50,60)];
-        [self addChild:self.attackButton];
 
         //método que testa se os botões foram pressionados
         SKAction *wait = [SKAction waitForDuration:0.2];
@@ -117,17 +84,75 @@ typedef enum : uint8_t {
         }];
         SKAction *checkButtonsAction = [SKAction sequence:@[wait,checkButtons]];
         [self runAction:[SKAction repeatActionForever:checkButtonsAction]];
-
+        
+        SKAction *waitScenario = [SKAction waitForDuration:25.2];
+        SKAction *checkScenario = [SKAction runBlock:^{
+            [self checkScenario];
+        }];
+        SKAction *checkScenarioAction = [SKAction sequence:@[waitScenario,checkScenario]];
+        [self runAction:[SKAction repeatActionForever:checkButtonsAction]];
+        [self runAction:[SKAction repeatActionForever:checkScenarioAction]];
         [PlayerHero loadSharedAssets];
         [Boss loadSharedAssets];
         
+        //direcionalz
+        self.imageJoystick = [[JCImageJoystick alloc]initWithJoystickImage:(@"joystick.png") baseImage:@"dpad.png"];
+        [self.imageJoystick setPosition:CGPointMake(70, 70)];
+        [self addChild:self.imageJoystick];
+        
+        //attack button
+        self.attackButton = [[JCButton alloc] initWithButtonRadius:35 color:[SKColor lightGrayColor] pressedColor:[SKColor blackColor] isTurbo:NO];
+        [self.attackButton setPosition:CGPointMake(self.frame.size.width - 50,60)];
+        [self addChild:self.attackButton];
         [self buildHUD];
     }
     return self;
 }
 
--(void) startGame: (NSInteger )level{
+-(void)creatScenario{
+    
+    
+    //lava
+    _lava = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.6 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(self.frame.size.width*6, self.frame.size.height*6)];
+    [_lava setTexture:[SKTexture textureWithImageNamed:@"lava"]];
+    _lava.position = CGPointMake(_world.position.x, _world.position.y);
+    //_lava.zPosition = -2; // pra lava ficar abaixo da ilha
+    _lava.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:_lava.frame];
+    _lava.physicsBody.categoryBitMask = ColliderTypeScenario;
+    _lava.physicsBody.collisionBitMask = ColliderTypeScenario;
+    SKNode *layerNode = self.layers[APAWorldLayerGround];
+    [layerNode removeAllChildren];
+    [self addNode:_lava atWorldLayer:APAWorldLayerGround];
+    
+    //island
+    _island = [SKSpriteNode spriteNodeWithColor:[SKColor colorWithRed:0.3 green:0.2 blue:0.2 alpha:1.0] size:CGSizeMake(_lava.frame.size.width*0.25f, _lava.frame.size.height*0.25f)];
+    [_island setTexture:[SKTexture textureWithImageNamed:@"rock"]];
+    //_island.position = CGPointMake(_lava.frame.size.width/2, _lava.frame.size.height/2);
+    //_island.zPosition = -1; // pra ilha ficar embaixo dos personagens
+    //island body
+    
+    _island.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:_island.frame.size];
+    _island.physicsBody.categoryBitMask = ColliderTypeIsland;
+    _island.physicsBody.collisionBitMask = ColliderTypeIsland;
+    _island.physicsBody.contactTestBitMask = ColliderTypeHero | ColliderTypeGoblinOrBoss;
+    SKNode *layerNodeisland = self.layers[APAWorldLayerBelowCharacter];
+    [layerNodeisland removeAllChildren];
+    [self addNode:_island atWorldLayer:APAWorldLayerBelowCharacter];
+    
 
+}
+
+-(void)checkScenario{
+    [self.island setSize:CGSizeMake(self.island.frame.size.width*0.88, self.island.frame.size.height*0.88)];
+    _island.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:_island.frame.size];
+    _island.physicsBody.categoryBitMask = ColliderTypeIsland;
+    _island.physicsBody.collisionBitMask = ColliderTypeIsland;
+    _island.physicsBody.contactTestBitMask = ColliderTypeHero | ColliderTypeGoblinOrBoss;
+}
+
+-(void) startGame: (NSInteger )level{
+    self.paused = false;
+    [self creatScenario];
     
     _world.xScale = 0.6f;
     _world.yScale = 0.6f;
@@ -158,9 +183,9 @@ typedef enum : uint8_t {
     if(level == 3){
         [enemy configDifficult:200.0f movementSpeed:100.0f atackSpeed:1.0f/78.f atackDamage:2.0f Mass:0.2f projectileSpeed:280.f];
     }else if(level == 4){
-        [enemy configDifficult:300.0f movementSpeed:100.0f atackSpeed:1.0f/88.f atackDamage:3.0f Mass:0.3f projectileSpeed:380.f];
+        [enemy configDifficult:250.0f movementSpeed:100.0f atackSpeed:1.0f/88.f atackDamage:3.0f Mass:0.25f projectileSpeed:380.f];
     }else{
-        [enemy configDifficult:400.0f movementSpeed:100.0f atackSpeed:1.0f/98.f atackDamage:4.0f Mass:0.4f projectileSpeed:780.f];
+        [enemy configDifficult:300.0f movementSpeed:100.0f atackSpeed:1.0f/98.f atackDamage:4.0f Mass:0.3f projectileSpeed:780.f];
     }
 }
 
@@ -174,6 +199,7 @@ typedef enum : uint8_t {
     if(self.heroes.count > 0){
         [(NSMutableArray *)self.heroes removeObject:hero];
     }
+    self.paused = true;
     self.gameOverBlock(TRUE);
 }
 
