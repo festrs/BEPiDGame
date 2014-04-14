@@ -173,7 +173,7 @@
         sharedAttackAnimationFrames = APALoadFramesFromAtlas(@"Boss_Attack", @"boss_attack_", kBossAttackFrames);
         sharedGetHitAnimationFrames = APALoadFramesFromAtlas(@"Boss_GetHit", @"boss_getHit_", kBossGetHitFrames);
         sharedDeathAnimationFrames = APALoadFramesFromAtlas(@"Boss_Death", @"boss_death_", kBossDeathFrames);
-        sSharedDamageEmitter = [SKEmitterNode apa_emitterNodeWithEmitterNamed:@"BossDamage"];
+        sSharedDamageEmitter = [SKEmitterNode apa_emitterNodeWithEmitterNamed:@"LavaDamage"];
         sSharedDamageAction = [SKAction sequence:@[[SKAction colorizeWithColor:[SKColor redColor] colorBlendFactor:10.0 duration:0.0],
                                                    [SKAction waitForDuration:0.25],
                                                    [SKAction colorizeWithColorBlendFactor:0.0 duration:0.25]
