@@ -357,8 +357,6 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
                                                (node.position.y-projectile.position.y)*2.0
                                                );
                 [node.physicsBody applyImpulse:vector atPoint:contact.contactPoint];
-                
-                NSLog(@"Força aplicada.");
             }
             
             // Build up a "one shot" particle to indicate where the projectile hit.
@@ -369,9 +367,7 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
             
         }else if((contact.bodyA.categoryBitMask & ColliderTypeProjectile || contact.bodyB.categoryBitMask & ColliderTypeProjectile) && (contact.bodyA.categoryBitMask & ColliderTypeProjectileBoss || contact.bodyB.categoryBitMask & ColliderTypeProjectileBoss)){
             
-            // projeteis se tocando
-            NSLog(@"Força aplicada.");
-            
+            // aplicando força de impulso nos 2 projéteis
             CGVector vector = CGVectorMake(
                                            (contact.bodyA.node.position.x-contact.bodyB.node.position.x)*0.4,
                                            (contact.bodyA.node.position.y-contact.bodyB.node.position.y)*0.4
