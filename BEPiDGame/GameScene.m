@@ -46,7 +46,8 @@ typedef enum : uint8_t {
 @property (nonatomic) NSArray *hudAvatars;              // keep track of the various nodes for the HUD
 @property (nonatomic) NSArray *hudLabels;               // - there are always 'kNumPlayers' instances in each array
 @property (nonatomic) NSArray *hudScores;
-@property (nonatomic) NSArray *hudPercents;      // an array of NSArrays of life hearts
+@property (nonatomic) NSArray *hudLifes;      // an array of NSArrays of life hearts
+@property (nonatomic) NSArray *hudManas;      // an array of NSArrays of life hearts
 @property (nonatomic) float lifeBarX;
 @end
 
@@ -449,7 +450,9 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     _hudAvatars = [NSMutableArray arrayWithCapacity:kNumPlayers];
     _hudLabels = [NSMutableArray arrayWithCapacity:kNumPlayers];
     _hudScores = [NSMutableArray arrayWithCapacity:kNumPlayers];
-    _hudPercents = [NSMutableArray arrayWithCapacity:kNumPlayers];
+    _hudLifes = [NSMutableArray arrayWithCapacity:kNumPlayers];
+    _hudManas = [NSMutableArray arrayWithCapacity:kNumPlayers];
+    
     SKNode *hud = [[SKNode alloc] init];
     
     for (int i = 0; i < kNumPlayers; i++) {
@@ -497,27 +500,21 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
         
         NSString *burstPath =
         [[NSBundle mainBundle] pathForResource:@"lifebar" ofType:@"sks"];
-        
         SKEmitterNode *lifeEmitter =
         [NSKeyedUnarchiver unarchiveObjectWithFile:burstPath];
-        
         lifeEmitter.position = CGPointMake(hudX + i * hudD + (avatar.size.width * 1.0 + 50) + ((lifeEmitter.frame.size.width / 2)), hudY +10);
-        
         [hud addChild:lifeEmitter];
         
         NSString *manaPath =
         [[NSBundle mainBundle] pathForResource:@"manabar" ofType:@"sks"];
-
-        
         SKEmitterNode *manaEmitter=
         [NSKeyedUnarchiver unarchiveObjectWithFile:manaPath];
-        
         manaEmitter.position = CGPointMake(hudX + i * hudD + (avatar.size.width * 1.0 + 50) + ((manaEmitter.frame.size.width / 2)), hudY -10);
-        
         [hud addChild:manaEmitter];
 
         self.lifeBarX = lifeEmitter.position.x ;
-        [(NSMutableArray *) _hudPercents addObject:lifeEmitter];
+        [(NSMutableArray *) _hudLifes addObject:lifeEmitter];
+        [(NSMutableArray *) _hudManas addObject:manaEmitter];
       
     }
     
@@ -571,27 +568,28 @@ static SKEmitterNode *sSharedProjectileSparkEmitter = nil;
     SKLabelNode *label = self.hudScores[playerIndex];
     label.text = [NSString stringWithFormat:@"SCORE: %d", player.score];
     
-    float teste = (player.health / 100) * 100;
+    /*---Update Life----*/
+    float life = (player.health / 100) * 100;
+    float diffLife = (100 - life);
+   
+    SKEmitterNode *lifeBar = self.hudLifes[playerIndex];
+    lifeBar.particlePositionRange = CGVectorMake((player.health / 100) * 100 , 10);
+    lifeBar.position = CGPointMake(self.lifeBarX - (diffLife /2), lifeBar.position.y);
+    /*---Fim Update Life----*/
+   
+    /*---Update Mana----*/
+    float mana = (player.health / 100) * 100;
+    float diffMana = (100 - mana);
     
-    float diferenca = (100 - teste);
-    //NSLog(@"%f , %f", teste , diferenca);
-    if(teste <= 0){
-        teste = 0;
-    }
-    SKEmitterNode *lblPercent = self.hudPercents[playerIndex];
-    lblPercent.particlePositionRange = CGVectorMake((player.health / 100) * 100 , 10);
+    SKEmitterNode *manaBar = self.hudManas[playerIndex];
+    manaBar.particlePositionRange = CGVectorMake((player.mana / 100) * 100 , 10);
+    manaBar.position = CGPointMake(self.lifeBarX - (diffMana /2), manaBar.position.y);
+    /*---Fim Update Life----*/
     
-    lblPercent.position = CGPointMake(self.lifeBarX - (diferenca /2), lblPercent.position.y);
-
-    if(diferenca > 95){
-        [lblPercent removeFromParent];
-    }
-
-    //NSLog(@"Teste %f", player.health);
 }
 
 - (void)updateHUDAfterHeroDeathForPlayer:(PlayerHero *)player {
-    //NSUInteger playerIndex = [self.players indexOfObject:player];
+    //NSUInteger playerIsndex = [self.players indexOfObject:player];
     
     // Fade out the relevant heart - one-based livesLeft has already been decremented.
     //NSUInteger heartNumber = player.livesLeft;
