@@ -132,11 +132,25 @@
     // Called when a requested animation has completed (usually overriden).
 }
 
-- (void)performAttackAction {
+- (void)performHeroAttackAction {
     if (self.attacking) {
         return;
     }
+    
+    if (self.mana < kManaToProjectile) {
+        return;
+    }
+    
+    self.mana -= kManaToProjectile;
+    self.attacking = YES;
+    self.requestedAnimation = APAAnimationStateAttack;
+}
 
+- (void)performEnemyAttackAction {
+    if (self.attacking) {
+        return;
+    }
+    
     self.attacking = YES;
     self.requestedAnimation = APAAnimationStateAttack;
 }

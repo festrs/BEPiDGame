@@ -74,6 +74,7 @@ typedef enum : uint8_t {
 
 #define kMovementSpeed 200.0
 #define kRotationSpeed 0.06
+#define kManaToProjectile 40.0
 
 #define kCharacterCollisionRadius   25
 #define kProjectileCollisionRadius  15
@@ -144,7 +145,8 @@ typedef enum : uint8_t {
 - (CGFloat)faceTo:(CGPoint)position;
 - (void)moveTowards:(CGPoint)position withTimeInterval:(NSTimeInterval)timeInterval;
 - (void)moveInDirection:(CGPoint)direction withTimeInterval:(NSTimeInterval)timeInterval;
-- (void)performAttackAction;
+- (void)performHeroAttackAction;
+- (void)performEnemyAttackAction;
 
 /* Scenes. */
 - (void)addToScene:(APAMultiplayerLayeredCharacterScene *)scene; // also adds the shadow blob

@@ -38,7 +38,6 @@ typedef enum : uint8_t {
 @property SKSpriteNode *lava;
 @property (strong,nonatomic) NSMutableArray *enemys;
 @property BOOL atackIntent;
-@property BOOL attackDelayed;
 @property (nonatomic, readwrite) NSMutableArray *heroes;
 @property (nonatomic) NSMutableArray *players;          // array of player objects or NSNull for no player
 @property (nonatomic) PlayerHero *defaultPlayer;         // player '1' controlled by keyboard/touch
@@ -122,8 +121,6 @@ typedef enum : uint8_t {
         [Boss loadSharedAssets];
         
         [self buildHUD];
-        
-        _attackDelayed = FALSE;
     }
     return self;
 }
@@ -274,18 +271,10 @@ typedef enum : uint8_t {
 
 - (void)checkButtons
 {
-    if (self.attackButton.wasPressed && self.attackDelayed == FALSE) {
+    if (self.attackButton.wasPressed) {
         self.atackIntent = TRUE;
-        self.attackDelayed = TRUE;
         PlayerHero *hero = [self.heroes objectAtIndex:0];
-        [hero performAttackAction];
-        
-        SKAction *wait = [SKAction waitForDuration:0.3];
-        SKAction *attackRelease = [SKAction runBlock:^{
-            self.attackDelayed = FALSE;
-        }];
-        SKAction *attackReleasedAction = [SKAction sequence:@[wait,attackRelease]];
-        [self runAction:attackReleasedAction];
+        [hero performHeroAttackAction];
     }
 }
 
