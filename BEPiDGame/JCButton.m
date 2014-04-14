@@ -38,11 +38,13 @@
         self.wasRead = NO;
         [self setUserInteractionEnabled:YES];
         CGMutablePathRef circlePath = CGPathCreateMutable();
-        CGPathAddEllipseInRect(circlePath , NULL , CGRectMake(self.position.x-self.buttonRadius, self.position.y-self.buttonRadius, self.buttonRadius*3, self.buttonRadius*3) );
+        CGPathAddEllipseInRect(circlePath , NULL , CGRectMake(self.position.x-self.buttonRadius, self.position.y-self.buttonRadius, self.buttonRadius*2, self.buttonRadius*2) );
         self.path = circlePath;
         self.fillColor =  self.color;
         self.lineWidth=0;
         CGPathRelease( circlePath );
+        
+        
     }
     return self;
 }

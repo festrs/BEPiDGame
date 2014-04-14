@@ -106,8 +106,8 @@ typedef enum : uint8_t {
         [self addChild:self.imageJoystick];
         
         //attack button
-        self.attackButton = [[JCButton alloc] initWithButtonRadius:25 color:[SKColor lightGrayColor] pressedColor:[SKColor blackColor] isTurbo:NO];
-        [self.attackButton setPosition:CGPointMake(size.width - 40,60)];
+        self.attackButton = [[JCButton alloc] initWithButtonRadius:35 color:[SKColor lightGrayColor] pressedColor:[SKColor blackColor] isTurbo:NO];
+        [self.attackButton setPosition:CGPointMake(size.width - 50,60)];
         [self addChild:self.attackButton];
 
         //método que testa se os botões foram pressionados
