@@ -159,7 +159,7 @@ typedef enum : uint8_t {
     }else if(level == 4){
         [enemy configDifficult:300.0f movementSpeed:100.0f atackSpeed:1.0f/88.f atackDamage:3.0f Mass:0.3f projectileSpeed:380.f];
     }else{
-        [enemy configDifficult:400.0f movementSpeed:100.0f atackSpeed:1.0f/98.f atackDamage:4.0f Mass:0.4f projectileSpeed:480.f];
+        [enemy configDifficult:400.0f movementSpeed:100.0f atackSpeed:1.0f/98.f atackDamage:4.0f Mass:0.4f projectileSpeed:780.f];
     }
 }
 
@@ -174,10 +174,6 @@ typedef enum : uint8_t {
         [(NSMutableArray *)self.heroes removeObject:hero];
     }
     self.gameOverBlock(TRUE);
-}
-
--(void)buttonAction{
-    [self startGame:8];
 }
 
 -(void)setMyVC:(ViewController *)myVC
@@ -232,7 +228,7 @@ typedef enum : uint8_t {
         hero = [self.heroes objectAtIndex:0];
     }
 
-    if(!hero.isDying){
+    if(!hero.isDying && hero != nil){
         if(self.imageJoystick.touchesBegin && !self.atackIntent){
             [hero moveTowards:CGPointMake(hero.position.x+self.imageJoystick.x *3, hero.position.y+self.imageJoystick.y *3) withTimeInterval:currentTime];
         }
@@ -273,8 +269,11 @@ typedef enum : uint8_t {
 {
     if (self.attackButton.wasPressed) {
         self.atackIntent = TRUE;
-        PlayerHero *hero = [self.heroes objectAtIndex:0];
-        [hero performHeroAttackAction];
+        if (self.heroes.count > 0){
+            PlayerHero *hero = [self.heroes objectAtIndex:0];
+            [hero performHeroAttackAction];
+        }
+        
     }
 }
 
