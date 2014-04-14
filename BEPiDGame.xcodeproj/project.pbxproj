@@ -553,7 +553,7 @@
 				ORGANIZATIONNAME = "Felipe Dias Pereira";
 				TargetAttributes = {
 					3ADCDB9E18E44EDD000ED44E = {
-						DevelopmentTeam = 5EUEY3M354;
+						DevelopmentTeam = RG5948VN88;
 					};
 					3ADCDBC618E44EDD000ED44E = {
 						TestTargetID = 3ADCDB9E18E44EDD000ED44E;
@@ -811,7 +811,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SPRITEKIT_TEXTURE_ATLAS_OUTPUT = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -829,7 +829,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SPRITEKIT_TEXTURE_ATLAS_OUTPUT = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
